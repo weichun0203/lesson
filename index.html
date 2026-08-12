@@ -1,1 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網站導覽入口</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: var(--text-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            background-color: #273548;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-color);
+        }
+
+        .card h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        .card span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>導覽入口網站</h1>
+        <p>請點擊下方卡片以快速前往對應的頁面</p>
+    </header>
+
+    <div class="container">
+        <!-- Gas Line Systems -->
+        <a href="gas_line_systems.html" class="card">
+            <h3>瓦斯管線系統</h3>
+            <span>gas_line_systems.html</span>
+        </a>
+
+        <!-- Invest Course Map -->
+        <a href="invest_course_map.html" class="card">
+            <h3>投資課程地圖</h3>
+            <span>invest_course_map.html</span>
+        </a>
+
+        <!-- Marketing Plan Guide -->
+        <a href="marketing-plan-guide.html" class="card">
+            <h3>行銷企劃書指南</h3>
+            <span>marketing-plan-guide.html</span>
+        </a>
+
+        <!-- Shorts Strategy -->
+        <a href="shorts_strategy.html" class="card">
+            <h3>短影音策略</h3>
+            <span>shorts_strategy.html</span>
+        </a>
+
+        <!-- Survey Course -->
+        <a href="survey_course (1).html" class="card">
+            <h3>問卷調查課程</h3>
+            <span>survey_course (1).html</span>
+        </a>
+
+        <!-- Video Editing SOP -->
+        <a href="video-editing-sop.html" class="card">
+            <h3>影片剪輯 SOP</h3>
+            <span>video-editing-sop.html</span>
+        </a>
+
+        <!-- Video Hook Design Course -->
+        <a href="video-hook-design-course.html" class="card">
+            <h3>短影音鉤子設計課程</h3>
+            <span>video-hook-design-course.html</span>
+        </a>
+    </div>
+
+</body>
+</html>
