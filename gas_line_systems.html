@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GAS × LINE@ 十大功能系統完全手冊</title>
+<style>
+:root{--bg:#0a0c12;--s1:#111520;--s2:#181c2a;--s3:#1e2338;--primary:#4F46E5;--pri2:#818CF8;--cyan:#06B6D4;--green:#10B981;--yellow:#F59E0B;--pink:#EC4899;--red:#EF4444;--text:#F1F5F9;--muted:#64748B;--soft:#94A3B8;--border:#1e2338;--border2:#2a3050;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(10,12,18,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 24px;gap:16px;}
+.nav-logo{font-size:14px;font-weight:800;background:linear-gradient(135deg,#818CF8,#06B6D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;}
+.nav-tabs{display:flex;gap:4px;overflow-x:auto;flex:1;}
+.nav-tabs::-webkit-scrollbar{height:0;}
+.ntab{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);white-space:nowrap;border:none;background:none;transition:all .2s;}
+.ntab:hover,.ntab.on{background:rgba(79,70,229,.15);color:var(--pri2);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 24px 60px;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(79,70,229,.2),transparent);}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(79,70,229,.15);border:1px solid rgba(79,70,229,.3);color:var(--pri2);padding:5px 16px;border-radius:30px;font-size:12px;font-weight:700;margin-bottom:20px;}
+.hero h1{font-size:clamp(28px,5vw,56px);font-weight:900;line-height:1.1;margin-bottom:16px;}
+.grad{background:linear-gradient(135deg,#818CF8,#06B6D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:15px;color:var(--soft);max-width:540px;margin:0 auto 32px;}
+.stat-row{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-top:40px;}
+.stat{text-align:center;}.stat-n{font-size:26px;font-weight:800;}.stat-l{font-size:11px;color:var(--muted);}
+.s-blue .stat-n{color:#818CF8;}.s-cyan .stat-n{color:#06B6D4;}.s-green .stat-n{color:#10B981;}.s-pink .stat-n{color:#EC4899;}
+
+/* INDEX GRID */
+.idx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:0 24px;max-width:1200px;margin:0 auto 80px;}
+.idx-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .25s;display:flex;gap:14px;align-items:flex-start;}
+.idx-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.idx-card.creative{border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.04);}
+.idx-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.idx-n{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:2px;}
+.idx-t{font-size:13px;font-weight:700;margin-bottom:3px;}
+.idx-d{font-size:11px;color:var(--soft);}
+.creative-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,.15);color:#FCD34D;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-top:4px;}
+
+/* SYSTEM PAGE */
+.sys-page{display:none;padding:80px 24px 60px;max-width:1000px;margin:0 auto;}
+.sys-page.active{display:block;}
+.sys-hero{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:36px;margin-bottom:32px;position:relative;overflow:hidden;}
+.sys-hero-bg{position:absolute;inset:0;opacity:.06;font-size:200px;display:flex;align-items:center;justify-content:flex-end;padding-right:20px;pointer-events:none;}
+.sys-badge{display:inline-flex;gap:6px;align-items:center;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:12px;}
+.sys-h1{font-size:clamp(22px,3vw,32px);font-weight:900;margin-bottom:8px;}
+.sys-sub{font-size:14px;color:var(--soft);max-width:600px;margin-bottom:20px;}
+.tag-row{display:flex;gap:8px;flex-wrap:wrap;}
+.tag{padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;}
+.t-blue{background:rgba(79,70,229,.15);color:#818CF8;}
+.t-cyan{background:rgba(6,182,212,.15);color:#67E8F9;}
+.t-green{background:rgba(16,185,129,.15);color:#6EE7B7;}
+.t-yellow{background:rgba(245,158,11,.15);color:#FCD34D;}
+.t-pink{background:rgba(236,72,153,.15);color:#F9A8D4;}
+.t-red{background:rgba(239,68,68,.15);color:#FCA5A5;}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:16px 0;padding:20px;background:var(--s2);border-radius:12px;justify-content:center;}
+.flow-node{background:var(--s3);border:1px solid var(--border2);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:600;text-align:center;white-space:nowrap;}
+.flow-arr{color:var(--muted);font-size:18px;padding:0 6px;}
+.flow-node.n-line{border-color:rgba(6,182,212,.4);color:#67E8F9;}
+.flow-node.n-gas{border-color:rgba(16,185,129,.4);color:#6EE7B7;}
+.flow-node.n-sheet{border-color:rgba(245,158,11,.4);color:#FCD34D;}
+.flow-node.n-user{border-color:rgba(79,70,229,.4);color:#818CF8;}
+
+/* SECTIONS */
+.sec{margin-bottom:32px;}
+.sec-title{font-size:16px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.sec-title::before{content:'';width:3px;height:18px;background:linear-gradient(to bottom,#4F46E5,#06B6D4);border-radius:2px;display:block;}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step-item{display:flex;gap:16px;}
+.step-left{display:flex;flex-direction:column;align-items:center;}
+.step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;}
+.step-line{flex:1;width:2px;background:var(--border);margin:4px 0;}
+.step-body{flex:1;padding-bottom:24px;}
+.step-t{font-size:14px;font-weight:700;margin-bottom:4px;}
+.step-d{font-size:13px;color:var(--soft);line-height:1.6;}
+
+/* CODE */
+.code-block{background:#0d1117;border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin:12px 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--s2);border-bottom:1px solid var(--border);}
+.code-lang{font-size:11px;font-weight:700;color:var(--soft);}
+.copy-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--soft);font-size:11px;cursor:pointer;transition:all .2s;}
+.copy-btn:hover{background:var(--s3);color:var(--text);}
+pre{padding:16px;overflow-x:auto;font-size:12px;line-height:1.7;font-family:'Consolas','Courier New',monospace;}
+.k{color:#FF79C6;}.f{color:#50FA7B;}.s{color:#F1FA8C;}.c{color:#6272A4;font-style:italic;}.v{color:#BD93F9;}.n{color:#8BE9FD;}.o{color:#FF5555;}
+
+/* INFO BOXES */
+.box{border-radius:10px;padding:14px 18px;margin:12px 0;border-left:3px solid;}
+.box-info{background:rgba(6,182,212,.06);border-color:var(--cyan);}
+.box-warn{background:rgba(245,158,11,.06);border-color:var(--yellow);}
+.box-ok{background:rgba(16,185,129,.06);border-color:var(--green);}
+.box-tip{background:rgba(79,70,229,.06);border-color:var(--primary);}
+.box-title{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+.box-info .box-title{color:#67E8F9;}.box-warn .box-title{color:#FCD34D;}.box-ok .box-title{color:#6EE7B7;}.box-tip .box-title{color:#818CF8;}
+.box p,.box li{font-size:13px;color:var(--soft);}
+.box ul{padding-left:16px;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;margin:12px 0;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--s2);padding:9px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--soft);}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* PROFIT CARD */
+.profit-card{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(236,72,153,.08));border:1px solid rgba(245,158,11,.25);border-radius:16px;padding:24px;margin-top:24px;}
+.profit-title{font-size:15px;font-weight:800;color:#FCD34D;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.profit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+.profit-item{background:rgba(0,0,0,.3);border-radius:10px;padding:14px;text-align:center;}
+.profit-num{font-size:20px;font-weight:800;color:#FCD34D;}
+.profit-label{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* BACK BTN */
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--soft);font-size:13px;cursor:pointer;transition:all .2s;margin-bottom:24px;}
+.back-btn:hover{background:var(--s2);color:var(--text);}
+.sys-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+.btn{padding:9px 20px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-p{background:linear-gradient(135deg,var(--primary),var(--cyan));color:#fff;}
+.btn-p:hover{opacity:.9;}
+.btn-g{background:none;border:1px solid var(--border2);color:var(--soft);}
+.btn-g:hover{background:var(--s2);color:var(--text);}
+
+@media(max-width:640px){.idx-grid{grid-template-columns:1fr 1fr;padding:0 16px;}.sys-page{padding:70px 16px 40px;}.flow{gap:4px;}}
+</style>
+</head>
+<body>
+
+<div id="nav">
+  <div class="nav-logo">⚙️ GAS × LINE@</div>
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="ntab on" onclick="showHome()">總覽</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="home-page">
+<div class="hero">
+  <div>
+    <div class="hero-badge">🔧 Google Apps Script × LINE Messaging API</div>
+    <h1>十大功能系統<br><span class="grad">完全實作手冊</span></h1>
+    <p class="hero-sub">從 Webhook 設定到 GAS 程式碼，每個系統都有完整架構圖、逐步教學和可直接使用的程式碼。</p>
+    <div class="stat-row">
+      <div class="stat s-blue"><div class="stat-n">10</div><div class="stat-l">可部署系統</div></div>
+      <div class="stat s-cyan"><div class="stat-n">3</div><div class="stat-l">創意獲利方案</div></div>
+      <div class="stat s-green"><div class="stat-n">0元</div><div class="stat-l">基礎建置成本</div></div>
+      <div class="stat s-pink"><div class="stat-n">GAS</div><div class="stat-l">無需伺服器</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- INDEX GRID -->
+<div class="idx-grid" id="idx-grid"></div>
+</div>
+
+<!-- SYSTEM PAGES (rendered by JS) -->
+<div id="sys-container"></div>
+
+<script>
+// ============================================================
+// SYSTEM DATA
+// ============================================================
+const systems = [
+{
+  id:1, icon:'🗓️', color:'#818CF8', bg:'rgba(79,70,229,.15)',
+  name:'自動預約管理系統',
+  short:'LINE訊息預約 → Sheet記錄 → 自動確認+提醒',
+  tags:['t-blue','t-cyan','t-green'],tagNames:['預約管理','自動回覆','定時提醒'],
+  creative:false,
+  desc:'讓客戶直接在LINE上預約服務，GAS自動寫入Google Sheet、發送確認訊息，並在預約前一天自動推播提醒，完全取代人工接單。',
+  flow:[
+    {t:'用戶傳訊息',c:'n-user'},{t:'LINE Webhook',c:'n-line'},{t:'GAS處理',c:'n-gas'},
+    {t:'寫入Sheet',c:'n-sheet'},{t:'回覆確認',c:'n-line'}
+  ],
+  steps:[
+    {t:'建立 Google Sheet（預約資料庫）',d:'建立工作表，欄位：時間戳、LINE userId、姓名、電話、預約日期、服務項目、狀態（待確認/已確認/已完成/取消）'},
+    {t:'LINE@ 官方帳號設定 Webhook URL',d:'在 LINE Developers Console → Messaging API → Webhook URL 填入 GAS 部署網址。啟用 Webhook，關閉自動回覆。'},
+    {t:'GAS doPost() — 接收並解析訊息',d:'解析 LINE 傳來的 JSON，提取 userId、訊息文字，判斷是否符合預約格式（如「預約 12/25 14:00 剪髮」）'},
+    {t:'GAS 寫入 Sheet + 回覆確認',d:'將預約資訊寫入 Sheet，同時呼叫 LINE Reply API 發送確認訊息含預約明細'},
+    {t:'設定時間觸發器 — 每日早上9點執行提醒',d:'掃描 Sheet 中「明天」的預約，批次呼叫 LINE Push API 推播提醒訊息給對應的 userId'},
+  ],
+  code:`// ===== GAS 主程式 =====
+const SHEET_ID = 'YOUR_SHEET_ID';
+const LINE_TOKEN = 'YOUR_CHANNEL_ACCESS_TOKEN';
+
+function doPost(e) {
+  <span class="k">const</span> <span class="v">data</span> = JSON.parse(e.postData.contents);
+  <span class="k">const</span> <span class="v">event</span> = data.events[<span class="n">0</span>];
+  <span class="k">if</span> (!event || event.type !== <span class="s">'message'</span>) <span class="k">return</span>;
+
+  <span class="k">const</span> <span class="v">userId</span> = event.source.userId;
+  <span class="k">const</span> <span class="v">text</span> = event.message.text.trim();
+  <span class="k">const</span> <span class="v">replyToken</span> = event.replyToken;
+
+  <span class="c">// 解析預約格式：「預約 YYYY/MM/DD HH:MM 服務名稱」</span>
+  <span class="k">const</span> <span class="v">match</span> = text.match(
+    <span class="s">/^預約\s+(\d{1,2}\/\d{1,2})\s+(\d{2}:\d{2})\s+(.+)$/</span>
+  );
+
+  <span class="k">if</span> (match) {
+    <span class="k">const</span> [_, date, time, service] = match;
+    saveBooking(userId, date, time, service);
+    replyMessage(replyToken,
+      <span class="s">\`✅ 預約成功！\n📅 日期：\${date}\n⏰ 時間：\${time}\n💇 服務：\${service}\n\n如需取消請回覆「取消預約」\`</span>
+    );
+  } <span class="k">else if</span> (text === <span class="s">'取消預約'</span>) {
+    cancelLatestBooking(userId);
+    replyMessage(replyToken, <span class="s">'已取消您最近一筆預約。'</span>);
+  } <span class="k">else</span> {
+    replyMessage(replyToken,
+      <span class="s">'📋 預約格式：\\n預約 月/日 時間 服務項目\\n例：預約 12/25 14:00 剪髮'</span>
+    );
+  }
+}
+
+<span class="f">function</span> <span class="n">saveBooking</span>(userId, date, time, service) {
+  <span class="k">const</span> <span class="v">ss</span> = SpreadsheetApp.openById(SHEET_ID);
+  <span class="k">const</span> <span class="v">sh</span> = ss.getSheetByName(<span class="s">'預約'</span>);
+  sh.appendRow([<span class="k">new</span> Date(), userId, date, time, service, <span class="s">'已確認'</span>]);
+}
+
+<span class="c">// ===== 每日提醒（設定時間觸發器）=====</span>
+<span class="f">function</span> <span class="n">sendDailyReminders</span>() {
+  <span class="k">const</span> <span class="v">sh</span> = SpreadsheetApp.openById(SHEET_ID).getSheetByName(<span class="s">'預約'</span>);
+  <span class="k">const</span> <span class="v">rows</span> = sh.getDataRange().getValues().slice(<span class="n">1</span>);
+  <span class="k">const</span> <span class="v">tomorrow</span> = getTomorrowStr(); <span class="c">// 'MM/DD'</span>
+
+  rows.forEach(row => {
+    <span class="k">if</span> (row[<span class="n">2</span>] === tomorrow && row[<span class="n">5</span>] === <span class="s">'已確認'</span>) {
+      pushMessage(row[<span class="n">1</span>], <span class="c">// userId</span>
+        <span class="s">\`⏰ 明日預約提醒\n📅 \${row[2]} \${row[3]}\n💇 \${row[4]}\n請準時到場，謝謝！\`</span>
+      );
+    }
+  });
+}
+
+<span class="f">function</span> <span class="n">replyMessage</span>(token, text) {
+  UrlFetchApp.fetch(<span class="s">'https://api.line.me/v2/bot/message/reply'</span>, {
+    method: <span class="s">'post'</span>, contentType: <span class="s">'application/json'</span>,
+    headers: {Authorization: <span class="s">\`Bearer \${LINE_TOKEN}\`</span>},
+    payload: JSON.stringify({replyToken: token, messages:[{type:<span class="s">'text'</span>,text}]})
+  });
+}
+
+<span class="f">function</span> <span class="n">pushMessage</span>(userId, text) {
+  UrlFetchApp.fetch(<span class="s">'https://api.line.me/v2/bot/message/push'</span>, {
+    method: <span class="s">'post'</span>, contentType: <span class="s">'application/json'</span>,
+    headers: {Authorization: <span class="s">\`Bearer \${LINE_TOKEN}\`</span>},
+    payload: JSON.stringify({to: userId, messages:[{type:<span class="s">'text'</span>,text}]})
+  });
+}`,
+  tips:['LINE@ 免費方案每月 500 則 Push 訊息，超過需升級', '可加入 Flex Message 做出漂亮的預約確認卡片', '建議加「查詢預約」指令讓用戶自助查看']
+},
+{
+  id:2, icon:'🤖', color:'#06B6D4', bg:'rgba(6,182,212,.15)',
+  name:'FAQ 智能客服機器人',
+  short:'關鍵字比對 → 自動回覆 → 轉人工',
+  tags:['t-cyan','t-blue'],tagNames:['客服自動化','關鍵字比對'],
+  creative:false,
+  desc:'從 Google Sheet 讀取 FAQ 資料庫，當用戶提問時自動比對關鍵字回覆答案，比對失敗時自動通知客服人員介入，7x24不停機。',
+  flow:[
+    {t:'用戶提問',c:'n-user'},{t:'LINE Webhook',c:'n-line'},{t:'GAS關鍵字比對',c:'n-gas'},
+    {t:'FAQ Sheet',c:'n-sheet'},{t:'自動回覆/轉人工',c:'n-line'}
+  ],
+  steps:[
+    {t:'建立 FAQ Google Sheet',d:'欄位：關鍵字（多個用逗號分隔）、回覆內容、分類。例：關鍵字「退貨,退款,換貨」→ 回覆退換貨政策說明'},
+    {t:'GAS 讀取 FAQ 並建立比對邏輯',d:'將 Sheet 資料快取至 CacheService（每5分鐘更新），用戶訊息與每筆 FAQ 的關鍵字做包含比對'},
+    {t:'分層回覆策略',d:'完全符合→直接回覆；部分符合→顯示最相關的3個問題供選擇；完全不符合→推送給管理員LINE帳號'},
+    {t:'加入人工介入機制',d:'管理員收到通知後可直接在 LINE 回覆（使用特定前綴如「回:」），GAS 將訊息轉發給原用戶'},
+    {t:'部署 Webhook 並測試',d:'用 Postman 模擬 LINE Webhook 測試各種情境，確認所有分支都能正確執行'},
+  ],
+  code:`<span class="c">// ===== FAQ 比對引擎 =====</span>
+<span class="f">function</span> <span class="n">doPost</span>(e) {
+  <span class="k">const</span> <span class="v">event</span> = JSON.parse(e.postData.contents).events[<span class="n">0</span>];
+  <span class="k">if</span> (!event || event.type !== <span class="s">'message'</span>) <span class="k">return</span>;
+
+  <span class="k">const</span> <span class="v">text</span> = event.message.text;
+  <span class="k">const</span> <span class="v">userId</span> = event.source.userId;
+  <span class="k">const</span> <span class="v">result</span> = matchFAQ(text);
+
+  <span class="k">if</span> (result.type === <span class="s">'exact'</span>) {
+    replyMessage(event.replyToken, result.answer);
+  } <span class="k">else if</span> (result.type === <span class="s">'partial'</span>) {
+    <span class="k">const</span> <span class="v">msg</span> = <span class="s">'您想詢問的是：\\n'</span> +
+      result.matches.map((m,i) => <span class="s">\`\${i+1}. \${m.title}\`</span>).join(<span class="s">'\\n'</span>) +
+      <span class="s">'\\n\\n請回覆數字選擇，或輸入「人工客服」'</span>;
+    replyMessage(event.replyToken, msg);
+  } <span class="k">else</span> {
+    <span class="c">// 推送給管理員</span>
+    pushMessage(ADMIN_USER_ID,
+      <span class="s">\`🔔 客服待處理\\n用戶：\${userId}\\n問題：\${text}\`</span>
+    );
+    replyMessage(event.replyToken,
+      <span class="s">'感謝您的提問！客服人員將於10分鐘內回覆您 🙏'</span>
+    );
+  }
+}
+
+<span class="f">function</span> <span class="n">matchFAQ</span>(text) {
+  <span class="k">const</span> <span class="v">faqs</span> = getFAQFromCache();
+  <span class="k">const</span> <span class="v">exact</span> = faqs.find(f =>
+    f.keywords.some(k => text.includes(k))
+  );
+  <span class="k">if</span> (exact) <span class="k">return</span> {type: <span class="s">'exact'</span>, answer: exact.answer};
+
+  <span class="c">// 部分相似：計算共同字符數</span>
+  <span class="k">const</span> <span class="v">scored</span> = faqs.map(f => ({
+    ...f,
+    score: f.keywords.reduce((s,k) =>
+      s + [...k].filter(c => text.includes(c)).length, <span class="n">0</span>)
+  })).filter(f => f.score > <span class="n">0</span>)
+     .sort((a,b) => b.score - a.score)
+     .slice(<span class="n">0</span>,<span class="n">3</span>);
+
+  <span class="k">if</span> (scored.length > <span class="n">0</span>)
+    <span class="k">return</span> {type: <span class="s">'partial'</span>, matches: scored};
+  <span class="k">return</span> {type: <span class="s">'none'</span>};
+}
+
+<span class="f">function</span> <span class="n">getFAQFromCache</span>() {
+  <span class="k">const</span> <span class="v">cache</span> = CacheService.getScriptCache();
+  <span class="k">let</span> <span class="v">data</span> = cache.get(<span class="s">'faq'</span>);
+  <span class="k">if</span> (!data) {
+    <span class="k">const</span> <span class="v">rows</span> = SpreadsheetApp.openById(SHEET_ID)
+      .getSheetByName(<span class="s">'FAQ'</span>).getDataRange().getValues().slice(<span class="n">1</span>);
+    <span class="k">const</span> <span class="v">faqs</span> = rows.map(r => ({
+      keywords: r[<span class="n">0</span>].split(<span class="s">','</span>).map(k => k.trim()),
+      answer: r[<span class="n">1</span>], title: r[<span class="n">2</span>]
+    }));
+    cache.put(<span class="s">'faq'</span>, JSON.stringify(faqs), <span class="n">300</span>);
+    <span class="k">return</span> faqs;
+  }
+  <span class="k">return</span> JSON.parse(data);
+}`,
+  tips:['FAQ Sheet 不限筆數，GAS Cache 讓每次查詢只需毫秒', '可設計「0 人工客服」的快捷指令', '建議在 Sheet 記錄每個問題的觸發次數，找出最常見問題優化答案']
+},
+{
+  id:3, icon:'📦', color:'#10B981', bg:'rgba(16,185,129,.15)',
+  name:'訂單狀態查詢系統',
+  short:'用戶輸入訂單號 → GAS查Sheet → 回覆狀態',
+  tags:['t-green','t-blue'],tagNames:['訂單管理','即時查詢'],
+  creative:false,
+  desc:'電商或服務業的標配。客戶在LINE輸入訂單編號，GAS秒查Google Sheet回傳最新狀態，並支援主動推播狀態更新通知。',
+  flow:[
+    {t:'輸入訂單號',c:'n-user'},{t:'LINE Webhook',c:'n-line'},{t:'GAS查詢',c:'n-gas'},
+    {t:'訂單Sheet',c:'n-sheet'},{t:'回傳狀態',c:'n-line'}
+  ],
+  steps:[
+    {t:'訂單 Sheet 結構設計',d:'欄位：訂單號、LINE userId、姓名、商品、金額、狀態（待付款/備貨中/配送中/已送達/退款中）、配送單號、更新時間'},
+    {t:'doPost() 解析查詢指令',d:'偵測「查詢 + 訂單號」格式，或直接識別符合訂單號格式的文字（如 ORD + 6位數字）'},
+    {t:'查詢函數 + 狀態樣板回覆',d:'用 find() 在 Sheet 搜尋訂單號，回傳格式化的狀態訊息，包含各階段 emoji 視覺化'},
+    {t:'主動推播狀態變更',d:'當商家在 Sheet 更新訂單狀態時（用 onEdit 觸發器），自動 Push 通知給對應的 userId'},
+  ],
+  code:`<span class="f">function</span> <span class="n">doPost</span>(e) {
+  <span class="k">const</span> <span class="v">event</span> = JSON.parse(e.postData.contents).events[<span class="n">0</span>];
+  <span class="k">const</span> <span class="v">text</span> = event.message.text.trim().toUpperCase();
+
+  <span class="c">// 支援「查詢 ORD123456」或直接輸入「ORD123456」</span>
+  <span class="k">const</span> <span class="v">orderMatch</span> = text.match(<span class="s">/ORD\d{6}/</span>);
+  <span class="k">if</span> (!orderMatch) {
+    replyMessage(event.replyToken,
+      <span class="s">'請輸入訂單編號，格式：ORD + 6位數字\\n例：ORD123456'</span>);
+    <span class="k">return</span>;
+  }
+
+  <span class="k">const</span> <span class="v">order</span> = findOrder(orderMatch[<span class="n">0</span>]);
+  <span class="k">if</span> (!order) {
+    replyMessage(event.replyToken, <span class="s">'查無此訂單，請確認訂單編號是否正確。'</span>);
+    <span class="k">return</span>;
+  }
+
+  replyMessage(event.replyToken, formatOrderStatus(order));
+}
+
+<span class="f">function</span> <span class="n">formatOrderStatus</span>(order) {
+  <span class="k">const</span> <span class="v">statusMap</span> = {
+    <span class="s">'待付款'</span>: <span class="s">'💳 等待付款中'</span>,
+    <span class="s">'備貨中'</span>: <span class="s">'📦 備貨中'</span>,
+    <span class="s">'配送中'</span>: <span class="s">'🚚 配送中'</span>,
+    <span class="s">'已送達'</span>: <span class="s">'✅ 已送達'</span>,
+    <span class="s">'退款中'</span>: <span class="s">'🔄 退款處理中'</span>
+  };
+  <span class="k">return</span> <span class="s">\`📋 訂單查詢結果
+─────────────
+訂單：\${order.id}
+狀態：\${statusMap[order.status] || order.status}
+商品：\${order.product}
+金額：NT$ \${order.amount}
+\${order.trackingNo ? '配送單號：'+order.trackingNo : ''}
+更新：\${order.updatedAt}
+─────────────
+如有問題請回覆「人工客服」\`</span>;
+}
+
+<span class="c">// ===== onEdit 觸發器：自動推播狀態更新 =====</span>
+<span class="f">function</span> <span class="n">onOrderStatusChange</span>(e) {
+  <span class="k">const</span> <span class="v">row</span> = e.range.getRow();
+  <span class="k">const</span> <span class="v">col</span> = e.range.getColumn();
+  <span class="k">if</span> (col !== <span class="n">6</span>) <span class="k">return</span>; <span class="c">// 第6欄是狀態</span>
+
+  <span class="k">const</span> <span class="v">sh</span> = e.source.getActiveSheet();
+  <span class="k">const</span> <span class="v">data</span> = sh.getRange(row, <span class="n">1</span>, <span class="n">1</span>, <span class="n">9</span>).getValues()[<span class="n">0</span>];
+  <span class="k">const</span> [orderId,userId,,,,status] = data;
+
+  pushMessage(userId,
+    <span class="s">\`🔔 訂單狀態更新\n訂單 \${orderId} 狀態已更新為：\${status}\n輸入訂單號可查看完整資訊\`</span>
+  );
+}`,
+  tips:['onEdit 觸發器需手動在GAS設定，不是 Webhook', '可加入 Flex Message 做出進度條樣式的狀態卡片', '訂單號建議用正則驗證，防止注入攻擊']
+},
+{
+  id:4, icon:'📢', color:'#F59E0B', bg:'rgba(245,158,11,.15)',
+  name:'定時群發推播系統',
+  short:'排程內容 → Sheet → 每日自動推全體',
+  tags:['t-yellow','t-blue'],tagNames:['定時推播','行銷自動化'],
+  creative:false,
+  desc:'在 Google Sheet 排好要推播的內容和時間，GAS 定時觸發器自動向所有粉絲或特定標籤群組推送訊息，適合每日早安報、促銷活動、課程提醒。',
+  flow:[
+    {t:'排程Sheet',c:'n-sheet'},{t:'GAS定時觸發',c:'n-gas'},{t:'LINE Broadcast',c:'n-line'},{t:'所有粉絲',c:'n-user'}
+  ],
+  steps:[
+    {t:'推播排程 Sheet 設計',d:'欄位：推播日期、推播時間、訊息內容、圖片URL（選填）、目標（all/特定標籤）、狀態（待推/已推/失敗）'},
+    {t:'建立每小時觸發器',d:'在GAS編輯器 → 觸發條件 → 新增每小時執行的觸發器，函數名稱：checkAndBroadcast'},
+    {t:'checkAndBroadcast() 邏輯',d:'取得當前時間，搜尋 Sheet 中符合「現在這小時」且狀態為「待推」的資料列，逐一執行推播'},
+    {t:'呼叫 LINE Broadcast API',d:'使用 /v2/bot/message/broadcast 推送給所有粉絲，或 /v2/bot/message/multicast 推送給特定 userId 清單'},
+    {t:'更新 Sheet 狀態 + 錯誤處理',d:'推播成功後將狀態改為「已推」並記錄時間；失敗時記錄錯誤訊息方便排查'},
+  ],
+  code:`<span class="f">function</span> <span class="n">checkAndBroadcast</span>() {
+  <span class="k">const</span> <span class="v">now</span> = <span class="k">new</span> Date();
+  <span class="k">const</span> <span class="v">sh</span> = SpreadsheetApp.openById(SHEET_ID).getSheetByName(<span class="s">'推播排程'</span>);
+  <span class="k">const</span> <span class="v">rows</span> = sh.getDataRange().getValues();
+
+  rows.forEach((row, idx) => {
+    <span class="k">if</span> (idx === <span class="n">0</span> || row[<span class="n">5</span>] !== <span class="s">'待推'</span>) <span class="k">return</span>;
+
+    <span class="k">const</span> <span class="v">scheduled</span> = <span class="k">new</span> Date(<span class="s">\`\${row[0]} \${row[1]}\`</span>);
+    <span class="k">const</span> <span class="v">diff</span> = Math.abs(now - scheduled) / <span class="n">60000</span>; <span class="c">// 分鐘差</span>
+
+    <span class="k">if</span> (diff <= <span class="n">60</span>) { <span class="c">// 在這小時內</span>
+      <span class="k">try</span> {
+        broadcast(row[<span class="n">2</span>], row[<span class="n">3</span>], row[<span class="n">4</span>]); <span class="c">// 內容, 圖片, 目標</span>
+        sh.getRange(idx+<span class="n">1</span>, <span class="n">6</span>).setValue(<span class="s">'已推'</span>);
+        sh.getRange(idx+<span class="n">1</span>, <span class="n">7</span>).setValue(now.toLocaleString());
+      } <span class="k">catch</span>(err) {
+        sh.getRange(idx+<span class="n">1</span>, <span class="n">6</span>).setValue(<span class="s">'失敗'</span>);
+        sh.getRange(idx+<span class="n">1</span>, <span class="n">7</span>).setValue(err.message);
+      }
+    }
+  });
+}
+
+<span class="f">function</span> <span class="n">broadcast</span>(text, imageUrl, target) {
+  <span class="k">const</span> <span class="v">messages</span> = [];
+  <span class="k">if</span> (imageUrl) messages.push({type:<span class="s">'image'</span>,originalContentUrl:imageUrl,previewImageUrl:imageUrl});
+  messages.push({type:<span class="s">'text'</span>, text});
+
+  <span class="k">const</span> <span class="v">endpoint</span> = target === <span class="s">'all'</span>
+    ? <span class="s">'https://api.line.me/v2/bot/message/broadcast'</span>
+    : <span class="s">'https://api.line.me/v2/bot/message/multicast'</span>;
+
+  <span class="k">const</span> <span class="v">payload</span> = target === <span class="s">'all'</span>
+    ? {messages}
+    : {to: target.split(<span class="s">','</span>), messages}; <span class="c">// Sheet存userId以逗號分隔</span>
+
+  UrlFetchApp.fetch(endpoint, {
+    method: <span class="s">'post'</span>, contentType: <span class="s">'application/json'</span>,
+    headers: {Authorization: <span class="s">\`Bearer \${LINE_TOKEN}\`</span>},
+    payload: JSON.stringify(payload)
+  });
+}`,
+  tips:['免費方案 Broadcast 每月500則，超過按則計費', 'GAS 觸發器最短可設每分鐘執行（但建議每小時即可）', '可在 Sheet 加入 A/B 測試欄位，比較不同訊息開信率']
+},
+{
+  id:5, icon:'📊', color:'#818CF8', bg:'rgba(79,70,229,.15)',
+  name:'表單填寫即時通知系統',
+  short:'Google表單提交 → GAS解析 → LINE即時通知',
+  tags:['t-blue','t-green'],tagNames:['表單整合','即時通知'],
+  creative:false,
+  desc:'Google 表單一有人提交，GAS立即解析內容並 Push 給指定的 LINE 帳號，適合報名通知、報價申請、內部審核流程。',
+  flow:[
+    {t:'用戶填表單',c:'n-user'},{t:'Google Sheet',c:'n-sheet'},{t:'GAS onFormSubmit',c:'n-gas'},{t:'LINE Push',c:'n-line'},{t:'管理員',c:'n-user'}
+  ],
+  steps:[
+    {t:'建立 Google 表單並連結 Sheet',d:'在表單設定→回應→建立試算表，讓表單回答自動寫入 Sheet'},
+    {t:'GAS 綁定 onFormSubmit 觸發器',d:'在 Sheet 的 GAS 編輯器中，建立「從試算表觸發 → 表單提交時」的觸發器'},
+    {t:'解析表單欄位並格式化訊息',d:'事件物件 e.namedValues 包含所有欄位名稱和值，格式化成可讀的 LINE 訊息'},
+    {t:'根據表單內容路由通知',d:'例如報名人數>10自動通知業務主管；預算>10萬通知業務總監；其他通知一般業務'},
+  ],
+  code:`<span class="c">// 綁定至 Google Sheet 的 onFormSubmit 觸發器</span>
+<span class="f">function</span> <span class="n">onFormSubmit</span>(e) {
+  <span class="k">const</span> <span class="v">data</span> = e.namedValues;
+
+  <span class="c">// 格式化通知訊息</span>
+  <span class="k">let</span> <span class="v">msg</span> = <span class="s">\`📩 新表單提交 \${new Date().toLocaleString('zh-TW')}\\n${'─'.repeat(20)}\\n\`</span>;
+
+  Object.entries(data).forEach(([key, val]) => {
+    msg += <span class="s">\`▸ \${key}：\${val[0]}\\n\`</span>;
+  });
+
+  <span class="c">// 路由邏輯：根據「預算」欄位決定通知對象</span>
+  <span class="k">const</span> <span class="v">budget</span> = parseInt((data[<span class="s">'預算'</span>] || [<span class="s">'0'</span>])[<span class="n">0</span>].replace(/[^0-9]/g,<span class="s">''</span>));
+  <span class="k">const</span> <span class="v">target</span> = budget >= <span class="n">100000</span> ? DIRECTOR_ID : SALES_ID;
+
+  pushMessage(target, msg);
+
+  <span class="c">// 也可以同時寄 Email</span>
+  GmailApp.sendEmail(
+    <span class="s">'your@email.com'</span>,
+    <span class="s">'新表單提交通知'</span>,
+    msg.replace(/[^\x00-\x7F]/g, c => c) <span class="c">// 移除emoji給email</span>
+  );
+}`,
+  tips:['onFormSubmit 是最穩定的觸發方式，不耗費 Webhook 配額', '可加入 Google Sheets 的 APPROVED/REJECTED 欄位，審核後自動回通知申請者', '搭配 GAS sendEmail 可同時發 LINE + Email 雙通知']
+},
+{
+  id:6, icon:'💎', color:'#EC4899', bg:'rgba(236,72,153,.15)',
+  name:'會員點數獎勵系統',
+  short:'消費記點 → 查點 → 兌換 → Sheet記錄',
+  tags:['t-pink','t-cyan','t-green'],tagNames:['會員管理','點數系統','忠誠計畫'],
+  creative:false,
+  desc:'完整的會員點數系統。用戶在LINE登記成會員、查詢點數、兌換優惠；商家在Sheet記錄消費並加點，所有操作即時同步。',
+  flow:[
+    {t:'用戶LINE操作',c:'n-user'},{t:'Webhook',c:'n-line'},{t:'GAS處理',c:'n-gas'},{t:'會員Sheet',c:'n-sheet'},{t:'回覆結果',c:'n-line'}
+  ],
+  steps:[
+    {t:'會員 Sheet 結構',d:'欄位：LINE userId、姓名、電話、加入日期、累積點數、可用點數、等級（一般/銀卡/金卡/白金）、上次消費日'},
+    {t:'點數記錄子Sheet',d:'每筆交易記錄：時間、userId、類型（加點/扣點/兌換）、點數變動、備註（消費金額/兌換品項）'},
+    {t:'用戶指令設計',d:'「我的點數」→查詢；「兌換」→顯示可兌換選項；「加入會員」→引導填寫資料；「消費紀錄」→近5筆'},
+    {t:'等級升降邏輯',d:'根據累積點數自動計算等級，等級提升時自動推播恭喜訊息'},
+    {t:'Rich Menu 整合',d:'設計 LINE Rich Menu 固定選單，含「我的點數」「兌換優惠」「聯絡客服」快捷按鈕'},
+  ],
+  code:`<span class="f">function</span> <span class="n">doPost</span>(e) {
+  <span class="k">const</span> <span class="v">event</span> = JSON.parse(e.postData.contents).events[<span class="n">0</span>];
+  <span class="k">const</span> <span class="v">userId</span> = event.source.userId;
+  <span class="k">const</span> <span class="v">text</span> = event.message.text.trim();
+
+  <span class="k">if</span> (text === <span class="s">'我的點數'</span>) {
+    <span class="k">const</span> <span class="v">member</span> = getMember(userId);
+    <span class="k">if</span> (!member) {
+      replyMessage(event.replyToken, <span class="s">'您尚未加入會員，回覆「加入會員」開始使用 🎁'</span>);
+      <span class="k">return</span>;
+    }
+    <span class="k">const</span> <span class="v">levelEmoji</span> = {<span class="s">'一般'</span>:<span class="s">'⚪'</span>,<span class="s">'銀卡'</span>:<span class="s">'🥈'</span>,<span class="s">'金卡'</span>:<span class="s">'🥇'</span>,<span class="s">'白金'</span>:<span class="s">'💎'</span>};
+    replyMessage(event.replyToken,
+      <span class="s">\`\${levelEmoji[member.level]} \${member.name} 的會員資訊
+─────────────
+等級：\${member.level}會員
+可用點數：\${member.points} 點
+累積點數：\${member.totalPoints} 點
+─────────────
+距離升級還需：\${getPointsToNextLevel(member)} 點
+回覆「兌換」查看可用優惠\`</span>
+    );
+
+  } <span class="k">else if</span> (text === <span class="s">'兌換'</span>) {
+    <span class="k">const</span> <span class="v">options</span> = getRedeemOptions();
+    <span class="k">const</span> <span class="v">msg</span> = <span class="s">'🎁 點數兌換選項：\\n'</span> +
+      options.map((o,i) => <span class="s">\`\${i+1}. \${o.name}（\${o.points}點）\`</span>).join(<span class="s">'\\n'</span>) +
+      <span class="s">'\\n\\n回覆「兌換 數字」進行兌換\\n例：兌換 1'</span>;
+    replyMessage(event.replyToken, msg);
+
+  } <span class="k">else if</span> (text.startsWith(<span class="s">'兌換 '</span>)) {
+    <span class="k">const</span> <span class="v">idx</span> = parseInt(text.split(<span class="s">' '</span>)[<span class="n">1</span>]) - <span class="n">1</span>;
+    processRedeem(userId, idx, event.replyToken);
+  }
+}
+
+<span class="c">// 商家後台加點（可做成簡單的Web App）</span>
+<span class="f">function</span> <span class="n">addPoints</span>(userId, amount) {
+  <span class="k">const</span> <span class="v">pts</span> = Math.floor(amount / <span class="n">100</span>); <span class="c">// 消費每百元1點</span>
+  <span class="k">const</span> <span class="v">member</span> = getMember(userId);
+  member.points += pts;
+  member.totalPoints += pts;
+  updateMember(member);
+  checkLevelUpgrade(member);
+  pushMessage(userId, <span class="s">\`🎉 消費 NT$\${amount} 獲得 \${pts} 點！\\n目前可用點數：\${member.points} 點\`</span>);
+}`,
+  tips:['Rich Menu 設定需在 LINE Developers Console 上傳圖片並設定 Action', '可加入「推薦朋友」加點功能，做口碑行銷', '點數到期提醒用定時觸發器，每月1日掃描即將過期點數']
+},
+{
+  id:7, icon:'⏱️', color:'#10B981', bg:'rgba(16,185,129,.15)',
+  name:'員工打卡出勤系統',
+  short:'LINE打卡 → GPS定位 → Sheet記錄 → 月報',
+  tags:['t-green','t-blue','t-yellow'],tagNames:['出勤管理','GPS定位','自動報表'],
+  creative:false,
+  desc:'員工直接在LINE傳送位置打卡，GAS驗證是否在公司範圍內（GPS圍欄），自動記錄上下班時間，月底生成出勤統計報表。',
+  flow:[
+    {t:'員工傳位置',c:'n-user'},{t:'LINE Webhook',c:'n-line'},{t:'GAS GPS驗證',c:'n-gas'},{t:'出勤Sheet',c:'n-sheet'},{t:'確認/異常通知',c:'n-line'}
+  ],
+  steps:[
+    {t:'在 LINE 啟用位置訊息功能',d:'用戶點擊「+」→位置資訊，傳送當前座標給 LINE Bot。Webhook 接收到的 message.type 為 "location"'},
+    {t:'GPS 圍欄驗證邏輯',d:'計算用戶坐標與公司座標的距離（Haversine公式），若距離<200公尺視為有效打卡'},
+    {t:'判斷上下班邏輯',d:'查看當天 Sheet 是否有該員工的上班記錄，有→下班；沒有→上班。自動計算工時'},
+    {t:'異常情況處理',d:'遲到（上班>09:00）、早退（下班<18:00）、忘打卡等情況，自動通知 HR 的 LINE 帳號'},
+    {t:'月末自動生成報表',d:'每月最後一天，GAS 統計每位員工的出勤天數、遲到次數、總工時，推播給管理者'},
+  ],
+  code:`<span class="f">function</span> <span class="n">doPost</span>(e) {
+  <span class="k">const</span> <span class="v">event</span> = JSON.parse(e.postData.contents).events[<span class="n">0</span>];
+
+  <span class="k">if</span> (event.message.type === <span class="s">'location'</span>) {
+    <span class="k">const</span> <span class="v">userId</span> = event.source.userId;
+    <span class="k">const</span> {latitude, longitude} = event.message;
+
+    <span class="c">// 公司座標（台北101為例）</span>
+    <span class="k">const</span> <span class="v">OFFICE</span> = {lat: <span class="n">25.0339</span>, lng: <span class="n">121.5645</span>};
+    <span class="k">const</span> <span class="v">dist</span> = getDistance(latitude, longitude, OFFICE.lat, OFFICE.lng);
+
+    <span class="k">if</span> (dist > <span class="n">200</span>) {
+      replyMessage(event.replyToken,
+        <span class="s">\`⚠️ 打卡失敗\\n您距離公司 \${Math.round(dist)} 公尺\\n請在公司範圍內（200公尺）打卡\`</span>);
+      <span class="k">return</span>;
+    }
+
+    <span class="k">const</span> <span class="v">result</span> = recordAttendance(userId, latitude, longitude);
+    replyMessage(event.replyToken,
+      <span class="s">\`✅ \${result.type}打卡成功\\n⏰ \${result.time}\\n\${result.type==='下班'?'今日工時：'+result.hours+'小時':''}\`</span>
+    );
+  }
+}
+
+<span class="f">function</span> <span class="n">getDistance</span>(lat1, lon1, lat2, lon2) {
+  <span class="c">// Haversine 公式計算兩點距離（公尺）</span>
+  <span class="k">const</span> <span class="v">R</span> = <span class="n">6371000</span>;
+  <span class="k">const</span> <span class="v">φ1</span> = lat1 * Math.PI/<span class="n">180</span>;
+  <span class="k">const</span> <span class="v">φ2</span> = lat2 * Math.PI/<span class="n">180</span>;
+  <span class="k">const</span> <span class="v">Δφ</span> = (lat2-lat1) * Math.PI/<span class="n">180</span>;
+  <span class="k">const</span> <span class="v">Δλ</span> = (lon2-lon1) * Math.PI/<span class="n">180</span>;
+  <span class="k">const</span> <span class="v">a</span> = Math.sin(Δφ/<span class="n">2</span>)**<span class="n">2</span> +
+    Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/<span class="n">2</span>)**<span class="n">2</span>;
+  <span class="k">return</span> R * <span class="n">2</span> * Math.atan2(Math.sqrt(a), Math.sqrt(<span class="n">1</span>-a));
+}`,
+  tips:['iOS 用戶需允許 LINE 存取精確位置', '可加入「補打卡申請」流程，讓員工填表後主管在LINE審核', '月報可用 Google Slides API 自動生成 PDF 傳給主管']
+},
+// ============================================================
+// CREATIVE SYSTEMS
+// ============================================================
+{
+  id:8, icon:'🧠', color:'#F59E0B', bg:'rgba(245,158,11,.15)',
+  name:'AI個人化知識訂閱機器人',
+  short:'用戶選主題標籤 → AI每日生成 → 付費推播',
+  tags:['t-yellow','t-pink','t-blue'],tagNames:['AI生成','訂閱制','付費內容'],
+  creative:true,
+  desc:'用戶在LINE選擇感興趣的主題標籤（行銷/投資/心理學等），GAS每天呼叫 OpenAI API 生成個人化的知識卡片推播給付費訂閱者。這是一個可直接變現的SaaS模型。',
+  flow:[
+    {t:'用戶訂閱標籤',c:'n-user'},{t:'LINE/Webhook',c:'n-line'},{t:'GAS',c:'n-gas'},{t:'OpenAI API',c:'n-sheet'},
+    {t:'個人化內容',c:'n-gas'},{t:'每日推播',c:'n-line'}
+  ],
+  steps:[
+    {t:'訂閱管理 Sheet',d:'欄位：LINE userId、姓名、訂閱標籤（最多3個）、訂閱方案（免費/基礎/進階）、到期日、付款記錄'},
+    {t:'用戶訂閱流程',d:'輸入「訂閱」→ 顯示主題選項（行銷/投資/心理/創業/科技）→ 用戶選3個→ 導向付款連結→ 確認後更新Sheet'},
+    {t:'每日內容生成排程（早上7:00）',d:'GAS時間觸發器→掃描有效訂閱用戶→依每人標籤呼叫 OpenAI GPT-4o API→生成個人化卡片文字'},
+    {t:'OpenAI Prompt 設計',d:'Prompt：「你是知識卡片編輯，針對[標籤]主題，生成一則今日知識：包含核心概念（2句）、實際案例（1句）、可執行建議（1句），總字數100字以內，繁體中文」'},
+    {t:'付費機制整合',d:'串接 LINE Pay 或綠界（ECPay）付款，付款成功後 Webhook 通知 GAS 更新訂閱狀態'},
+  ],
+  code:`<span class="c">// ===== 每日AI內容生成推播 =====</span>
+<span class="k">const</span> <span class="v">OPENAI_KEY</span> = <span class="s">'sk-...'</span>;
+
+<span class="f">function</span> <span class="n">dailyAIBroadcast</span>() {
+  <span class="k">const</span> <span class="v">members</span> = getActiveSubscribers(); <span class="c">// 取有效訂閱者</span>
+
+  members.forEach(member => {
+    <span class="k">const</span> <span class="v">content</span> = generateContent(member.tags);
+    pushMessage(member.userId,
+      <span class="s">\`☀️ 今日知識卡片\\n標籤：\${member.tags.join(' ')}\\n─────────────\\n\${content}\\n─────────────\\n💡 喜歡請分享給朋友！\`</span>
+    );
+  });
+}
+
+<span class="f">function</span> <span class="n">generateContent</span>(tags) {
+  <span class="k">const</span> <span class="v">tagStr</span> = tags.join(<span class="s">'、'</span>);
+  <span class="k">const</span> <span class="v">prompt</span> = <span class="s">\`你是知識卡片編輯。針對以下主題生成今日知識：【\${tagStr}】
+格式：
+📌 核心概念：（1-2句）
+🔍 真實案例：（1句，含數字）
+✅ 今日行動：（1個具體建議）
+總字數100字以內，繁體中文，不用markdown。\`</span>;
+
+  <span class="k">const</span> <span class="v">res</span> = UrlFetchApp.fetch(
+    <span class="s">'https://api.openai.com/v1/chat/completions'</span>, {
+    method: <span class="s">'post'</span>, contentType: <span class="s">'application/json'</span>,
+    headers: {Authorization: <span class="s">\`Bearer \${OPENAI_KEY}\`</span>},
+    payload: JSON.stringify({
+      model: <span class="s">'gpt-4o-mini'</span>, <span class="c">// 成本最低，每千token約$0.00015</span>
+      messages: [{role:<span class="s">'user'</span>, content: prompt}],
+      max_tokens: <span class="n">300</span>
+    })
+  });
+
+  <span class="k">return</span> JSON.parse(res.getContentText())
+    .choices[<span class="n">0</span>].message.content;
+}
+
+<span class="c">// ===== 訂閱管理 =====</span>
+<span class="f">function</span> <span class="n">doPost</span>(e) {
+  <span class="k">const</span> <span class="v">event</span> = JSON.parse(e.postData.contents).events[<span class="n">0</span>];
+  <span class="k">const</span> <span class="v">text</span> = event.message.text;
+
+  <span class="k">if</span> (text === <span class="s">'訂閱'</span>) {
+    <span class="c">// 用 Flex Message 顯示主題選單</span>
+    replyFlexMenu(event.replyToken, getTopicMenu());
+  } <span class="k">else if</span> (text === <span class="s">'我的訂閱'</span>) {
+    <span class="k">const</span> <span class="v">sub</span> = getSubscription(event.source.userId);
+    replyMessage(event.replyToken,
+      sub ? <span class="s">\`📚 您的訂閱主題：\${sub.tags.join(' ')}\n到期：\${sub.expiry}\`</span>
+          : <span class="s">'您尚未訂閱，回覆「訂閱」開始使用'</span>
+    );
+  }
+}`,
+  tips:['GPT-4o-mini 每篇內容成本約 NT$0.003，1000用戶/天 = 月成本約 NT$90', '可設計免費版每週一篇、付費版每日一篇的分層', '加入「分享給朋友」機制，被推薦人訂閱時雙方都延長7天'],
+  profit:{
+    model:'訂閱制 SaaS',
+    price:'每月 NT$199（基礎）/ NT$399（進階含3個主題）',
+    cost:'GAS免費 + OpenAI每月約NT$300（1000用戶）',
+    target:'需要持續學習的上班族、創業者',
+    revenue:'1000訂閱者 × NT$199 = 月營收 NT$199,000',
+    moat:'個人化標籤組合 + 持續更新的演算法讓用戶難以離開'
+  }
+},
+{
+  id:9, icon:'⚡', color:'#EF4444', bg:'rgba(239,68,68,.15)',
+  name:'限時秒殺競價機器人',
+  short:'商家開場→倒數推播→用戶出價→自動結標',
+  tags:['t-red','t-yellow','t-cyan'],tagNames:['電商競價','限時活動','自動結標'],
+  creative:true,
+  desc:'商家透過後台設定限時搶購或競價活動，GAS 自動推播給粉絲，用戶直接在LINE輸入金額出價，倒數結束後自動宣布得標者並通知付款。高互動、高轉換的電商工具。',
+  flow:[
+    {t:'商家建立活動',c:'n-sheet'},{t:'GAS倒數推播',c:'n-gas'},{t:'LINE全體推播',c:'n-line'},
+    {t:'用戶出價',c:'n-user'},{t:'GAS結標判定',c:'n-gas'},{t:'通知得標者',c:'n-line'}
+  ],
+  steps:[
+    {t:'活動 Sheet 設計',d:'欄位：活動ID、商品名稱、底價、截止時間、類型（秒殺/競標）、狀態、當前最高價、得標userId'},
+    {t:'出價記錄 Sheet',d:'欄位：活動ID、userId、出價金額、時間，每次出價追加一列'},
+    {t:'開始活動推播（含倒數）',d:'活動開始→推播給所有粉絲→設定5分鐘後再次提醒「還剩5分鐘！」→活動截止推播結果'},
+    {t:'用戶出價邏輯',d:'用戶輸入「出價 500」→驗證是否高於當前最高價→更新Sheet→回覆確認→推播給所有人「目前最高出價 NT$500」'},
+    {t:'自動結標與通知',d:'截止時間到→GAS掃描活動→找出最高出價者→推播得標通知含付款連結→通知其他競標者落標'},
+  ],
+  code:`<span class="c">// ===== 出價處理 =====</span>
+<span class="f">function</span> <span class="n">doPost</span>(e) {
+  <span class="k">const</span> <span class="v">event</span> = JSON.parse(e.postData.contents).events[<span class="n">0</span>];
+  <span class="k">const</span> <span class="v">userId</span> = event.source.userId;
+  <span class="k">const</span> <span class="v">text</span> = event.message.text.trim();
+
+  <span class="k">const</span> <span class="v">bidMatch</span> = text.match(<span class="s">/^出價\s+(\d+)$/</span>);
+  <span class="k">if</span> (!bidMatch) <span class="k">return</span>;
+
+  <span class="k">const</span> <span class="v">amount</span> = parseInt(bidMatch[<span class="n">1</span>]);
+  <span class="k">const</span> <span class="v">active</span> = getActiveAuction(); <span class="c">// 取得進行中活動</span>
+
+  <span class="k">if</span> (!active) {
+    replyMessage(event.replyToken, <span class="s">'目前沒有進行中的競標活動'</span>);
+    <span class="k">return</span>;
+  }
+  <span class="k">if</span> (amount <= active.currentBid) {
+    replyMessage(event.replyToken,
+      <span class="s">\`出價需高於目前最高價 NT$\${active.currentBid}\`</span>);
+    <span class="k">return</span>;
+  }
+
+  <span class="c">// 更新最高出價</span>
+  updateHighestBid(active.id, userId, amount);
+  recordBid(active.id, userId, amount);
+
+  <span class="c">// 回覆出價者</span>
+  replyMessage(event.replyToken,
+    <span class="s">\`✅ 出價成功！您的出價：NT$\${amount}\n截止時間：\${active.endTime}\`</span>
+  );
+
+  <span class="c">// 廣播給所有粉絲（製造緊張感）</span>
+  broadcastToAll(
+    <span class="s">\`🔥 競標更新！\n商品：\${active.name}\n目前最高：NT$\${amount}\n截止：\${active.endTime}\n\n👆 回覆「出價 金額」搶標！\`</span>
+  );
+}
+
+<span class="c">// ===== 結標函數（定時觸發，每分鐘執行）=====</span>
+<span class="f">function</span> <span class="n">checkAuctionEnd</span>() {
+  <span class="k">const</span> <span class="v">auctions</span> = getEndedAuctions(); <span class="c">// 截止時間已過但狀態=進行中</span>
+  auctions.forEach(auction => {
+    <span class="k">const</span> <span class="v">winner</span> = getHighestBidder(auction.id);
+    <span class="k">if</span> (winner) {
+      <span class="c">// 通知得標者</span>
+      pushMessage(winner.userId,
+        <span class="s">\`🎉 恭喜！您以 NT$\${winner.amount} 得標！\n商品：\${auction.name}\n請於24小時內完成付款：\${PAYMENT_URL}?id=\${auction.id}\`</span>
+      );
+      <span class="c">// 廣播結果</span>
+      broadcastToAll(
+        <span class="s">\`🏆 競標結束！\n商品：\${auction.name}\n得標金額：NT$\${winner.amount}\n感謝所有參與者！\`</span>
+      );
+    }
+    updateAuctionStatus(auction.id, <span class="s">'已結標'</span>);
+  });
+}`,
+  tips:['競標廣播要注意 LINE 免費方案 500 則限制，活動期間廣播次數要控制', '可設計「秒殺價」模式：第一個回覆「搶購」的用戶直接得標', '加入「出價歷史」指令讓用戶查看自己的出價紀錄'],
+  profit:{
+    model:'抽成 SaaS / 授權收費',
+    price:'每筆成交抽3-5%，或月租方案 NT$2,980/月',
+    cost:'GAS免費，LINE@ 依規模約 NT$800-4,000/月',
+    target:'二手商品、特色商品、藝術品、限量商品賣家',
+    revenue:'10家店 × NT$2,980 = 月收 NT$29,800，成本幾乎為零',
+    moat:'競標製造FOMO心理，轉換率比一般電商高3-5倍'
+  }
+},
+{
+  id:10, icon:'🐾', color:'#10B981', bg:'rgba(16,185,129,.15)',
+  name:'寵物健康管家機器人',
+  short:'記錄健康 → 自動提醒 → AI分析 → 月報',
+  tags:['t-green','t-yellow','t-pink'],tagNames:['寵物市場','訂閱SaaS','AI分析'],
+  creative:true,
+  desc:'飼主透過LINE記錄寵物的飲食、體重、排泄、疫苗，GAS自動提醒定期健檢和疫苗，AI每月生成健康分析報告，是台灣寵物市場的高潛力垂直SaaS。',
+  flow:[
+    {t:'飼主LINE記錄',c:'n-user'},{t:'Webhook',c:'n-line'},{t:'GAS解析',c:'n-gas'},
+    {t:'健康Sheet',c:'n-sheet'},{t:'AI分析/提醒',c:'n-gas'},{t:'推播報告',c:'n-line'}
+  ],
+  steps:[
+    {t:'寵物檔案建立流程',d:'用戶輸入「新增寵物」→ 引導輸入：名字、品種、出生日期、體重→ 建立專屬 Sheet 子表'},
+    {t:'快速記錄指令設計',d:'格式簡化成關鍵字：「吃飯 100g」「體重 5.2kg」「大便 正常」「嘔吐」「打疫苗 狂犬病」讓記錄極低門檻'},
+    {t:'自動提醒觸發器',d:'每天早上掃描所有寵物的疫苗/健檢到期日，提前14天、7天、1天各推播一次提醒'},
+    {t:'AI月度健康報告',d:'每月1日，GAS彙總上個月的體重趨勢、飲食記錄、異常事件，呼叫 OpenAI API 生成健康分析文字'},
+    {t:'付費功能解鎖',d:'免費：1隻寵物 + 基本記錄；付費：多隻寵物 + AI月報 + 分享給獸醫（PDF匯出）'},
+  ],
+  code:`<span class="c">// ===== 快速記錄解析 =====</span>
+<span class="f">function</span> <span class="n">doPost</span>(e) {
+  <span class="k">const</span> <span class="v">event</span> = JSON.parse(e.postData.contents).events[<span class="n">0</span>];
+  <span class="k">const</span> <span class="v">userId</span> = event.source.userId;
+  <span class="k">const</span> <span class="v">text</span> = event.message.text.trim();
+
+  <span class="k">const</span> <span class="v">patterns</span> = [
+    {re: <span class="s">/^吃飯\s+([\d.]+)(g|克|kg)?/</span>, type: <span class="s">'飲食'</span>},
+    {re: <span class="s">/^體重\s+([\d.]+)(kg|公斤|g)?/</span>, type: <span class="s">'體重'</span>},
+    {re: <span class="s">/^大便\s*(.*)$/</span>,            type: <span class="s">'排便'</span>},
+    {re: <span class="s">/^嘔吐\s*(.*)$/</span>,             type: <span class="s">'嘔吐'</span>},
+    {re: <span class="s">/^打疫苗\s+(.+)$/</span>,           type: <span class="s">'疫苗'</span>},
+    {re: <span class="s">/^健檢\s*(.*)$/</span>,             type: <span class="s">'健檢'</span>},
+  ];
+
+  <span class="k">const</span> <span class="v">matched</span> = patterns.find(p => p.re.test(text));
+  <span class="k">if</span> (!matched) {
+    <span class="k">if</span> (text === <span class="s">'說明'</span>) {
+      replyMessage(event.replyToken, getHelpText());
+    } <span class="k">else if</span> (text === <span class="s">'月報'</span>) {
+      generateMonthlyReport(userId, event.replyToken);
+    }
+    <span class="k">return</span>;
+  }
+
+  <span class="k">const</span> <span class="v">value</span> = matched.re.exec(text)[<span class="n">1</span>] || text;
+  <span class="k">const</span> <span class="v">pet</span> = getPet(userId); <span class="c">// 取用戶的寵物資料</span>
+
+  logHealth(userId, pet.name, matched.type, value);
+
+  <span class="c">// 嘔吐異常提醒</span>
+  <span class="k">if</span> (matched.type === <span class="s">'嘔吐'</span>) {
+    replyMessage(event.replyToken,
+      <span class="s">\`已記錄 \${pet.name} 嘔吐事件 😟\n如頻繁發生建議就醫。\n輸入「月報」可查看近期健康趨勢。\`</span>
+    );
+    <span class="k">return</span>;
+  }
+
+  replyMessage(event.replyToken,
+    <span class="s">\`✅ 已記錄 \${pet.name} - \${matched.type}：\${value}\n📅 \${new Date().toLocaleString('zh-TW')}\`</span>
+  );
+}
+
+<span class="c">// ===== AI月度報告生成 =====</span>
+<span class="f">function</span> <span class="n">generateMonthlyReport</span>(userId, replyToken) {
+  <span class="k">const</span> <span class="v">records</span> = getLastMonthRecords(userId);
+  <span class="k">const</span> <span class="v">summary</span> = summarizeRecords(records); <span class="c">// 統計各類型數量/趨勢</span>
+
+  <span class="k">const</span> <span class="v">prompt</span> = <span class="s">\`你是獸醫助理，根據以下寵物一個月的健康記錄，用溫暖的語氣給飼主一份健康摘要報告：
+記錄摘要：\${JSON.stringify(summary)}
+格式：整體評估（1句）、值得注意的事項（2-3點）、下個月建議（1-2點）
+繁體中文，200字以內。\`</span>;
+
+  <span class="k">const</span> <span class="v">report</span> = callOpenAI(prompt);
+  replyMessage(replyToken,
+    <span class="s">\`🐾 \${records[0].petName} 的月度健康報告\\n─────────────\\n\${report}\\n─────────────\\n完整數據請升級進階方案查看PDF報告\`</span>
+  );
+}`,
+  tips:['台灣寵物市場規模超過 500 億，飼主付費意願高', '可加入「照片記錄」功能，接收寵物照片自動分類存入 Google Drive', '獸醫診所合作模式：診所向你購買授權，提供給客戶使用'],
+  profit:{
+    model:'訂閱 + B2B 診所授權',
+    price:'個人版 NT$99/月，診所版 NT$3,980/月（100客戶）',
+    cost:'GAS免費 + OpenAI月約NT$150（500用戶）',
+    target:'台灣350萬寵物飼主（犬貓）',
+    revenue:'5000訂閱者 × NT$99 + 20家診所 × NT$3,980 = 月收 NT$574,100',
+    moat:'健康記錄數據積累越久用戶越難離開（轉換成本高）'
+  }
+}
+];
+
+// ============================================================
+// RENDER INDEX
+// ============================================================
+function renderIndex() {
+  const grid = document.getElementById('idx-grid');
+  grid.innerHTML = systems.map(s => `
+    <div class="idx-card ${s.creative?'creative':''}" onclick="showSystem(${s.id})">
+      <div class="idx-icon" style="background:${s.bg}">${s.icon}</div>
+      <div>
+        <div class="idx-n">系統 ${String(s.id).padStart(2,'0')} ${s.creative?'<span class="creative-tag">💡 創意變現</span>':''}</div>
+        <div class="idx-t">${s.name}</div>
+        <div class="idx-d">${s.short}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// RENDER SYSTEM PAGE
+// ============================================================
+function showSystem(id) {
+  const s = systems.find(x=>x.id===id);
+  document.getElementById('home-page').style.display='none';
+  const container = document.getElementById('sys-container');
+
+  const prevId = id > 1 ? id-1 : null;
+  const nextId = id < systems.length ? id+1 : null;
+
+  container.innerHTML = `
+    <div class="sys-page active">
+      <button class="back-btn" onclick="showHome()">← 返回總覽</button>
+
+      <div class="sys-hero">
+        <div class="sys-hero-bg">${s.icon}</div>
+        <div class="sys-badge" style="background:${s.bg};color:${s.color}">
+          系統 ${String(s.id).padStart(2,'0')} ${s.creative?'｜💡 創意變現':''}
+        </div>
+        <div class="sys-h1">${s.name}</div>
+        <div class="sys-sub">${s.desc}</div>
+        <div class="tag-row">
+          ${s.tags.map((t,i)=>`<span class="tag ${t}">${s.tagNames[i]}</span>`).join('')}
+        </div>
+      </div>
+
+      <!-- FLOW -->
+      <div class="sec">
+        <div class="sec-title">運作架構</div>
+        <div class="flow">
+          ${s.flow.map((n,i)=>`
+            <div class="flow-node ${n.c}">${n.t}</div>
+            ${i<s.flow.length-1?'<div class="flow-arr">→</div>':''}
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="sec">
+        <div class="sec-title">實作步驟</div>
+        <div class="steps">
+          ${s.steps.map((st,i)=>`
+            <div class="step-item">
+              <div class="step-left">
+                <div class="step-num">${i+1}</div>
+                ${i<s.steps.length-1?'<div class="step-line"></div>':''}
+              </div>
+              <div class="step-body">
+                <div class="step-t">${st.t}</div>
+                <div class="step-d">${st.d}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- CODE -->
+      <div class="sec">
+        <div class="sec-title">GAS 程式碼</div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Google Apps Script (JavaScript)</span>
+            <button class="copy-btn" onclick="copyCode(this)">複製</button>
+          </div>
+          <pre>${s.code}</pre>
+        </div>
+      </div>
+
+      <!-- TIPS -->
+      <div class="sec">
+        <div class="sec-title">關鍵提醒</div>
+        <div class="box box-tip">
+          <div class="box-title">💡 實作注意事項</div>
+          <ul>${s.tips.map(t=>`<li>${t}</li>`).join('')}</ul>
+        </div>
+      </div>
+
+      ${s.profit ? `
+      <!-- PROFIT -->
+      <div class="sec">
+        <div class="sec-title">商業模式分析</div>
+        <div class="profit-card">
+          <div class="profit-title">💰 獲利潛力評估</div>
+          <div class="profit-grid">
+            <div class="profit-item"><div class="profit-num" style="font-size:14px">${s.profit.model}</div><div class="profit-label">商業模式</div></div>
+            <div class="profit-item"><div class="profit-num" style="font-size:13px">${s.profit.price}</div><div class="profit-label">定價策略</div></div>
+            <div class="profit-item"><div class="profit-num" style="font-size:13px">${s.profit.cost}</div><div class="profit-label">每月成本</div></div>
+            <div class="profit-item"><div class="profit-num" style="font-size:13px">${s.profit.revenue}</div><div class="profit-label">收入潛力</div></div>
+          </div>
+          <div class="box box-warn" style="margin-top:16px;">
+            <div class="box-title">🎯 目標客群</div>
+            <p>${s.profit.target}</p>
+          </div>
+          <div class="box box-ok" style="margin-top:8px;">
+            <div class="box-title">🔒 競爭護城河</div>
+            <p>${s.profit.moat}</p>
+          </div>
+        </div>
+      </div>` : ''}
+
+      <div class="sys-nav">
+        ${prevId ? `<button class="btn btn-g" onclick="showSystem(${prevId})">← 系統 ${String(prevId).padStart(2,'0')}</button>` : '<div></div>'}
+        ${nextId ? `<button class="btn btn-p" onclick="showSystem(${nextId})">系統 ${String(nextId).padStart(2,'0')} →</button>` : '<button class="btn btn-p" onclick="showHome()">回總覽</button>'}
+      </div>
+    </div>
+  `;
+  window.scrollTo(0,0);
+}
+
+function showHome() {
+  document.getElementById('home-page').style.display='';
+  document.getElementById('sys-container').innerHTML='';
+  window.scrollTo(0,0);
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(()=>{
+    btn.textContent='已複製 ✓';
+    setTimeout(()=>btn.textContent='複製',2000);
+  });
+}
+
+// INIT
+renderIndex();
+</script>
+</body>
+</html>

@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行銷企劃書完全指南｜通用架構與撰寫要點</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:600px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🧭 通用範本</div>
+    <div class="sidebar-title">行銷企劃書<br>撰寫指南</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>閱讀進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一節</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一節 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const chapters = [
+  {id:0,title:'企劃書總覽',subtitle:'先看懂整體架構',icon:'🗺️',time:'5 分鐘',level:'必看',content:renderCh0},
+  {id:1,title:'執行摘要',subtitle:'一頁講清楚全局',icon:'📝',time:'10 分鐘',level:'必寫',content:renderCh1},
+  {id:2,title:'市場現況與情勢分析',subtitle:'PEST／SWOT／競品',icon:'🔍',time:'20 分鐘',level:'必寫',content:renderCh2},
+  {id:3,title:'目標客群（STP）',subtitle:'區隔·目標·定位',icon:'🎯',time:'20 分鐘',level:'必寫',content:renderCh3},
+  {id:4,title:'行銷目標與KPI',subtitle:'SMART 原則',icon:'📊',time:'15 分鐘',level:'必寫',content:renderCh4},
+  {id:5,title:'核心策略與訊息定位',subtitle:'定位聲明·核心訊息',icon:'💡',time:'20 分鐘',level:'必寫',content:renderCh5},
+  {id:6,title:'行銷組合（4P/7P）',subtitle:'產品·價格·通路·推廣',icon:'🧩',time:'15 分鐘',level:'依產業調整',content:renderCh6},
+  {id:7,title:'通路與媒體策略',subtitle:'自有·贏得·付費',icon:'📡',time:'20 分鐘',level:'必寫',content:renderCh7},
+  {id:8,title:'內容與創意規劃',subtitle:'素材清單＋行事曆',icon:'🎨',time:'20 分鐘',level:'必寫',content:renderCh8},
+  {id:9,title:'時程規劃',subtitle:'甘特圖與關鍵路徑',icon:'🗓️',time:'15 分鐘',level:'必寫',content:renderCh9},
+  {id:10,title:'預算規劃',subtitle:'分配表與應變預備金',icon:'💰',time:'15 分鐘',level:'必寫',content:renderCh10},
+  {id:11,title:'執行分工與角色',subtitle:'簡化版 RACI',icon:'👥',time:'10 分鐘',level:'依團隊規模',content:renderCh11},
+  {id:12,title:'風險評估與應變計畫',subtitle:'風險矩陣與應變SOP',icon:'⚠️',time:'15 分鐘',level:'必寫',content:renderCh12},
+  {id:13,title:'成效追蹤與檢討機制',subtitle:'追蹤·檢討·結案',icon:'📈',time:'15 分鐘',level:'必寫',content:renderCh13},
+  {id:14,title:'附錄與使用建議',subtitle:'檢核表＋換位思考',icon:'📎',time:'10 分鐘',level:'收尾',content:renderCh14}
+];
+
+let currentChapter = 0;
+// 本頁不使用瀏覽器儲存，進度僅保留在本次瀏覽的記憶體中
+let completedChapters = new Set();
+
+// ============================================================
+// RENDER SIDEBAR
+// ============================================================
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 掌握了本節的重點，可以繼續下一節！':'💪 建議再回顧一次上面的內容，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// 第0節：總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 企劃書總覽</div>
+  <h1>行銷企劃書完全指南<br>通用架構與撰寫要點</h1>
+  <p class="desc">14 個核心章節 × 每節都附「撰寫內容」與「注意事項」× 互動小測驗，帶你系統性寫出一份禁得起主管、財務、法務三方檢驗的行銷企劃書。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總閱讀時間：約 3.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>14 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適用任何產業與規模</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">這份指南能幫你解決什麼</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">14</div><div class="stat-label">企劃章節架構</div></div>
+    <div class="stat-card"><div class="stat-num">60+</div><div class="stat-label">實務注意事項</div></div>
+    <div class="stat-card"><div class="stat-num">10+</div><div class="stat-label">表格／框架可直接套用</div></div>
+    <div class="stat-card"><div class="stat-num">13</div><div class="stat-label">章節小測驗</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">完整架構地圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">🧭 定調（第1–2節）</div>
+        <div class="step-desc">執行摘要先講結論，市場現況分析說明為什麼要做這件事、現在的機會與風險在哪。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">🎯 對準目標（第3–5節）</div>
+        <div class="step-desc">釐清目標客群、設定可衡量的行銷目標，並定義獨特的核心策略與訊息。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">🧩 展開戰術（第6–9節）</div>
+        <div class="step-desc">行銷組合、通路媒體、內容素材、時程排程，把策略落地成具體可執行的行動。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">💼 資源與治理（第10–12節）</div>
+        <div class="step-desc">預算怎麼分配、誰該負責什麼、萬一出狀況要怎麼應變，這是企劃能不能被核准的關鍵。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">📈 追蹤與收尾（第13–14節）</div>
+        <div class="step-desc">成效怎麼看、多久檢討一次、附錄該放什麼，讓企劃書畫下完整句點。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">如何使用這份指南</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>先確認這次企劃的主要目的（品牌認知／產品上市／名單開發／顧客回購），再決定哪幾節要加重篇幅。</li>
+        <li><span class="check-icon">✅</span>每節都做一次小測驗，測驗聚焦在最容易被忽略的注意事項，60分以上代表這節重點你已經抓到了。</li>
+        <li><span class="check-icon">✅</span>邊看邊套用：每節的表格與框架都可以直接複製到你自己的企劃書草稿裡。</li>
+        <li><span class="check-icon">✅</span>寫完全文後，回到第14節做「換位思考」檢查，那是企劃書被打回票前最後的防線。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 給已經有經驗的讀者</div>
+    <p>如果你只是想確認自己有沒有漏掉關鍵細節，建議直接跳到第10節（預算）、第12節（風險）與第13節（追蹤），這三節是企劃書最常被打回票的地方。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始閱讀 第一節 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第1節：執行摘要
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第一節</div>
+  <h1>執行摘要<br>一頁講清楚全局</h1>
+  <p class="desc">執行摘要是寫給「沒時間看全文的主管」看的，如果他只看這一段就會做決定，你要確保這段話撐得住。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card">
+    <div class="card-body">
+      <p style="font-size:15px;color:var(--text);margin-bottom:12px;">用 <strong style="color:var(--secondary)">200–400 字</strong>濃縮整份企劃書的精華，涵蓋五個要點：</p>
+      <ul class="checklist">
+        <li><span class="check-icon">1️⃣</span>為什麼要做這個行銷專案（背景／問題／機會）</li>
+        <li><span class="check-icon">2️⃣</span>這次要達成什麼目標（一句話講清楚，最好附數字）</li>
+        <li><span class="check-icon">3️⃣</span>用什麼策略達成（一到兩句話）</li>
+        <li><span class="check-icon">4️⃣</span>需要多少預算、多長時間</li>
+        <li><span class="check-icon">5️⃣</span>預期成果與投資報酬概念</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 最容易被抓到的低級錯誤</div>
+    <ul>
+      <li>摘要中提到的數字（目標、預算、時程）必須與後面章節完全一致——很多企劃書是正文改了但摘要忘記同步更新。</li>
+      <li>避免使用內部術語或代號，很多企劃書因為摘要看不懂而在第一輪就被打回票。</li>
+    </ul>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 寫作順序建議</div>
+    <p>執行摘要建議<strong>最後寫</strong>，而不是最先寫，這樣才能真正反映全文的重點，而不是寫出你「原本以為」的重點。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 第一節測驗</span><span class="quiz-title">執行摘要</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 執行摘要中的數字（目標、預算、時程），與正文最理想的關係是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">可以略有差異，反正是摘要</button>
+      <button class="quiz-opt" data-correct="1">必須與正文完全一致</button>
+      <button class="quiz-opt" data-correct="0">摘要不需要放具體數字</button>
+      <button class="quiz-opt" data-correct="0">以摘要為準，正文可以之後再調整</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 執行摘要建議在什麼時候撰寫？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">整份企劃書動筆前最先寫</button>
+      <button class="quiz-opt" data-correct="1">全文寫完之後最後寫</button>
+      <button class="quiz-opt" data-correct="0">和市場分析同時寫</button>
+      <button class="quiz-opt" data-correct="0">交給主管自己寫</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">下一節：市場現況分析 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第2節：市場現況與情勢分析
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔍 第二節</div>
+  <h1>市場現況與情勢分析<br>先看清楚戰場再談策略</h1>
+  <p class="desc">這一節的目的不是寫一份獨立的市場報告，而是為後面的策略章節找到「為什麼要這樣做」的依據。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🌐</div><div class="card-title">總體環境（PEST）</div><div class="card-body">政治、經濟、社會、科技（可加法規、環境）對此專案的影響。</div></div>
+    <div class="card"><div class="card-icon">🏟️</div><div class="card-title">產業與競爭分析</div><div class="card-body">市場規模、成長趨勢、主要競爭者的定位與行銷手法。</div></div>
+    <div class="card"><div class="card-icon">⚖️</div><div class="card-title">SWOT 分析</div><div class="card-body">優勢、劣勢、機會、威脅，誠實面對自己的弱點。</div></div>
+    <div class="card"><div class="card-icon">📂</div><div class="card-title">自身現況檢視</div><div class="card-body">過去行銷成效回顧、現有資源盤點（人力、預算、素材、既有客群）。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-danger">
+    <div class="box-title">❌ SWOT 最常見的錯誤</div>
+    <p>把「劣勢寫得像優勢」（例如把「產品貴」寫成「高單價高品質」），失去分析意義。建議誠實面對弱點，才能在策略章節真正對症下藥。</p>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 容易被忽略的細節</div>
+    <ul>
+      <li>競爭者分析不要只列「同業」，也要考慮「替代方案」與「消費者不作為的選項」。</li>
+      <li>市場數據務必標明資料來源與年份，引用過時或無來源的報告，容易在提案時第一個被質疑。</li>
+      <li>過去成效回顧要客觀呈現「有效」與「無效」的部分，不要為了讓新企劃顯得必要而誇大過去的失敗。</li>
+      <li>情勢分析不宜過長，重點是「這些發現如何導出後面的策略」，避免變成獨立於企劃之外的市場報告。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔍 第二節測驗</span><span class="quiz-title">情勢分析</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. SWOT 分析中最常見的錯誤是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">機會寫得太少</button>
+      <button class="quiz-opt" data-correct="1">把劣勢包裝成優勢，失去分析意義</button>
+      <button class="quiz-opt" data-correct="0">威脅寫太多項</button>
+      <button class="quiz-opt" data-correct="0">忘記加入競爭者</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 競爭者分析除了同業之外，還應該考慮什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只需要考慮價格最低的對手</button>
+      <button class="quiz-opt" data-correct="1">替代方案，以及消費者選擇不作為（不買任何方案）的可能</button>
+      <button class="quiz-opt" data-correct="0">只考慮國外品牌</button>
+      <button class="quiz-opt" data-correct="0">不需要考慮，同業分析就足夠</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">下一節：目標客群 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第3節：目標客群（STP）
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎯 第三節</div>
+  <h1>目標客群<br>區隔・目標・定位（STP）</h1>
+  <p class="desc">後面所有的通路與訊息策略，都建立在這一節的假設之上。如果客群輪廓錯了，後面做得再漂亮也是白工。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">S</div>
+      <div class="step-content"><div class="step-title">市場區隔 Segmentation</div><div class="step-desc">依人口統計、地理、行為、心理變數切分市場。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">T</div>
+      <div class="step-content"><div class="step-title">目標客群選擇 Targeting</div><div class="step-desc">說明為何鎖定這群人：市場大小、可接觸性、獲利潛力。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">P</div>
+      <div class="step-content"><div class="step-title">顧客輪廓 Persona</div><div class="step-desc">至少一組主要客群、一組次要客群：基本資料、痛點與需求、決策考量、慣用接觸管道、目前所處購買階段。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 客群輪廓不能憑印象拍腦袋</div>
+    <ul>
+      <li>最好附上依據（既有客戶數據、問卷、訪談、第三方報告），否則後面的通路與訊息策略會建立在錯誤假設上。</li>
+      <li>避免把「所有人」都當目標客群，明確排除「非目標客群」跟定義目標客群一樣重要。</li>
+      <li>若企業有多個產品線或客群，務必說明「這份企劃鎖定哪一群」，避免策略想同時討好所有人而失焦。</li>
+      <li>人物誌要定期更新，尤其消費行為變化快的產業（電商、App），舊的persona可能已經不符合現況。</li>
+    </ul>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🔒 敏感族群提醒</div>
+    <p>若涉及未成年族群或其他敏感族群作為目標客群，需特別留意相關廣告規範與倫理界線，並在企劃中說明因應方式。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎯 第三節測驗</span><span class="quiz-title">目標客群</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 顧客輪廓（Persona）最好依據什麼撰寫？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">團隊成員的個人印象</button>
+      <button class="quiz-opt" data-correct="1">既有客戶數據、問卷、訪談或第三方報告</button>
+      <button class="quiz-opt" data-correct="0">競爭對手的官網介紹</button>
+      <button class="quiz-opt" data-correct="0">主管的直覺判斷</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼「明確排除非目標客群」跟定義目標客群一樣重要？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為法規要求一定要排除某些人</button>
+      <button class="quiz-opt" data-correct="1">因為資源有限，鎖定夠明確才能讓後面的策略聚焦</button>
+      <button class="quiz-opt" data-correct="0">因為排除的人不會看到廣告</button>
+      <button class="quiz-opt" data-correct="0">這不重要，客群定義本來就該愈廣愈好</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">下一節：行銷目標與KPI →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第4節：行銷目標與KPI
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📊 第四節</div>
+  <h1>行銷目標與 KPI<br>用 SMART 原則說清楚成功長怎樣</h1>
+  <p class="desc">目標若不夠聚焦，資源分配就沒有依據；目標若沒有基準值，沒有人能判斷這個數字合不合理。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card">
+    <div class="card-body">
+      <p style="color:var(--text);margin-bottom:10px;">目標依 <strong style="color:var(--secondary)">SMART</strong> 原則書寫：具體 Specific・可衡量 Measurable・可達成 Achievable・相關 Relevant・有時限 Time-bound。</p>
+      <p style="margin-bottom:10px;">區分「主要目標」與「次要目標」，依目標類型設定對應指標：</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>目標類型</th><th>常見指標</th></tr></thead>
+    <tbody>
+      <tr><td>品牌認知</td><td>觸及率、曝光次數、品牌搜尋量、聲量占比</td></tr>
+      <tr><td>興趣考慮</td><td>內容互動率、名單蒐集數、官網停留時間</td></tr>
+      <tr><td>轉換／銷售</td><td>訂單數、轉換率、客單價、獲客成本（CPA）</td></tr>
+      <tr><td>顧客留存</td><td>回購率、續約率、NPS、客訴率</td></tr>
+      <tr><td>口碑推廣</td><td>推薦數、UGC 產出量、評論分數</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 目標設定的常見陷阱</div>
+    <ul>
+      <li>一份企劃書若同時列出五、六個「同樣重要」的KPI，通常代表目標不夠聚焦，建議明確排序主要與次要指標。</li>
+      <li>目標數字要有「基準值」對照，沒有基準值的目標無法判斷是否合理或有挑戰性。</li>
+      <li>留意「虛榮指標」陷阱（按讚數、粉絲數容易好看卻不一定連結商業目標），建議搭配至少一項與營收或留存相關的指標。</li>
+      <li>目標設定要考慮外部不可控因素（季節性、競品促銷、大環境景氣）。</li>
+      <li>目標與後面的預算、時程要互相對應，野心很大的目標配上很小的預算與很短的時程，等於一開始就注定達不到。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📊 第四節測驗</span><span class="quiz-title">目標與KPI</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「虛榮指標」最常見的例子是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">獲客成本 CPA</button>
+      <button class="quiz-opt" data-correct="1">按讚數、粉絲數等好看但不一定連結商業目標的數字</button>
+      <button class="quiz-opt" data-correct="0">回購率</button>
+      <button class="quiz-opt" data-correct="0">轉換率</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 目標數字若沒有「基準值」對照，會造成什麼問題？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">沒有問題，目標本來就不需要基準值</button>
+      <button class="quiz-opt" data-correct="1">無法判斷這個目標是否合理或有挑戰性</button>
+      <button class="quiz-opt" data-correct="0">只會影響預算，不影響目標本身</button>
+      <button class="quiz-opt" data-correct="0">只在B2B產業才需要基準值</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">下一節：核心策略與訊息定位 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第5節：核心策略與訊息定位
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">💡 第五節</div>
+  <h1>核心策略與訊息定位<br>你憑什麼讓消費者選你</h1>
+  <p class="desc">定位聲明如果套用在任何競爭者身上都成立，代表你的差異化不夠明確。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card">
+    <div class="card-title">定位聲明公式</div>
+    <div class="card-body" style="font-size:14px;color:var(--text);">
+      「對於〔目標客群〕來說，〔品牌／產品〕是〔品類〕中，唯一／最能提供〔核心利益〕的選擇，因為〔關鍵理由／差異化證明〕。」
+    </div>
+  </div>
+  <div class="section-title" style="font-size:16px;margin-top:24px;">訊息階層（Message Hierarchy）</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">為什麼消費者該在乎</div><div class="step-desc">痛點或機會。</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">你的解決方案是什麼</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">為什麼是你</div><div class="step-desc">差異化。</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">消費者現在該採取什麼行動</div><div class="step-desc">CTA。</div></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 核心訊息避免塞太多賣點</div>
+    <p>常見錯誤是想把所有優點都講一遍，結果消費者一個都記不住。建議一次溝通聚焦一個核心利益。</p>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🚫 宣稱與法規風險</div>
+    <ul>
+      <li>訊息若涉及功效、比較性宣稱（如「最」、「第一」、「保證」），務必確認有實際數據或第三方驗證支持，避免觸犯公平交易或廣告不實相關規範。</li>
+      <li>涉及比較競爭對手的文案，需留意是否符合當地公平競爭與比較廣告相關法規，避免對特定品牌做出無法佐證的負面陳述。</li>
+      <li>不同語言、不同地區市場的訊息，要留意在地文化敏感度與翻譯後語意是否失真，不能直接逐字翻譯。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">💡 第五節測驗</span><span class="quiz-title">策略與定位</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 如何檢查一句定位聲明的差異化夠不夠明確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">看句子長不長</button>
+      <button class="quiz-opt" data-correct="1">套用在任何一個競爭者身上，看是否仍然成立</button>
+      <button class="quiz-opt" data-correct="0">看有沒有押韻</button>
+      <button class="quiz-opt" data-correct="0">問主管喜不喜歡</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 文案中使用「最」、「第一」、「保證」等宣稱時，最需要注意什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只要語氣夠有自信即可</button>
+      <button class="quiz-opt" data-correct="1">需要有實際數據或第三方驗證支持，避免觸犯廣告不實相關規範</button>
+      <button class="quiz-opt" data-correct="0">只有電視廣告需要注意，數位廣告不用</button>
+      <button class="quiz-opt" data-correct="0">這類詞語一律不能使用</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">下一節：行銷組合 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第6節：行銷組合（4P/7P）
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧩 第六節</div>
+  <h1>行銷組合<br>4P／7P 或整合傳播規劃</h1>
+  <p class="desc">最常見的問題是：一份企劃書只談 Promotion（推廣），完全沒提 Price 與 Place，結果推廣做得再好，消費者卻買不到或價格不合理。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🟡</span>依產業調整</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">📦</div><div class="card-title">Product 產品／服務</div><div class="card-body">本次主打的產品線、規格、包裝、服務內容是否有調整。</div></div>
+    <div class="card"><div class="card-icon">💵</div><div class="card-title">Price 價格</div><div class="card-body">定價策略、促銷折扣、付款方式，是否有價格敏感度評估。</div></div>
+    <div class="card"><div class="card-icon">🏪</div><div class="card-title">Place 通路</div><div class="card-body">銷售通路（實體／電商／經銷）、上架時程。</div></div>
+    <div class="card"><div class="card-icon">📣</div><div class="card-title">Promotion 推廣</div><div class="card-body">本企劃的核心，串聯到後面通路與內容章節。</div></div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 服務業可再加 3P</div>
+    <p>People 人員、Process 流程、Physical Evidence 有形展示。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見疏漏</div>
+    <ul>
+      <li>若牽涉促銷折扣，務必確認是否符合公司毛利底線與相關促銷法規（如需標示原價、折扣期限等）。</li>
+      <li>通路異動（如新增電商平台）常有前置作業時間（上架審核、串接金流物流），企劃時程要預留緩衝，不能假設「說要上架就能立刻上架」。</li>
+      <li>服務業容易忽略 People 與 Process 對行銷承諾的影響，若廣告主打「快速到府服務」但現場人力／流程跟不上，會造成期望落差與客訴。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧩 第六節測驗</span><span class="quiz-title">行銷組合</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 行銷企劃書最常見的結構性疏漏是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">Promotion 寫太多</button>
+      <button class="quiz-opt" data-correct="1">只談 Promotion，忽略 Price 與 Place</button>
+      <button class="quiz-opt" data-correct="0">Product 描述太詳細</button>
+      <button class="quiz-opt" data-correct="0">沒有加入服務業的3P</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 新增電商上架通路時，企劃時程最容易忽略什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">不需要特別規劃時程</button>
+      <button class="quiz-opt" data-correct="1">上架審核、金流物流串接等前置作業時間</button>
+      <button class="quiz-opt" data-correct="0">只需要確認客服人力</button>
+      <button class="quiz-opt" data-correct="0">只需要確認商品定價</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">下一節：通路與媒體策略 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第7節：通路與媒體策略
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📡 第七節</div>
+  <h1>通路與媒體策略<br>自有・贏得・付費</h1>
+  <p class="desc">通路選擇要回到「目標客群在哪裡」，而不是「公司習慣用哪個通路」。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>通路類型</th><th>常見通路</th><th>適合目的</th><th>主要指標</th></tr></thead>
+    <tbody>
+      <tr><td>自有 Owned</td><td>官網、部落格、EDM、自媒體社群、LINE官方帳號</td><td>教育、留存、長期經營</td><td>流量、開信率、停留時間</td></tr>
+      <tr><td>贏得 Earned</td><td>媒體公關、KOL/KOC合作、口碑、社群討論</td><td>信任建立、擴大觸及</td><td>曝光、聲量、轉介流量</td></tr>
+      <tr><td>付費 Paid</td><td>搜尋廣告、社群廣告、聯播網廣告、線下廣告、贊助</td><td>快速觸及、精準導流</td><td>CPC、CTR、CPA、ROAS</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 平台審核與規範</div>
+    <ul>
+      <li>付費廣告要留意平台審核政策（如醫療、金融、保健食品類廣告在各大平台有嚴格審核規則與所需證明文件），送審時間常被低估，需提早準備素材與文件。</li>
+      <li>與KOL/KOC合作務必留意「業配標示」相關規範（需明確揭露為業配／廣告合作），避免造成消費者誤認為自然口碑而產生法規風險。</li>
+    </ul>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🔒 跨國操作提醒</div>
+    <p>若跨國或跨地區操作，需留意各地區對數據隱私（如個資保護規範）與廣告投放的法規差異，尤其是蒐集使用者資料進行受眾投放時。</p>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 內容不是複製貼上</div>
+    <p>不同通路的內容不應該只是「同一份素材複製貼上」，需依平台特性（版位尺寸、用戶使用情境、演算法邏輯）調整格式與呈現方式。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📡 第七節測驗</span><span class="quiz-title">通路與媒體</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 通路選擇最根本的判斷依據是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">公司過去習慣用的通路</button>
+      <button class="quiz-opt" data-correct="1">目標客群實際花時間的地方</button>
+      <button class="quiz-opt" data-correct="0">哪個通路最便宜</button>
+      <button class="quiz-opt" data-correct="0">競爭對手用哪個通路就跟著用</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 與KOL/KOC合作時，法規上最需要留意什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">合作費用要越低越好</button>
+      <button class="quiz-opt" data-correct="1">需明確揭露業配／廣告合作標示，避免誤認為自然口碑</button>
+      <button class="quiz-opt" data-correct="0">只要粉絲數夠多就沒有問題</button>
+      <button class="quiz-opt" data-correct="0">合作內容不需要事先審閱</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">下一節：內容與創意規劃 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第8節：內容與創意規劃
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎨 第八節</div>
+  <h1>內容與創意規劃<br>素材清單＋內容行事曆</h1>
+  <p class="desc">很多專案失敗於執行順序顛倒——廣告先上線，Landing Page 卻還沒做好。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card">
+    <div class="card-body">
+      <p style="color:var(--text);margin-bottom:10px;">列出所有需要產出的內容資產（主視覺、影片、圖文貼文、Landing Page、EDM文案、新聞稿等），標註負責人、需求說明、優先順序（必要／加分）、預計完成時間。</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>週次</th><th>內容項目</th><th>通路</th><th>負責人／備註</th><th>狀態</th></tr></thead>
+    <tbody>
+      <tr><td>第1週</td><td>預熱貼文＋Landing Page上線</td><td>官網、社群</td><td>需先完成視覺設計</td><td>待製作</td></tr>
+      <tr><td>第2週</td><td>正式上線公告＋KOL首發</td><td>社群、EDM</td><td>需等KOL合約簽署完成</td><td>待確認</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 依賴關係與製作時間</div>
+    <ul>
+      <li>內容行事曆要標明「前後依賴關係」，例如「廣告投放前，Landing Page 必須先上線且完成轉換追蹤碼設置」。</li>
+      <li>素材製作時間常被低估：社群圖文約1–2個工作天、影片製作約2–4週、白皮書／電子書約2–4週，排程時務必反推製作前置期。</li>
+      <li>建議在行事曆中預留約15–20%的彈性檔期，用來因應臨時話題或需要緊急調整的內容。</li>
+    </ul>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🔒 授權與肖像權</div>
+    <ul>
+      <li>素材若使用外部圖庫、音樂、字體，務必確認授權範圍（是否可商用、是否可用於廣告投放、使用期限），避免版權爭議。</li>
+      <li>內容若涉及真人素材（照片、影片），需事先取得當事人書面同意與肖像授權，尤其若素材會用於付費廣告的長期投放。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎨 第八節測驗</span><span class="quiz-title">內容與創意</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 內容行事曆最重要卻最常被忽略的元素是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">內容的美術風格</button>
+      <button class="quiz-opt" data-correct="1">內容項目之間的前後依賴關係</button>
+      <button class="quiz-opt" data-correct="0">貼文的字數多寡</button>
+      <button class="quiz-opt" data-correct="0">使用哪個字體</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 使用外部圖庫或音樂素材前，最需要確認什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">檔案格式是否為最新版本</button>
+      <button class="quiz-opt" data-correct="1">授權範圍是否涵蓋商用與廣告投放，以及使用期限</button>
+      <button class="quiz-opt" data-correct="0">檔案大小是否夠小</button>
+      <button class="quiz-opt" data-correct="0">是否為熱門素材</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">下一節：時程規劃 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第9節：時程規劃
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗓️ 第九節</div>
+  <h1>時程規劃<br>甘特圖與關鍵路徑</h1>
+  <p class="desc">跨部門審核時間往往比想像中耗時，這是時程規劃最常被忽略的一塊。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card">
+    <div class="card-body">
+      <p>以甘特圖或時程表呈現整體專案的關鍵里程碑：企劃核准、素材製作、通路備料、正式上線、期中檢視、結案檢討。標示每個里程碑的起訖日、負責單位、前置依賴事項。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 找出關鍵路徑</div>
+    <p>務必抓出「關鍵路徑」（Critical Path）：哪些任務一旦delay，會直接拖延上線日，這些任務要優先管理與追蹤。</p>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 別忘了跨部門審核時間</div>
+    <p>時程規劃常忽略「跨部門審核時間」（法務審稿、財務核銷、主管簽核），這些流程往往比想像中耗時，建議明確列入時程而非視為「順便就會完成」的背景工作。</p>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🎯 固定死線的排程原則</div>
+    <p>若專案涉及節慶檔期或特定日期（週年慶、雙11、產品發表會），要以「不可變動的死線」往前推算所有工作，中間務必預留緩衝天數因應意外狀況（如平台審核延遲、印刷延誤等）。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🗓️ 第九節測驗</span><span class="quiz-title">時程規劃</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 時程規劃中最常被低估、卻常常拖累整體進度的環節是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">素材設計時間</button>
+      <button class="quiz-opt" data-correct="1">跨部門審核時間（法務、財務、主管簽核）</button>
+      <button class="quiz-opt" data-correct="0">廣告投放時間</button>
+      <button class="quiz-opt" data-correct="0">社群發文時間</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 若專案有固定的節慶檔期（如雙11），時程該如何規劃？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">用理想情況往後排，走一步算一步</button>
+      <button class="quiz-opt" data-correct="1">以不可變動的死線往前推算所有工作，並預留緩衝天數</button>
+      <button class="quiz-opt" data-correct="0">不需要特別處理，跟平常排程一樣即可</button>
+      <button class="quiz-opt" data-correct="0">把所有工作壓縮到檔期當天完成</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">下一節：預算規劃 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第10節：預算規劃
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">💰 第十節</div>
+  <h1>預算規劃<br>分配表與應變預備金</h1>
+  <p class="desc">預算表沒有留應變預備金，是行銷專案執行到一半最常見的窘境。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>項目類別</th><th>預算占比參考</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>付費媒體投放</td><td>30–40%</td><td>搜尋廣告、社群廣告、聯播網</td></tr>
+      <tr><td>內容與素材製作</td><td>20–30%</td><td>攝影、影片、設計、文案</td></tr>
+      <tr><td>活動／異業合作／贊助</td><td>10–20%</td><td>快閃活動、KOL合作、線下贊助</td></tr>
+      <tr><td>工具與技術</td><td>10–15%</td><td>數據追蹤工具、行銷自動化、CRM</td></tr>
+      <tr><td>測試與應變預備金</td><td>10–15%</td><td>A/B測試、新通路試水、突發狀況</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);">（實際比例依產業與目標調整，此表僅為起始參考框架）</p>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 一次性費用 vs 持續性費用</div>
+    <p>要區分「一次性製作成本」與「持續性投放成本」，很多企劃書把兩者混在一起，導致後續追加預算時無法判斷是製作超支還是投放超支。</p>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 送審建議</div>
+    <p>若企劃書要送交財務或主管審核，建議附上「預期投資報酬概念」，即使無法精算完整ROI，也應說明預算與預期效益的合理對應關係，避免只有支出沒有效益推估。</p>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🔒 常見遺漏</div>
+    <ul>
+      <li>廣告投放預算需留意「首次投放學習期」，初期成效可能不如中後期穩定，企劃書應提前說明，避免決策者看到前期數據就急於砍預算。</li>
+      <li>與外部廠商合作時，務必確認報價是否含稅、是否含修改次數限制、付款條件（簽約金、驗收款比例），並保留合約審閱時間。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">💰 第十節測驗</span><span class="quiz-title">預算規劃</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 預算表建議保留多少比例的應變預備金？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">0%，預算應該精準抓好不留餘裕</button>
+      <button class="quiz-opt" data-correct="1">10–15%</button>
+      <button class="quiz-opt" data-correct="0">50%以上</button>
+      <button class="quiz-opt" data-correct="0">應變預備金不需要放進預算表</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼廣告投放不應該在「首次投放學習期」就因成效不佳被砍預算？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為廣告平台不允許中途調整預算</button>
+      <button class="quiz-opt" data-correct="1">因為平台演算法需要時間優化，初期成效通常不如中後期穩定</button>
+      <button class="quiz-opt" data-correct="0">因為合約規定投放期間不能停止</button>
+      <button class="quiz-opt" data-correct="0">這個說法不成立，成效不佳就該立刻停止</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(11)">下一節：執行分工與角色 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第11節：執行分工與角色
+// ============================================================
+function renderCh11(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">👥 第十一節</div>
+  <h1>執行分工與角色<br>簡化版 RACI</h1>
+  <p class="desc">每項任務只能有「一個」最終決策者，這一節看似簡單，卻是執行順暢與否的關鍵。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🟡</span>依團隊規模調整</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🛠️</div><div class="card-title">R 負責執行</div><div class="card-body">實際動手完成任務的人。</div></div>
+    <div class="card"><div class="card-icon">✅</div><div class="card-title">A 最終決策</div><div class="card-body">對結果負責、有拍板權限的人，每項任務只能有一位。</div></div>
+    <div class="card"><div class="card-icon">💬</div><div class="card-title">C 需諮詢</div><div class="card-body">執行前需要徵詢意見的角色。</div></div>
+    <div class="card"><div class="card-icon">📩</div><div class="card-title">I 需告知</div><div class="card-body">完成後需要同步的角色。</div></div>
+  </div>
+  <div class="card">
+    <div class="card-body">條列專案關鍵任務並標示 RACI 角色，標明跨部門溝通窗口（設計、業務、客服、法務、財務），若有外部協力廠商，列出合作範圍與聯繫窗口。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 決策權要單一化</div>
+    <p>每項任務只能有「一個」最終決策者（A），若同一件事有兩個人都能拍板，執行時容易出現互相等待或互踢皮球的狀況。</p>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">📞 別忘了客服團隊</div>
+    <p>客服與第一線人員常被行銷企劃遺漏，但活動上線後第一個接觸消費者疑問與抱怨的往往是他們，建議企劃執行前務必同步活動內容、常見問題與應對話術給客服團隊。</p>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">🌏 跨時區提醒</div>
+    <p>若涉及跨國團隊或跨時區合作，需在時程規劃中明確標示時差對溝通與審核效率的影響。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">👥 第十一節測驗</span><span class="quiz-title">執行分工</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 為什麼每項任務只能有一個「A（最終決策者）」？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為公司規定每項任務只能一個人負責</button>
+      <button class="quiz-opt" data-correct="1">避免兩個人都能拍板，導致互相等待或互踢皮球</button>
+      <button class="quiz-opt" data-correct="0">因為薪資結構的關係</button>
+      <button class="quiz-opt" data-correct="0">這不重要，多幾個決策者反而比較保險</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 行銷企劃執行前，最容易被遺漏卻很關鍵的同步對象是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">財務部門</button>
+      <button class="quiz-opt" data-correct="1">客服與第一線人員</button>
+      <button class="quiz-opt" data-correct="0">股東</button>
+      <button class="quiz-opt" data-correct="0">競爭對手</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(10)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(12)">下一節：風險評估與應變計畫 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第12節：風險評估與應變計畫
+// ============================================================
+function renderCh12(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚠️ 第十二節</div>
+  <h1>風險評估與應變計畫<br>風險矩陣與應變SOP</h1>
+  <p class="desc">風險評估不是「寫給自己安心用」，而是要真的先想好：如果發生，第一步該做什麼、誰有權限拍板。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🗓️</div><div class="card-title">時程風險</div><div class="card-body">素材delay、平台審核delay、外部合作方違約。</div></div>
+    <div class="card"><div class="card-icon">📉</div><div class="card-title">市場風險</div><div class="card-body">競品同期推出類似活動或更大促銷、市場氛圍突變。</div></div>
+    <div class="card"><div class="card-icon">🎯</div><div class="card-title">成效風險</div><div class="card-body">廣告成效不如預期、轉換率過低。</div></div>
+    <div class="card"><div class="card-icon">💬</div><div class="card-title">輿情風險</div><div class="card-body">文案／視覺引發爭議、KOL合作方個人爭議。</div></div>
+    <div class="card"><div class="card-icon">⚖️</div><div class="card-title">法規風險</div><div class="card-body">廣告內容涉及誇大不實、個資蒐集不合規。</div></div>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);">建議列出至少3–5項可能風險，並針對每項說明應變方式。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 應變計畫要有明確觸發條件</div>
+    <p>建議明確寫出應變的觸發條件，例如：「若上線72小時內負面留言占比超過某比例，即啟動危機處理流程」，而不是只寫「視情況調整」。</p>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🔒 輿情與法規風險的授權歸屬</div>
+    <ul>
+      <li>輿情風險的應變計畫應包含「暫停廣告投放」「下架爭議素材」「對外聲明」的權限歸屬與流程，避免事發當下才臨時決定誰能拍板。</li>
+      <li>涉及個資蒐集（如活動報名表單、會員資料）務必於企劃階段就確認蒐集、使用、保存方式是否符合當地個資法規，並考慮是否需要法務或資安部門提前審閱。</li>
+      <li>廣告文案涉及誇大或無法舉證的宣稱，是最容易被主管機關開罰或競品檢舉的風險來源，重要宣稱都要有實證資料佐證並保留紀錄。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⚠️ 第十二節測驗</span><span class="quiz-title">風險與應變</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 一份好的應變計畫，應該明確寫出什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只需要寫「視情況調整」即可</button>
+      <button class="quiz-opt" data-correct="1">具體的觸發條件，例如負面留言占比超過某比例即啟動危機流程</button>
+      <button class="quiz-opt" data-correct="0">只需要列出風險名稱，不用寫應變方式</button>
+      <button class="quiz-opt" data-correct="0">交給公關公司全權處理即可，不需要寫在企劃書</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 輿情風險應變計畫最容易被忽略、卻很關鍵的一環是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">聲明稿的用字遣詞</button>
+      <button class="quiz-opt" data-correct="1">暫停投放、下架素材、對外聲明的權限歸屬與流程</button>
+      <button class="quiz-opt" data-correct="0">選擇哪個社群平台發布聲明</button>
+      <button class="quiz-opt" data-correct="0">聲明稿要用幾種語言撰寫</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(11)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(13)">下一節：成效追蹤與檢討機制 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第13節：成效追蹤與檢討機制
+// ============================================================
+function renderCh13(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📈 第十三節</div>
+  <h1>成效追蹤與檢討機制<br>追蹤・檢討・結案</h1>
+  <p class="desc">追蹤機制要在「上線前」就設定好，活動已經上線才發現轉換無法歸因，是最讓人扼腕的失誤。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔴</span>必寫</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">撰寫內容</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">🔧</span>追蹤工具與方式（GA4、廣告後台、CRM、自建儀表板）</li>
+        <li><span class="check-icon">📅</span>檢視頻率：每日監控指標／每週彙整報告／期中檢討／期末結案報告</li>
+        <li><span class="check-icon">🔁</span>期中檢討機制：達標／落後時分別的調整動作（加碼投放、更換素材、調整受眾等）</li>
+        <li><span class="check-icon">📋</span>結案報告架構：目標達成率、各通路成效比較、投入產出分析、下一步建議</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">注意事項</div>
+  <div class="box box-danger">
+    <div class="box-title">❌ 追蹤要在上線前設好</div>
+    <p>常見失誤是活動已經上線才發現轉換無法歸因，導致成效數據不完整或無法追溯。建議統一UTM命名規則並事先列出對照表，避免不同人員各自命名造成後續數據拆分混亂。</p>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 期中檢討要有決策點</div>
+    <p>務必設定「明確的決策點」（如第7天若CPA超過目標值20%，即討論是否調整受眾或素材），避免只是被動觀察數據卻沒有觸發任何行動。</p>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 結案報告要誠實</div>
+    <p>結案報告不只呈現「達成的部分」，也要誠實檢討「沒達到的部分與原因」，才能真正累積組織的行銷知識。同時留意數據解讀的因果謬誤，轉換提升不一定完全歸功於本次行銷活動，需考慮季節性、同期其他行銷動作等干擾因素。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📈 第十三節測驗</span><span class="quiz-title">成效追蹤</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 廣告轉換追蹤碼與UTM參數規則，應該在什麼時候設定好？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">活動上線後再慢慢補</button>
+      <button class="quiz-opt" data-correct="1">活動上線前就設定好</button>
+      <button class="quiz-opt" data-correct="0">結案報告撰寫時才需要</button>
+      <button class="quiz-opt" data-correct="0">不需要特別設定，平台會自動處理</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 期中檢討機制最重要的設計原則是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只需要每天看數據，不需要設定行動門檻</button>
+      <button class="quiz-opt" data-correct="1">要有明確的決策點，例如CPA超過目標值一定比例即觸發調整討論</button>
+      <button class="quiz-opt" data-correct="0">交給廣告平台自動優化即可</button>
+      <button class="quiz-opt" data-correct="0">只在活動結束後才檢討</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(12)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(14)">下一節：附錄與使用建議 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 第14節：附錄與使用建議
+// ============================================================
+function renderCh14(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📎 第十四節</div>
+  <h1>附錄與使用建議<br>收尾前的最後一道防線</h1>
+  <p class="desc">多數企劃書被打回票，不是策略不好，而是漏了某個角色會問的問題。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🟢</span>收尾</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">附錄該放什麼</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>市場研究數據來源</li>
+        <li><span class="check-icon">✅</span>過去活動成效參考數據</li>
+        <li><span class="check-icon">✅</span>相關合約／報價單摘要</li>
+        <li><span class="check-icon">✅</span>品牌規範／視覺識別指南連結</li>
+        <li><span class="check-icon">✅</span>名詞縮寫對照表（CPA、CTR、ROAS等，方便非行銷背景的審核者閱讀）</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 附錄也有版權風險</div>
+    <p>附錄資料若引用外部報告或圖片，需確認引用是否符合著作權規範，內部流通企劃書若會外流給客戶或合作夥伴，更要留意。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">送出前的換位思考檢查</div>
+  <div class="accordion">
+    <div class="acc-header" onclick="accToggle(this)"><span>💰 如果我是財務，我會問什麼？</span><span class="acc-arrow">▼</span></div>
+    <div class="acc-body">
+      <p style="font-size:13px;color:var(--text-muted);">預算的一次性與持續性費用分清楚了嗎？有沒有應變預備金？投資報酬的合理性有沒有交代？</p>
+    </div>
+  </div>
+  <div class="accordion">
+    <div class="acc-header" onclick="accToggle(this)"><span>⚖️ 如果我是法務，我會問什麼？</span><span class="acc-arrow">▼</span></div>
+    <div class="acc-body">
+      <p style="font-size:13px;color:var(--text-muted);">文案宣稱有沒有實證？個資蒐集流程合規嗎？KOL合作有沒有業配標示？素材授權範圍夠嗎？</p>
+    </div>
+  </div>
+  <div class="accordion">
+    <div class="acc-header" onclick="accToggle(this)"><span>🎧 如果我是第一線客服，我會問什麼？</span><span class="acc-arrow">▼</span></div>
+    <div class="acc-body">
+      <p style="font-size:13px;color:var(--text-muted);">消費者最可能問什麼問題？我有應對話術嗎？活動細則我看得懂嗎？</p>
+    </div>
+  </div>
+  <div class="accordion">
+    <div class="acc-header" onclick="accToggle(this)"><span>📊 如果我是主管，我會問什麼？</span><span class="acc-arrow">▼</span></div>
+    <div class="acc-body">
+      <p style="font-size:13px;color:var(--text-muted);">目標與摘要的數字一致嗎？萬一沒達標，第一步該做什麼？誰是最終決策者？</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">使用小提醒</div>
+  <div class="box box-info">
+    <div class="box-title">💡 依企劃目的調整篇幅</div>
+    <p>先確認這次企劃屬於「品牌認知」「產品上市」「名單開發／轉換」「顧客回購」哪一種主要目的，再決定哪些章節要加重篇幅——例如純線上名單開發活動，通路策略與成效追蹤會是重點；品牌形象活動則情勢分析與訊息定位會是重點。</p>
+  </div>
+  <div class="box box-success">
+    <div class="box-title">✅ 想直接產出具體版企劃書？</div>
+    <p>只要提供活動主題、目標、目標客群、時程與預算範圍，就可以依這份骨架直接產出「具體版」的行銷活動企劃，含週別內容行事曆與實際KPI目標。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(13)">← 上一節</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">回到總覽 ↺</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>

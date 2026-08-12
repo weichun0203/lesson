@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>短影音開場鉤子(HOOK)設計完全指南｜從心理原理到108種公式</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:600px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.prompt-box{background:#0B1220;border:1px solid var(--secondary);border-radius:10px;padding:16px 18px;margin:12px 0;font-size:12.5px;color:#cbd5e1;white-space:pre-wrap;font-family:'Consolas',monospace;line-height:1.6;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🪝 HOOK 設計課</div>
+    <div class="sidebar-title">短影音開場鉤子<br>從心理原理到108種公式</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// HOOK 資料庫（依九大心理驅動分類）
+// ============================================================
+const hookData = {
+  curiosity: [
+    {t:"疑問式開頭", p:"「你知道為什麼＿＿嗎？」／「為什麼＿＿卻＿＿？」", e:"你知道為什麼便宜的洗面乳反而更傷皮膚嗎？"},
+    {t:"結果前置＋懸念式", p:"「我只花了＿＿，就達成了＿＿」", e:"我只花了7天，體重就少了3公斤，方法很簡單"},
+    {t:"秘密/內幕式", p:"「沒有人告訴過你的＿＿」", e:"沒有人告訴過你，代購其實這樣賺價差"},
+    {t:"倒敘/時間跳躍式", p:"「三個月前的我，怎麼也想不到＿＿」", e:"一年前我還在負債，現在⋯"},
+    {t:"未完成句式", p:"「我當時只跟他說了一句話，結果＿＿」", e:"我當時只跟他說了一句話，結果他當場愣住"},
+    {t:"錯誤示範預告式", p:"「接下來我要故意做錯一次給你看」", e:"接下來我要故意用錯誤方式煮泡麵給你看"},
+    {t:"未知身份式", p:"「有一個做法，連某知名品牌都在偷偷用」", e:"有一招，連某知名連鎖店都在偷偷用"},
+    {t:"數字倒數式", p:"「第3名你一定猜不到」", e:"這5個省錢法，第3名你一定猜不到"},
+    {t:"對話截取式", p:"「他跟我說：『你這樣做，遲早會後悔』」", e:"主管跟我說：『你這樣做，遲早會後悔』"},
+    {t:"標題留白式", p:"「我把存款全部拿去做了一件事…」", e:"我把三年積蓄全部拿去做了一件事…"},
+    {t:"反問句式", p:"「誰說一定要＿＿？」", e:"誰說一定要30歲前買房？"},
+    {t:"對比提問式", p:"「A方法和B方法，你猜哪個效果更好？」", e:"早餐吃蛋還是吃燕麥，你猜哪個更容易餓？"},
+    {t:"未來預告式", p:"「影片最後你會發現一個超反轉的真相」", e:"影片最後你會發現，這根本不是廣告"},
+    {t:"關鍵字閃現式", p:"畫面先出現關鍵數字/字卡，1秒後才解釋", e:"畫面先閃過『$100,000』字卡，再說明這筆錢怎麼來的"},
+  ],
+  pain: [
+    {t:"痛點戳中式", p:"「你是不是也常常＿＿？」", e:"你是不是也常常訂了健身房卻從沒去過？"},
+    {t:"警告/提醒式", p:"「千萬不要＿＿，不然你會＿＿」", e:"千萬不要空腹喝咖啡，尤其是這種體質的人"},
+    {t:"打臉/糾錯式", p:"「很多人都以為＿＿，其實根本是錯的」", e:"很多人都以為多喝水能瘦，其實方法不對根本沒用"},
+    {t:"危機/緊迫式", p:"「再不＿＿，你就會＿＿」", e:"再不注意這個保存期限，可能會吃出問題"},
+    {t:"自我對話式痛點", p:"「『這個月又要吃土了』——你是不是也常這樣想？」", e:"『存款怎麼又是0』——是不是很熟悉？"},
+    {t:"症狀列舉式", p:"「如果你常常＿＿、＿＿、＿＿⋯」", e:"如果你常常肩頸痠痛、失眠、注意力不集中⋯"},
+    {t:"隱藏成本式", p:"「你可能不知道，這個習慣正在讓你多花＿＿」", e:"這個習慣每個月多花你2000元"},
+    {t:"錯誤後果式", p:"「如果你繼續這樣做，＿＿年後你會＿＿」", e:"如果你繼續這樣坐，5年後你的脊椎會⋯"},
+    {t:"比較落差式", p:"「同年齡的人已經＿＿，你呢？」", e:"同年齡的人已經存到100萬，你呢？"},
+    {t:"自我否定式", p:"「你是不是也懷疑過，自己是不是不適合＿＿？」", e:"你是不是也懷疑過，自己是不是不適合創業？"},
+    {t:"身體感受式", p:"「那種＿＿的感覺，你懂嗎？」", e:"那種胸口悶悶的感覺，你懂嗎？"},
+    {t:"財務焦慮式", p:"「＿＿讓你晚上睡不著嗎？」", e:"存款簿餘額讓你晚上睡不著嗎？"},
+    {t:"時間流逝式", p:"「你已經浪費了多少時間在＿＿？」", e:"你已經浪費了多少個週末在滑手機？"},
+    {t:"未來恐懼式", p:"「如果現在不開始＿＿，未來的你會＿＿」", e:"如果現在不開始存退休金，65歲的你會⋯"},
+  ],
+  value: [
+    {t:"直接利益承諾式", p:"「看完這支影片，你會學到＿＿」", e:"看完這支影片，你會學會3招讓履歷被HR秒讀"},
+    {t:"數字/清單式", p:"「＿＿個你一定要知道的＿＿」", e:"5個新手投資一定要避開的地雷"},
+    {t:"時間限制挑戰式", p:"「在60秒內教你學會＿＿」", e:"60秒教你看懂租屋合約陷阱"},
+    {t:"數據佐證式", p:"「研究顯示，＿＿的人有＿＿％會＿＿」", e:"研究顯示，90%的人存錢方式都是錯的"},
+    {t:"免費/零成本式", p:"「不用花一毛錢，你也能學會＿＿」", e:"不用花一毛錢，你也能學會修圖"},
+    {t:"一步到位式", p:"「只要改一個設定，就能＿＿」", e:"只要改一個設定，手機電力多撐5小時"},
+    {t:"效率承諾式", p:"「不用＿＿，＿＿分鐘就能＿＿」", e:"不用上健身房，10分鐘在家練出馬甲線"},
+    {t:"對象限定利益式", p:"「＿＿限定：這招讓你＿＿」", e:"上班族限定：這招讓你多睡20分鐘"},
+    {t:"隱藏福利式", p:"「很多人不知道，＿＿其實有這個隱藏福利」", e:"很多人不知道，這張卡其實有這個隱藏回饋"},
+    {t:"保證式", p:"「如果沒有效，我＿＿」", e:"如果沒有效，我全額退費"},
+    {t:"前後對照利益式", p:"「跟著做＿＿，你的＿＿會＿＿」", e:"跟著做一週，你的皮膚狀態會明顯不同"},
+    {t:"專屬工具/資源式", p:"「文末附上我自己在用的＿＿，直接套用」", e:"文末附上我自己在用的履歷範本，直接套用"},
+    {t:"意外收穫式", p:"「學會這招，你還會順便學到＿＿」", e:"學會這招，你還會順便學到談判技巧"},
+    {t:"反脆弱承諾式", p:"「就算沒有成功，你也不會損失什麼，因為＿＿」", e:"因為完全免費試用"},
+  ],
+  contrast: [
+    {t:"反差顛覆式", p:"「你以為＿＿，其實是＿＿」", e:"你以為越貴的保養品越好，其實成分才是關鍵"},
+    {t:"爭議/挑釁式", p:"「我知道這樣說會被罵，但＿＿」", e:"我知道這樣說會被罵，但存錢真的沒用"},
+    {t:"對比示範式（Before/After）", p:"畫面直接呈現「改造前」→「改造後」", e:"先出現雜亂房間畫面，再切到整潔畫面"},
+    {t:"職業反差式", p:"「一個＿＿教你＿＿」", e:"一個工程師教你談戀愛"},
+    {t:"年齡反差式", p:"「＿＿歲的她，剛學會＿＿」", e:"70歲的她，剛學會滑板"},
+    {t:"外表反差式", p:"「看起來很普通的＿＿，其實藏著＿＿」", e:"看起來很普通的便當，其實藏著厲害的巧思"},
+    {t:"立場反轉式", p:"「我以前也覺得這是＿＿，直到＿＿」", e:"我以前也覺得這是騙人的，直到親自試過"},
+    {t:"專家打臉式", p:"「大家都這樣說，但最新研究發現＿＿」", e:"醫生都這樣說，但最新研究發現不一定對"},
+    {t:"弱者逆襲式", p:"「沒＿＿、沒＿＿，他還是做到了」", e:"沒背景、沒資源，他還是做到了"},
+    {t:"失敗轉折式", p:"「被＿＿之後，他做了這件事」", e:"被開除後，他做了這件事"},
+    {t:"常識翻案式", p:"「『＿＿』，這句話可能是錯的」", e:"『少油少鹽才健康』，這句話可能是錯的"},
+    {t:"極端案例式", p:"「他每天只＿＿，卻＿＿」", e:"他每天只睡4小時，卻能維持高效率"},
+    {t:"角色互換式", p:"「這次換＿＿來教＿＿」", e:"這次換學生來教老師"},
+  ],
+  emotion: [
+    {t:"同理共感式", p:"「有沒有一種瞬間，你會覺得＿＿」", e:"有沒有一種瞬間，你覺得自己特別孤單"},
+    {t:"故事式開場", p:"「那天晚上，我＿＿」", e:"那天晚上，我收到一封讓我辭職的訊息"},
+    {t:"自我揭露/示弱式", p:"「老實說，我曾經＿＿」", e:"老實說，我曾經因為這個決定賠光積蓄"},
+    {t:"假設情境式", p:"「如果你只有＿＿，你會怎麼做？」", e:"如果你只剩下一個月薪水，你會先花在哪？"},
+    {t:"回憶觸發式", p:"「還記得小時候＿＿嗎？」", e:"還記得小時候放學都要衝去買的那個零食嗎？"},
+    {t:"遺憾式", p:"「如果早知道，我一定不會＿＿」", e:"如果早知道，我一定不會等到30歲才開始存錢"},
+    {t:"感謝/致敬式", p:"「謝謝那個曾經＿＿的自己／人」", e:"謝謝那個曾經沒有放棄的自己"},
+    {t:"憤怒共鳴式", p:"「每次遇到＿＿，我都很想＿＿」", e:"每次遇到店員態度不好，我都很想離開"},
+    {t:"溫馨陪伴式", p:"「如果你今天過得很累，這支影片是為你做的」", e:"（可直接套用）"},
+    {t:"家人視角式", p:"「我媽看到這個，哭了」", e:"我爸看完這支影片後，跟我說了一句話"},
+    {t:"成長蛻變式", p:"「＿＿年前的我，絕對不敢＿＿」", e:"兩年前的我，絕對不敢在鏡頭前說話"},
+    {t:"感官記憶式", p:"「聞到＿＿的味道，我就想起＿＿」", e:"聞到這個味道，我就想起阿嬤煮的湯"},
+    {t:"心聲代言式", p:"「其實我們都想過，要不要＿＿」", e:"其實我們都想過，要不要乾脆放棄算了"},
+    {t:"溫柔提醒式", p:"「提醒你，今天也要記得＿＿」", e:"提醒你，今天也要記得喝水、好好休息"},
+  ],
+  social: [
+    {t:"名人/借勢式", p:"「連＿＿都在用的方法」", e:"連醫師都在用的3個抗老方法"},
+    {t:"從眾/趨勢式", p:"「最近超多人在做＿＿，原因是」", e:"最近超多上班族都在做這件事來省錢"},
+    {t:"模仿熱門梗/音樂卡點", p:"套用當下平台熱門音效/轉場公式開場", e:"使用當紅BGM卡點做開場動作"},
+    {t:"團體認證式", p:"「整個＿＿社團都在討論這個」", e:"整個媽媽社團都在討論這個副食品做法"},
+    {t:"銷售量佐證式", p:"「這款＿＿一個月賣出＿＿件」", e:"這款商品一個月賣出10萬件"},
+    {t:"專業社群認可式", p:"「連＿＿自己也在用這個」", e:"連營養師自己也在吃這個"},
+    {t:"排隊/搶購式", p:"「這款一上架就＿＿」", e:"這款一上架就秒殺，補貨都來不及"},
+    {t:"媒體報導式", p:"「被＿＿報導過的方法」", e:"被知名新聞台報導過的省錢方法"},
+    {t:"用戶見證式", p:"「『＿＿』——這是一位顧客的留言」", e:"『用了之後我後悔沒早點知道』"},
+    {t:"地區流行式", p:"「最近＿＿超流行這個方法」", e:"最近日本超流行這個收納方法"},
+    {t:"世代共識式", p:"「這是每個＿＿都懂的默契」", e:"這是每個90後都懂的默契"},
+  ],
+  visual: [
+    {t:"視覺衝擊式", p:"第1秒直接呈現最吸睛的畫面", e:"影片一開始直接切到色彩繽紛的成品特寫"},
+    {t:"動作/聲音開場式", p:"開場0.5秒內出現大動作或響亮聲音", e:"一開場就是刀具『喀』一聲切開食材的特寫"},
+    {t:"慢動作特寫式", p:"開場0-2秒用慢動作呈現關鍵動作瞬間", e:"慢動作呈現醬汁淋下、水滴落下的瞬間"},
+    {t:"顏色衝擊式", p:"開場畫面中安排一個高對比色塊", e:"畫面中央出現一個鮮豔撞色的成品特寫"},
+    {t:"鏡頭快切式", p:"0.5秒內連續切換2-3個相關畫面", e:"快速切換『準備、動手、成品』三個畫面"},
+    {t:"第一人稱視角式", p:"鏡頭模擬觀眾自己的視角進行動作", e:"鏡頭模擬『正在下班路上』的第一人稱視角"},
+    {t:"空拍/宏觀式", p:"開場用空拍或大場景鏡頭建立氣勢", e:"空拍呈現整個活動會場或旅遊景點全貌"},
+    {t:"特寫細節式", p:"只拍攝局部細節，不露出完整全貌", e:"只拍手部動作的特寫，不露出完整畫面"},
+    {t:"動畫字卡衝擊式", p:"開場用彈跳、放大、震動等動態文字特效", e:"關鍵字以彈跳放大特效出現在畫面正中央"},
+    {t:"環境音先行式", p:"開場0-1秒先出現關鍵聲音，畫面隨後出現", e:"先聽到雨聲或油炸聲，1秒後才切到對應畫面"},
+  ],
+  interactive: [
+    {t:"提問互動/投票式", p:"「A還是B？留言告訴我」", e:"奶茶還是咖啡？你的選擇透露你的個性"},
+    {t:"挑戰觀眾常識式", p:"「你猜猜看，＿＿是多少？」", e:"你猜猜看，一杯手搖飲有多少糖？"},
+    {t:"猜結局式", p:"「猜猜看最後發生了什麼事？留言你的答案」", e:"猜猜看最後這個實驗成功了嗎？"},
+    {t:"填空互動式", p:"「如果只能選一個＿＿，你會選？」", e:"如果只能選一個習慣戒掉，你會選？"},
+    {t:"你會怎麼做式", p:"「換作是你，你會怎麼處理？」", e:"換作是你，遇到這種主管你會怎麼處理？"},
+    {t:"找碴挑戰式", p:"「你有發現哪裡不對勁嗎？」", e:"這張照片你有發現哪裡被修圖了嗎？"},
+    {t:"完成任務邀請式", p:"「敢不敢跟我一起試試看？」", e:"敢不敢跟我一起挑戰7天早起？"},
+    {t:"你是哪一種式", p:"「這3種類型，你是哪一種？」", e:"投資新手這3種類型，你是哪一種？"},
+    {t:"留言解鎖式", p:"「留言『關鍵字』，我幫你解析」", e:"留言『+1』，我幫你分析你的狀況"},
+    {t:"反駁邀請式", p:"「不同意的話，留言告訴我為什麼」", e:"不同意這個說法的話，留言告訴我為什麼"},
+  ],
+  urgency: [
+    {t:"限時/限量式", p:"「僅剩＿＿名額／到＿＿為止」", e:"這個方法只公開到今天晚上12點"},
+    {t:"即將失去式", p:"「再不＿＿，你會錯過＿＿」", e:"再不申請，這筆補助明年就取消了"},
+    {t:"季節限定式", p:"「只有這個月才有的＿＿」", e:"只有這個月才有的中秋限定做法"},
+    {t:"版本淘汰式", p:"「這個方法明年就要被取代了」", e:"這種報稅方式明年就要被取代了"},
+    {t:"名額遞減式", p:"「名額只會越來越少」", e:"這梯次名額只會越來越少"},
+    {t:"政策異動式", p:"「這項規定下個月就要修法了」", e:"這項補助辦法下個月就要修法了"},
+    {t:"早鳥優勢式", p:"「越早知道這件事的人，越早受益」", e:"越早知道這個投資工具的人，越早開始累積"},
+    {t:"唯一機會式", p:"「這個機會只有這一次」", e:"這個合作機會只有這一次，之後不會再有"},
+  ],
+};
+
+function renderHookTable(rows){
+  return `<div class="table-wrap"><table>
+    <thead><tr><th style="width:22%">鉤子類型</th><th style="width:38%">句型模板</th><th>範例文案</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td><strong style="color:var(--text)">${r.t}</strong></td><td>${r.p}</td><td>${r.e}</td></tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+// ============================================================
+// 章節資料
+// ============================================================
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'鉤子設計地圖', icon:'🗺️', time:'8 分鐘', level:'所有程度', content: renderCh0 },
+  { id:1, title:'Hook核心定義與三大任務', subtitle:'留住注意力的關鍵1-3秒', icon:'🎯', time:'15 分鐘', level:'入門', content: renderCh1 },
+  { id:2, title:'好奇心驅動鉤子', subtitle:'14種公式：利用資訊缺口', icon:'❓', time:'18 分鐘', level:'基礎', content: renderCh2 },
+  { id:3, title:'痛點/恐懼驅動鉤子', subtitle:'14種公式：戳中焦慮與損失規避', icon:'😰', time:'18 分鐘', level:'基礎', content: renderCh3 },
+  { id:4, title:'利益/價值驅動鉤子', subtitle:'14種公式：先給好處再談內容', icon:'💰', time:'18 分鐘', level:'基礎', content: renderCh4 },
+  { id:5, title:'反差/衝突驅動鉤子', subtitle:'13種公式：打破既有認知', icon:'⚡', time:'18 分鐘', level:'進階', content: renderCh5 },
+  { id:6, title:'情緒共鳴驅動鉤子', subtitle:'14種公式：故事與同理心', icon:'💗', time:'18 分鐘', level:'進階', content: renderCh6 },
+  { id:7, title:'社會認同與視覺感官鉤子', subtitle:'21種公式：從眾效應與畫面衝擊', icon:'👥', time:'20 分鐘', level:'進階', content: renderCh7 },
+  { id:8, title:'互動參與與緊迫稀缺鉤子', subtitle:'18種公式：留言互動與時間壓力', icon:'⏳', time:'20 分鐘', level:'進階', content: renderCh8 },
+  { id:9, title:'跨平台應用與AI提示詞工作坊', subtitle:'把Hook改寫成可直接使用的AI指令', icon:'🤖', time:'20 分鐘', level:'專家', content: renderCh9 },
+  { id:10, title:'常見陷阱與風險管理', subtitle:'Hook設計最容易踩的坑', icon:'⚠️', time:'15 分鐘', level:'專家', content: renderCh10 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('hook_sop_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('hook_sop_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// CHAPTER 0: 課程總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>短影音開場鉤子(HOOK)設計完全指南<br>從心理原理到108種公式</h1>
+  <p class="desc">9大心理驅動分類 × 108種鉤子公式 × 30組AI提示詞範本 × 互動測驗，帶你建立一套可複製、可套用的開場鉤子設計系統。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 2.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>11 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適合創作者、小編、行銷企劃</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">9</div><div class="stat-label">心理驅動大分類</div></div>
+    <div class="stat-card"><div class="stat-num">108</div><div class="stat-label">鉤子公式</div></div>
+    <div class="stat-card"><div class="stat-num">30+</div><div class="stat-label">AI提示詞範本</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">🎯 核心觀念（第1章）</div>
+        <div class="step-desc">Hook的定義、三大任務（好奇/相關/價值）、視覺型與文字型兩大類、三個檢查要素，建立判斷基準。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">🧩 九宮格公式庫（第2-8章）</div>
+        <div class="step-desc">依心理驅動力分類的108種鉤子公式：好奇心、痛點/恐懼、利益/價值、反差/衝突、情緒共鳴、社會認同、視覺/感官、互動參與、緊迫/稀缺。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">🤖 跨平台與AI實作（第9章）</div>
+        <div class="step-desc">把同一個Hook構想改寫成短影音/圖文/長影音三種版本，並用AI提示詞快速產出、快速自我檢查。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">⚠️ 風險管理（第10章）</div>
+        <div class="step-desc">Hook設計最常見的六大陷阱：標題黨反噬、無法兌現承諾、公式濫用失去真實感等，任何一項都可能讓內容口碑翻車。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">如何使用本課程</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>按順序學習：第1章的三大任務與三個檢查要素，是後面所有公式的判斷基準。</li>
+        <li><span class="check-icon">✅</span>做完每章測驗：60分以上才算過關，幫助你鞏固知識。</li>
+        <li><span class="check-icon">✅</span>邊學邊套用：每章結束後，挑2-3種公式套用到你手邊的主題上。</li>
+        <li><span class="check-icon">✅</span>善用AI提示詞：第9章的提示詞可直接複製貼給ChatGPT/Claude使用。</li>
+        <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 給有經驗的創作者</div>
+    <p>如果你已經很熟悉基本公式，可以直接跳到第9章（跨平台與AI提示詞）或第10章（常見陷阱），課程支援任意跳章。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習 第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1: HOOK核心定義與三大任務
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎯 第一章</div>
+  <h1>Hook核心定義與三大任務<br>留住注意力的關鍵1-3秒</h1>
+  <p class="desc">在學任何公式之前，你必須先搞懂Hook到底要做什麼。本章建立判斷「這是不是一個好Hook」的基準，後面8章的公式都是為了完成這三大任務。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌱</span>入門</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">核心定義</div>
+  <div class="card">
+    <div class="card-body">
+      <p style="font-size:15px;color:var(--text);margin-bottom:12px;">Hook（鉤子）是內容開頭——通常是<strong style="color:var(--secondary)">前1～3秒的影片畫面，或標題／首句文案</strong>——用來留住受眾注意力、阻止其滑走的關鍵設計。它決定了觀眾會不會繼續看下去，也是整支內容成敗的第一道關卡。</p>
+      <p style="font-size:13px;color:var(--text-muted);">關鍵字拆解：<span class="tag tag-blue">3秒法則</span><span class="tag tag-cyan">注意力經濟</span><span class="tag tag-green">滑走阻斷</span><span class="tag tag-yellow">開場設計</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">好Hook必須同時做到的三大任務</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">❓</div>
+      <div class="card-title">① 引發好奇</div>
+      <div class="card-body">留下一個未解的懸念或好奇點，讓觀眾產生「我想知道接下來會怎樣」的衝動。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">② 建立相關性</div>
+      <div class="card-body">讓受眾在一秒內判斷「這跟我有關」，如果內容跟自己無關，再有趣也會被滑走。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💎</div>
+      <div class="card-title">③ 暗示價值</div>
+      <div class="card-body">清楚暗示看下去能得到什麼具體好處或情緒價值，讓觀眾覺得「花時間看值得」。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Hook的兩大類型</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎬</div>
+      <div class="card-title">視覺型Hook</div>
+      <div class="card-body">利用畫面、動作、剪輯節奏在極短時間內抓住眼球，常見於短影音。例如：突然的動作、反差畫面、快速變焦、文字動畫強調。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">✍️</div>
+      <div class="card-title">文字型Hook</div>
+      <div class="card-body">透過標題、旁白或字幕的語句設計來引發好奇或情緒共鳴，適用於文章、圖文貼文、影片旁白開場。</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 實務上如何搭配</div>
+    <p>短影音通常是「視覺型Hook做第一擊，文字型Hook做補刀」——畫面先抓住眼球，緊接著的字幕/旁白再把懸念和價值講清楚，兩者缺一不可。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三個檢查要素（後面所有公式的驗收標準）</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span><strong style="color:var(--text)">相關性檢查</strong>：受眾能不能在一秒內判斷「這跟我有關」</li>
+        <li><span class="check-icon">✅</span><strong style="color:var(--text)">懸念檢查</strong>：內容是否留下一個未解的懸念或好奇點</li>
+        <li><span class="check-icon">✅</span><strong style="color:var(--text)">價值檢查</strong>：是否清楚暗示看下去能得到什麼具體好處或情緒價值</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見誤區</div>
+    <ul>
+      <li>只顧著製造噱頭或懸念，卻沒有暗示任何價值，觀眾看完覺得被騙、產生負面觀感</li>
+      <li>Hook跟正文內容脫節（標題黨），短期拉高點擊率但長期傷害帳號信任度</li>
+      <li>誤以為Hook只存在於影片，其實圖文標題、長影音開場15-30秒，都需要各自的Hook設計</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">不同平台的應用差異</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>平台類型</th><th>Hook設計重點</th></tr></thead>
+    <tbody>
+      <tr><td>短影音（Reels/TikTok/Shorts）</td><td>依賴視覺型Hook，搭配前3秒的強烈畫面或動作</td></tr>
+      <tr><td>圖文平台（IG貼文/部落格）</td><td>依賴標題與首句文字的懸念設計</td></tr>
+      <tr><td>長影音（YouTube）</td><td>需要在開場15～30秒內建立「這支影片會解決你什麼問題」的清楚承諾</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">實作檢核流程（四步驟）</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">確定目標受眾與痛點</div><div class="step-desc">先想清楚這支內容是給誰看的，他們最在意什麼。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">選擇1-2種公式組合</div><div class="step-desc">從第2-8章的108種公式中，挑選最適合的1-2種來設計開場句。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">搭配視覺或語氣呈現</div><div class="step-desc">決定畫面動作、字卡或旁白語氣，讓文字與畫面互相加強。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">自我測試修改</div><div class="step-desc">自問「如果我是滑動的觀眾，我會不會停下來？」，依三個檢查要素修改到通過為止。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎯 第一章測驗</span><span class="quiz-title">核心觀念檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 好的Hook必須同時做到哪三件事？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">好看、好笑、好記</button>
+      <button class="quiz-opt" data-correct="1">引發好奇、建立相關性、暗示價值</button>
+      <button class="quiz-opt" data-correct="0">高畫質、高音質、高互動</button>
+      <button class="quiz-opt" data-correct="0">快、狠、準</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 只顧著製造懸念卻沒有暗示任何價值，最可能導致什麼結果？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">完全沒有負面影響</button>
+      <button class="quiz-opt" data-correct="1">觀眾覺得被騙，產生負面觀感，長期傷害帳號信任度</button>
+      <button class="quiz-opt" data-correct="0">演算法會自動提高觸及率</button>
+      <button class="quiz-opt" data-correct="0">觀眾會更願意分享</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 長影音（YouTube）的Hook設計重點是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">前3秒要有強烈的視覺衝擊畫面</button>
+      <button class="quiz-opt" data-correct="1">在開場15-30秒內建立「這支影片會解決你什麼問題」的清楚承諾</button>
+      <button class="quiz-opt" data-correct="0">標題要越長越好</button>
+      <button class="quiz-opt" data-correct="0">完全不需要設計開場</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：好奇心驅動鉤子 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2: 好奇心驅動鉤子
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">❓ 第二章</div>
+  <h1>好奇心驅動鉤子<br>14種公式：利用資訊缺口</h1>
+  <p class="desc">心理學上的「資訊缺口理論（Information Gap Theory）」指出：當人們意識到自己知識中有一個缺口時，會產生想填補的衝動。這是最經典、也最百搭的Hook驅動力。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌱</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">為什麼好奇心有效</div>
+  <div class="card">
+    <div class="card-body">
+      <p style="font-size:14px;color:var(--text);">好奇心驅動鉤子的共同原理：先給觀眾一個「結果」或「片段」，但刻意不說明「原因」或「過程」，讓大腦因為資訊不完整而產生想繼續看下去的驅動力。使用時要注意——懸念留得住，但答案也要真的給得出來，否則會變成標題黨。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">14種好奇心驅動公式</div>
+  ${renderHookTable(hookData.curiosity)}
+</div>
+
+<div class="box box-success">
+  <div class="box-title">✅ 使用技巧</div>
+  <p>好奇心鉤子最怕「懸念太大、內容太小」——開場吊足胃口，內文卻沒有相應的份量，觀眾會覺得浪費時間。建議懸念的「重量」要跟內文的「份量」成正比。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">❓ 第二章測驗</span><span class="quiz-title">好奇心驅動鉤子檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 好奇心驅動鉤子的共同原理是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">用很大聲的音樂吸引注意</button>
+      <button class="quiz-opt" data-correct="1">先給結果或片段，刻意不說明原因，讓觀眾想填補資訊缺口</button>
+      <button class="quiz-opt" data-correct="0">直接把所有資訊講完</button>
+      <button class="quiz-opt" data-correct="0">用很長的標題描述細節</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2.「結果前置＋懸念式」的關鍵是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">先講原因再講結果</button>
+      <button class="quiz-opt" data-correct="1">先透露驚人結果，過程留白引發好奇</button>
+      <button class="quiz-opt" data-correct="0">完全不提到任何結果</button>
+      <button class="quiz-opt" data-correct="0">用數據佐證可信度</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：痛點/恐懼驅動鉤子 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3: 痛點/恐懼驅動鉤子
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">😰 第三章</div>
+  <h1>痛點/恐懼驅動鉤子<br>14種公式：戳中焦慮與損失規避</h1>
+  <p class="desc">行為經濟學中的「損失規避（Loss Aversion）」告訴我們：人們對「失去」的敏感度，遠高於對「獲得」的敏感度。這類鉤子直接點出觀眾的困擾、焦慮或風險，讓人產生「這在講我」的強烈代入感。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌱</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">14種痛點/恐懼驅動公式</div>
+  ${renderHookTable(hookData.pain)}
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 使用時的分寸拿捏</div>
+  <ul>
+    <li>痛點要「戳」但不要「傷」——描述困擾是為了引發共鳴，不是為了羞辱或製造過度焦慮</li>
+    <li>恐懼訴求若過度誇大或無根據，容易引發觀眾反感，甚至被檢舉為誇大不實</li>
+    <li>建議痛點鉤子之後，緊接著就要給出「解方的方向」，讓觀眾從焦慮轉為期待</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">😰 第三章測驗</span><span class="quiz-title">痛點/恐懼驅動鉤子檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 痛點/恐懼驅動鉤子背後的行為經濟學原理是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">從眾效應</button>
+      <button class="quiz-opt" data-correct="1">損失規避：人們對「失去」的敏感度遠高於「獲得」</button>
+      <button class="quiz-opt" data-correct="0">資訊缺口理論</button>
+      <button class="quiz-opt" data-correct="0">錨定效應</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 使用痛點鉤子時最需要注意的分寸是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">痛點描述越誇張越好，越誇張越有效</button>
+      <button class="quiz-opt" data-correct="1">戳中痛點但不羞辱觀眾，且應接續給出解方方向</button>
+      <button class="quiz-opt" data-correct="0">完全避免提到任何負面情境</button>
+      <button class="quiz-opt" data-correct="0">痛點鉤子只適合用在健康類內容</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：利益/價值驅動鉤子 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4: 利益/價值驅動鉤子
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">💰 第四章</div>
+  <h1>利益/價值驅動鉤子<br>14種公式：先給好處再談內容</h1>
+  <p class="desc">這類鉤子直接把「看下去能得到什麼」講清楚，降低觀眾判斷「值不值得花時間」的門檻，特別適合教學型、乾貨型、產品推薦類內容。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌱</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">14種利益/價值驅動公式</div>
+  ${renderHookTable(hookData.value)}
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 與好奇心鉤子的差異</div>
+  <p>好奇心鉤子讓觀眾「想知道答案」，利益鉤子讓觀眾「知道會有收穫」——兩者可以疊加使用，例如先用數字/清單式告訴觀眾「有5個技巧」，同時保留「哪5個」的懸念。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">💰 第四章測驗</span><span class="quiz-title">利益/價值驅動鉤子檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 利益/價值驅動鉤子的核心目的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">製造神秘感讓觀眾猜測</button>
+      <button class="quiz-opt" data-correct="1">直接讓觀眾知道看下去能得到什麼具體好處，降低判斷門檻</button>
+      <button class="quiz-opt" data-correct="0">用爭議話題引發討論</button>
+      <button class="quiz-opt" data-correct="0">用視覺特效吸引眼球</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 「數字/清單式」鉤子的主要優勢是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">聽起來比較有學問</button>
+      <button class="quiz-opt" data-correct="1">量化內容份量，增加可信度與可掃描性</button>
+      <button class="quiz-opt" data-correct="0">可以避免被演算法限流</button>
+      <button class="quiz-opt" data-correct="0">不需要搭配任何懸念</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：反差/衝突驅動鉤子 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5: 反差/衝突驅動鉤子
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚡ 第五章</div>
+  <h1>反差/衝突驅動鉤子<br>13種公式：打破既有認知</h1>
+  <p class="desc">大腦對「符合預期」的資訊會自動忽略，對「打破預期」的資訊才會停下來多看一眼。反差/衝突鉤子的本質，就是製造認知落差（Pattern Interrupt）。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌿</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">13種反差/衝突驅動公式</div>
+  ${renderHookTable(hookData.contrast)}
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 爭議/挑釁式的風險提醒</div>
+  <p>爭議式鉤子能有效帶動留言互動，但過度使用容易引發不必要的攻擊或誤解，且長期使用會讓帳號調性變得情緒化。建議搭配清楚的論證，而非單純為了製造衝突而衝突。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⚡ 第五章測驗</span><span class="quiz-title">反差/衝突驅動鉤子檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 反差/衝突驅動鉤子的核心心理機制是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">從眾效應</button>
+      <button class="quiz-opt" data-correct="1">認知落差（Pattern Interrupt）：打破預期才會被注意到</button>
+      <button class="quiz-opt" data-correct="0">損失規避</button>
+      <button class="quiz-opt" data-correct="0">稀缺性</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 過度使用爭議/挑釁式鉤子可能帶來的風險是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">完全沒有風險，用越多越好</button>
+      <button class="quiz-opt" data-correct="1">引發不必要攻擊，且長期讓帳號調性變得情緒化</button>
+      <button class="quiz-opt" data-correct="0">會讓演算法自動降低觸及</button>
+      <button class="quiz-opt" data-correct="0">只會影響短影音，不影響圖文</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：情緒共鳴驅動鉤子 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6: 情緒共鳴驅動鉤子
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">💗 第六章</div>
+  <h1>情緒共鳴驅動鉤子<br>14種公式：故事與同理心</h1>
+  <p class="desc">人是情感的動物，比起數據和邏輯，一段能引發情緒連結的故事或一句「說中心聲」的話，往往更能讓人停下來、看完、甚至分享。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌿</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">14種情緒共鳴驅動公式</div>
+  ${renderHookTable(hookData.emotion)}
+</div>
+
+<div class="box box-success">
+  <div class="box-title">✅ 使用技巧</div>
+  <p>情緒共鳴鉤子最忌諱「為賦新詞強說愁」——刻意煽情但缺乏真實細節，觀眾很容易察覺。建議搭配具體的場景、時間、對話，讓故事有畫面感，情緒才會真實。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">💗 第六章測驗</span><span class="quiz-title">情緒共鳴驅動鉤子檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「心聲代言式」鉤子的作用是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">強調產品銷售數字</button>
+      <button class="quiz-opt" data-correct="1">說出觀眾不敢公開表達的心裡話，建立強烈認同感</button>
+      <button class="quiz-opt" data-correct="0">用倒數方式營造節奏感</button>
+      <button class="quiz-opt" data-correct="0">限定特定名額製造急迫感</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 情緒共鳴鉤子最需要避免的問題是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">內容太過真實</button>
+      <button class="quiz-opt" data-correct="1">刻意煽情卻缺乏具體細節，讓觀眾覺得不真實</button>
+      <button class="quiz-opt" data-correct="0">使用太多數字佐證</button>
+      <button class="quiz-opt" data-correct="0">畫面太過寫實</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：社會認同與視覺感官鉤子 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7: 社會認同與視覺/感官驅動鉤子
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">👥 第七章</div>
+  <h1>社會認同與視覺/感官驅動鉤子<br>21種公式：從眾效應與畫面衝擊</h1>
+  <p class="desc">本章合併兩種驅動力：一種利用「別人都在做/都認可」的從眾心理降低嘗試門檻；另一種則是純粹靠畫面、聲音、剪輯節奏在0.5秒內抓住眼球，兩者常常需要搭配使用。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌿</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Part A：社會認同驅動（11種公式）</div>
+  ${renderHookTable(hookData.social)}
+</div>
+
+<div class="section">
+  <div class="section-title">Part B：視覺/感官驅動（10種公式）</div>
+  ${renderHookTable(hookData.visual)}
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 兩者如何搭配</div>
+  <p>視覺/感官鉤子通常負責「前0.5-1秒的第一擊」，社會認同鉤子則常出現在緊接著的字幕或旁白中（例如畫面先用動作/聲音抓住眼球，字幕再補上「這款一上架就秒殺」）。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">👥 第七章測驗</span><span class="quiz-title">社會認同與視覺感官鉤子檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 社會認同驅動鉤子的核心心理機制是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">損失規避</button>
+      <button class="quiz-opt" data-correct="1">從眾效應：強調別人都在做/都認可，降低嘗試疑慮</button>
+      <button class="quiz-opt" data-correct="0">資訊缺口理論</button>
+      <button class="quiz-opt" data-correct="0">稀缺性</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 視覺/感官驅動鉤子通常負責整支影片的哪個時刻？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">影片結尾的總結</button>
+      <button class="quiz-opt" data-correct="1">前0.5-1秒的第一擊，負責瞬間抓住眼球</button>
+      <button class="quiz-opt" data-correct="0">影片中段的產品介紹</button>
+      <button class="quiz-opt" data-correct="0">整支影片都不重要</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：互動參與與緊迫稀缺鉤子 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8: 互動參與與緊迫/稀缺驅動鉤子
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⏳ 第八章</div>
+  <h1>互動參與與緊迫/稀缺驅動鉤子<br>18種公式：留言互動與時間壓力</h1>
+  <p class="desc">本章合併兩種驅動力：互動參與鉤子透過提問/邀請提高留言與停留時間；緊迫/稀缺鉤子則利用「時間或名額有限」的心理，刺激立即行動。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌿</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Part A：互動參與驅動（10種公式）</div>
+  ${renderHookTable(hookData.interactive)}
+</div>
+
+<div class="section">
+  <div class="section-title">Part B：緊迫/稀缺驅動（8種公式）</div>
+  ${renderHookTable(hookData.urgency)}
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 緊迫/稀缺鉤子的誠信提醒</div>
+  <p>「僅剩名額」「限時優惠」若不是真的，長期會嚴重傷害觀眾信任。稀缺性訴求務必對應真實情況，虛假的急迫感一旦被拆穿，反噬力道會比沒有Hook更強。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⏳ 第八章測驗</span><span class="quiz-title">互動與緊迫稀缺鉤子檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 互動參與驅動鉤子的主要目的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">單純增加影片時長</button>
+      <button class="quiz-opt" data-correct="1">邀請觀眾留言/選擇/參與，提高互動率與停留時間</button>
+      <button class="quiz-opt" data-correct="0">降低演算法推薦門檻</button>
+      <button class="quiz-opt" data-correct="0">避免使用任何懸念設計</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 使用「僅剩名額」等稀缺性鉤子時，最重要的原則是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">名額是否真實不重要，重點是效果</button>
+      <button class="quiz-opt" data-correct="1">必須對應真實情況，虛假急迫感一旦被拆穿會嚴重傷害信任</button>
+      <button class="quiz-opt" data-correct="0">應該永遠標示「最後一次機會」</button>
+      <button class="quiz-opt" data-correct="0">只適用於實體商品，不適用於課程</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：跨平台應用與AI提示詞工作坊 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9: 跨平台應用與AI提示詞工作坊
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🤖 第九章</div>
+  <h1>跨平台應用與AI提示詞工作坊<br>把Hook改寫成可直接使用的AI指令</h1>
+  <p class="desc">學會108種公式後，這一章教你把同一個構想快速改寫成不同平台的版本，並用現成的AI提示詞加速產出與自我檢查。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>專家</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">同一構想的三平台改寫示範</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>平台</th><th>設計重點</th><th>範例</th></tr></thead>
+    <tbody>
+      <tr><td>短影音（Reels/TikTok/Shorts）</td><td>視覺型Hook為主，前3秒畫面+一句字幕</td><td>畫面先出現存摺數字特寫，字幕：「存款簿餘額讓你晚上睡不著嗎？」</td></tr>
+      <tr><td>圖文（IG貼文/部落格）</td><td>標題+首句文字懸念</td><td>標題「同年齡的人已經存到100萬，你呢？」首句延續懸念不重複標題</td></tr>
+      <tr><td>長影音（YouTube）</td><td>開場15-30秒建立清楚承諾</td><td>「這支影片會告訴你，為什麼同樣的薪水，有人存得到錢，有人存不到」</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">AI提示詞①：單一公式產出</div>
+  <div class="card">
+    <div class="card-body">複製以下提示詞，貼給ChatGPT/Claude，換掉【】內的欄位即可使用。</div>
+  </div>
+  <div class="prompt-box">你是一位擅長寫短影音開場鉤子（Hook）的文案專家。
+請針對以下主題，設計3句「【填入公式名稱，例如：痛點戳中式】」的Hook文案：
+- 受眾：【填入目標受眾】
+- 主題／產品：【填入主題或產品】
+- 平台：【TikTok／IG Reels／YouTube Shorts】
+
+規則：
+1. 依所選公式的邏輯設計，每句不超過20字，口語化、適合唸出來。
+2. 同時通過三個檢查要素：
+   (a) 受眾一秒內覺得「這跟我有關」
+   (b) 留下未解懸念
+   (c) 暗示具體好處或情緒價值
+請輸出3個版本，並標註各自適合的平台與情緒強度（1-5分）。</div>
+</div>
+
+<div class="section">
+  <div class="section-title">AI提示詞②：完整四步驟大師提示詞</div>
+  <div class="prompt-box">你是一位自媒體內容策略師，請依照以下四步驟流程，幫我完整設計一組開場Hook：
+- 主題／產品：【填入】
+- 目標受眾：【填入，越具體越好】
+- 平台：【填入】
+
+步驟1｜受眾與痛點：先列出這個受眾最主要的1-3個痛點或焦慮。
+步驟2｜選擇公式：從108種公式中，挑選最適合的1-2種，並說明原因。
+步驟3｜設計開場句與呈現方式：寫出3個開場句版本，並說明對應的視覺／語氣呈現方式。
+步驟4｜自我測試：對每個版本自問「如果我是滑動中的觀眾，我會不會停下來？」，
+檢查是否同時具備(a)一秒內覺得有關(b)留下懸念(c)暗示具體好處，
+指出最弱的一項並提出修改後的最終版本。</div>
+</div>
+
+<div class="section">
+  <div class="section-title">AI提示詞③：快速自我檢查</div>
+  <div class="prompt-box">請幫我檢查以下這句Hook文案，是否符合三個檢查要素，並提出修改建議：
+
+Hook文案：【貼上你寫好的Hook】
+目標受眾：【填入】
+
+請逐項檢查並打分（1-5分）：
+(a) 相關性：受眾能否在一秒內判斷「這跟我有關」
+(b) 懸念：是否留下一個尚未解開的好奇點
+(c) 價值：是否清楚暗示看下去能得到的具體好處或情緒價值
+
+針對分數最低的一項，提出2個具體修改版本。</div>
+</div>
+
+<div class="box box-success">
+  <div class="box-title">✅ 工作坊練習建議</div>
+  <p>拿你目前正在經營的一個主題，依序套用「提示詞①→③」跑一次完整流程，親自體驗從0到3個可用版本的產出速度，會比單純閱讀公式更快內化。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🤖 第九章測驗</span><span class="quiz-title">跨平台與AI應用檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 把Hook改寫成長影音版本時，最需要補足的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">更快的剪輯節奏</button>
+      <button class="quiz-opt" data-correct="1">開場15-30秒建立「這支影片會解決你什麼問題」的清楚承諾</button>
+      <button class="quiz-opt" data-correct="0">更多的背景音樂</button>
+      <button class="quiz-opt" data-correct="0">更長的標題文字</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 使用AI提示詞產出Hook後，最後一步應該做什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">直接發布，不需要檢查</button>
+      <button class="quiz-opt" data-correct="1">依三個檢查要素（相關性/懸念/價值）自我檢查並修改</button>
+      <button class="quiz-opt" data-correct="0">把所有版本都發布，讓演算法決定</button>
+      <button class="quiz-opt" data-correct="0">交給AI決定要不要發布</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：常見陷阱與風險管理 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10: 常見陷阱與風險管理
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚠️ 第十章</div>
+  <h1>常見陷阱與風險管理<br>Hook設計最容易踩的坑</h1>
+  <p class="desc">公式學再多，若忽略誠信與後續內容的兌現，Hook反而會變成傷害帳號的地雷。本章整理六大常見陷阱與對策。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>專家</div>
+  </div>
+</div>
+
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 標題黨反噬</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">Hook製造的懸念如果和內文完全不相符，短期能拉高點擊率，但長期會讓觀眾對帳號失去信任，甚至引發負評與檢舉。建議懸念的「重量」要跟內文的「份量」成正比。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 承諾無法兌現</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">利益/價值鉤子承諾了具體好處（例如「看完學會3招」），若內文根本沒有講清楚這3招，會直接摧毀信任感。發布前務必檢查Hook與內文是否對得上。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 虛假稀缺與急迫感</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">「僅剩名額」「限時優惠」若不是真的，一旦被觀眾拆穿，反噬力道會比完全沒有Hook更強，甚至可能觸及消費者保護相關規範。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 公式濫用、失去真實感</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">同一種公式（例如反問句式）用過頭，觀眾會開始「認得出套路」而免疫，甚至覺得不真誠。建議定期輪替不同心理驅動力的公式，並保留自己的語氣特色。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑤ 過度使用爭議/挑釁引發攻擊</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">爭議式鉤子能帶動討論，但若缺乏站得住腳的論證，容易演變成無意義的網路爭吵，甚至傷害品牌／個人形象。建議搭配具體理由，而非只是為了衝突而衝突。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑥ 忽略平台差異，一套Hook打天下</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">直接把短影音的視覺型Hook原封不動搬到部落格標題，或把圖文標題直接當作影片旁白，往往效果打折。應依平台特性（見第九章）分別調整呈現方式。</p>
+  </div>
+</div>
+
+<div class="section" style="margin-top:32px;">
+  <div class="section-title">風險與對策總表</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>風險</th><th>對策</th></tr></thead>
+    <tbody>
+      <tr><td>標題黨反噬</td><td>懸念重量與內文份量成正比，發布前互相檢查</td></tr>
+      <tr><td>利益承諾無法兌現</td><td>發布前逐條核對Hook提到的好處，內文是否都有講清楚</td></tr>
+      <tr><td>虛假稀缺與急迫感</td><td>稀缺性訴求對應真實情況，不誇大名額或時限</td></tr>
+      <tr><td>公式濫用失去真實感</td><td>定期輪替不同心理驅動力的公式，保留個人語氣特色</td></tr>
+      <tr><td>爭議挑釁引發攻擊</td><td>搭配具體論證，而非單純製造衝突</td></tr>
+      <tr><td>忽略平台差異</td><td>依短影音/圖文/長影音三種平台特性分別調整呈現方式</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⚠️ 第十章測驗</span><span class="quiz-title">風險管理總複習</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「標題黨反噬」最根本的預防方式是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">懸念做得越誇張越好</button>
+      <button class="quiz-opt" data-correct="1">確保懸念的重量與內文的份量成正比，發布前互相檢查</button>
+      <button class="quiz-opt" data-correct="0">完全不使用任何懸念設計</button>
+      <button class="quiz-opt" data-correct="0">只在標題使用，內文不需要對應</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼虛假的稀缺性/急迫感風險特別高？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為稀缺性鉤子完全沒有效果</button>
+      <button class="quiz-opt" data-correct="1">一旦被觀眾拆穿，反噬力道會比完全沒有Hook更強</button>
+      <button class="quiz-opt" data-correct="0">因為稀缺性鉤子只適合圖文平台</button>
+      <button class="quiz-opt" data-correct="0">因為演算法會自動偵測並限流</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 同一種公式用過頭，觀眾可能出現什麼反應？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">觀眾會更加信任內容</button>
+      <button class="quiz-opt" data-correct="1">觀眾開始「認得出套路」而免疫，甚至覺得不真誠</button>
+      <button class="quiz-opt" data-correct="0">演算法會給予更多推薦</button>
+      <button class="quiz-opt" data-correct="0">完全不會有任何影響</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>

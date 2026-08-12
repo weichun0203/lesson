@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影片剪輯SOP完全指南｜從素材到成片的效率流程</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+/* Layout */
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+/* Sidebar */
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* Topbar */
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+/* Chapter content */
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:600px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+/* Sections */
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+/* Highlight boxes */
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+/* Tags */
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+/* Table */
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+/* Quiz */
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+/* Checklist */
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+/* Steps */
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+/* Formula */
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+/* Nav */
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+/* Mobile */
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+/* Accordion */
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+/* Stat grid */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🎬 剪輯 SOP</div>
+    <div class="sidebar-title">影片剪輯<br>從素材到成片的效率流程</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<!-- Main -->
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'剪輯流程地圖', icon:'🗺️', time:'8 分鐘', level:'所有程度', content: renderCh0 },
+  { id:1, title:'剪輯前的準備工作', subtitle:'素材整理與命名規範', icon:'🗂️', time:'15 分鐘', level:'入門', content: renderCh1 },
+  { id:2, title:'需求釐清與腳本對齊', subtitle:'先想清楚再動手', icon:'🎯', time:'15 分鐘', level:'入門', content: renderCh2 },
+  { id:3, title:'專案範本與快捷鍵設定', subtitle:'把重複工作系統化', icon:'🧰', time:'15 分鐘', level:'基礎', content: renderCh3 },
+  { id:4, title:'粗剪：先求有', subtitle:'建立骨架版本', icon:'✂️', time:'15 分鐘', level:'基礎', content: renderCh4 },
+  { id:5, title:'精剪：節奏與剪接技巧', subtitle:'把骨架剪出血肉', icon:'🎞️', time:'20 分鐘', level:'基礎', content: renderCh5 },
+  { id:6, title:'聲音設計與混音', subtitle:'觀眾對聲音比畫面敏感', icon:'🔊', time:'15 分鐘', level:'進階', content: renderCh6 },
+  { id:7, title:'調色：一級與二級', subtitle:'先校正再風格化', icon:'🎨', time:'15 分鐘', level:'進階', content: renderCh7 },
+  { id:8, title:'字幕與動態圖形', subtitle:'讓內容更好懂也更好看', icon:'💬', time:'15 分鐘', level:'進階', content: renderCh8 },
+  { id:9, title:'輸出與品管檢查', subtitle:'避免重工的最後防線', icon:'📤', time:'12 分鐘', level:'進階', content: renderCh9 },
+  { id:10, title:'常見陷阱與風險管理', subtitle:'剪輯師最容易踩的坑', icon:'⚠️', time:'18 分鐘', level:'專家', content: renderCh10 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('edit_sop_done')||'[]')); } catch(e){}
+
+// ============================================================
+// RENDER SIDEBAR
+// ============================================================
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('edit_sop_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// CHAPTER 0: OVERVIEW
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>影片剪輯 SOP 完全指南<br>從素材到成片的效率流程</h1>
+  <p class="desc">5大流程階段 × 20+ 實用技巧 × 常見陷阱清單 × 互動測驗，帶你建立一套可複製、可交接的剪輯工作流程。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 3 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>11 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適合各階段剪輯師</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">大流程階段</div></div>
+    <div class="stat-card"><div class="stat-num">20+</div><div class="stat-label">效率提升技巧</div></div>
+    <div class="stat-card"><div class="stat-num">15+</div><div class="stat-label">常見陷阱與對策</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">🗂️ 前置整理（第1-3章）</div>
+        <div class="step-desc">素材命名與資料夾架構、需求釐清與腳本對齊、專案範本與快捷鍵設定，把重複性工作系統化，讓每次開新案都能快速上手。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">✂️ 剪輯執行（第4-5章）</div>
+        <div class="step-desc">從粗剪建立骨架版本，到精剪打磨節奏與剪接手法，先求有再求好，避免一開始就陷入細節微調。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">🔊🎨 聲音與調色（第6-7章）</div>
+        <div class="step-desc">聲音設計與混音、一級與二級調色，這兩項後製工序往往是「業餘感」與「專業感」的分水嶺。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">📤 輸出品管（第8-9章）</div>
+        <div class="step-desc">字幕與動態圖形製作技巧，以及輸出前必做的品管檢查清單，避免上架後才發現問題。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">⚠️ 風險管理（第10章）</div>
+        <div class="step-desc">版權授權、備份容錯、硬體效能、溝通管理等六大常見陷阱，任何一項踩雷都可能讓專案翻車。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">如何使用本課程</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>按順序學習：每章環環相扣，建議新手從第1章開始。</li>
+        <li><span class="check-icon">✅</span>做完每章測驗：60分以上才算過關，幫助你鞏固知識。</li>
+        <li><span class="check-icon">✅</span>邊學邊套用：每章結束後立即應用到手邊的剪輯專案。</li>
+        <li><span class="check-icon">✅</span>善用檢查清單：第9、10章的清單可直接印出貼在螢幕旁。</li>
+        <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 給有經驗的剪輯師</div>
+    <p>如果你已有基本流程概念，可以直接跳到第6章（聲音設計）或第10章（常見陷阱），課程支援任意跳章。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習 第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1: PRE-PRODUCTION
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗂️ 第一章</div>
+  <h1>剪輯前的準備工作<br>磨刀不誤砍柴工</h1>
+  <p class="desc">剪輯效率有八成決定於「開始剪之前」。本章教你建立資料夾架構、命名規範與代理剪輯流程，讓剪輯中不再頻繁中斷找檔案。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌱</span>入門</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">為什麼準備工作決定效率</div>
+  <div class="card">
+    <div class="card-body">
+      <p style="font-size:15px;color:var(--text);margin-bottom:12px;">素材命名混亂、資料夾結構不一致，是導致剪輯中途頻繁中斷、來回尋找檔案的<strong style="color:var(--secondary)">最大兇手</strong>。剪輯師花在「找素材」的時間，往往比花在「做決策」的時間還多。</p>
+      <p style="font-size:13px;color:var(--text-muted);">關鍵字拆解：<span class="tag tag-blue">資料夾架構</span><span class="tag tag-cyan">命名規範</span><span class="tag tag-green">代理剪輯</span><span class="tag tag-yellow">專案範本</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">建立固定資料夾架構</div>
+  <div class="card">
+    <div class="card-body">建議每個專案都採用相同的資料夾架構，養成肌肉記憶，不用每次重新思考檔案該放哪。</div>
+  </div>
+  <div class="formula">01_原始素材
+02_音樂音效
+03_圖片素材
+04_專案檔
+05_輸出成品</div>
+</div>
+
+<div class="section">
+  <div class="section-title">命名規範</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>欄位</th><th>說明</th><th>範例</th></tr></thead>
+    <tbody>
+      <tr><td>日期</td><td>拍攝或建立日期，統一用 YYYYMMDD</td><td>20260804</td></tr>
+      <tr><td>場景</td><td>對應腳本中的場景名稱</td><td>開場</td></tr>
+      <tr><td>鏡頭</td><td>鏡頭編號，方便對照分鏡表</td><td>鏡頭03</td></tr>
+      <tr><td>版本</td><td>同一鏡頭的不同剪輯版本</td><td>v2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="formula">20260804_開場_鏡頭03_v2.mp4</div>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 常見錯誤</div>
+  <ul>
+    <li>檔名使用中文全形空白或特殊符號，容易在跨系統轉檔時出錯</li>
+    <li>日期格式不統一（有時 2026/8/4，有時 08-04-26），排序時會亂掉</li>
+    <li>沒有版本號，改到最後分不清哪個是最終版</li>
+  </ul>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 建議做法</div>
+  <p>命名全部使用半形英數字與底線，日期固定 8 碼格式，版本號從 v1 開始遞增，最終定版另存為 _final。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">代理剪輯 Proxy Workflow</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">匯入素材立即轉代理</div><div class="step-desc">面對 4K、8K 高解析度素材時，先批次產生低解析度代理檔。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">用代理檔案剪輯</div><div class="step-desc">拖曳時間軸、預覽播放都更流暢，大幅降低電腦負擔。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">剪輯完成後 link 回原始檔</div><div class="step-desc">確定剪接、調色都定案後，切換回原始高畫質素材。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">輸出使用原始高畫質</div><div class="step-desc">兼顧剪輯流暢度與最終成片畫質，不需二選一。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🗂️ 第一章測驗</span><span class="quiz-title">準備工作觀念檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 剪輯效率主要由什麼決定？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">剪輯師的手速</button>
+      <button class="quiz-opt" data-correct="1">開始剪之前的整個流程設計是否合理</button>
+      <button class="quiz-opt" data-correct="0">電腦螢幕的大小</button>
+      <button class="quiz-opt" data-correct="0">使用的剪輯軟體品牌</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 代理剪輯（Proxy）主要解決什麼問題？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">字幕製作太慢</button>
+      <button class="quiz-opt" data-correct="1">高解析度素材造成電腦負擔、拖曳預覽不流暢</button>
+      <button class="quiz-opt" data-correct="0">音樂版權問題</button>
+      <button class="quiz-opt" data-correct="0">客戶溝通不良</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 以下哪個命名方式最符合建議規範？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">開場鏡頭 3（最終版本）.mp4</button>
+      <button class="quiz-opt" data-correct="1">20260804_開場_鏡頭03_v2.mp4</button>
+      <button class="quiz-opt" data-correct="0">2026/8/4-鏡頭#3.mp4</button>
+      <button class="quiz-opt" data-correct="0">IMG_0001.mp4</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：需求釐清與腳本對齊 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2: REQUIREMENTS & SCRIPT
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎯 第二章</div>
+  <h1>需求釐清與腳本對齊<br>先想清楚再動手</h1>
+  <p class="desc">動手剪輯前先確認平台規格、腳本節奏與核心訊息，才能在後續剪輯時果斷取捨，避免剪到一半才發現方向錯誤。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌱</span>入門</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">剪輯前必須確認的三件事</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">影片用途與投放平台</div><div class="step-desc">不同平台對長寬比、時長、字幕呈現方式要求不同，事先確認能省去事後重剪的風險。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">是否已有完整腳本或分鏡</div><div class="step-desc">若有，剪輯時可直接依照腳本節奏抓取素材，減少「邊看素材邊構思」的猶豫時間。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">目標時長與核心訊息</div><div class="step-desc">先確定影片要傳達的一句話重點，剪輯時才能果斷取捨，避免陷入「捨不得刪」的困境。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">各平台規格比較</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>平台</th><th>建議比例</th><th>建議時長</th><th>字幕需求</th></tr></thead>
+    <tbody>
+      <tr><td>YouTube</td><td>16:9</td><td>8–15 分鐘</td><td>建議加，利於SEO與無聲瀏覽</td></tr>
+      <tr><td>Instagram Reels</td><td>9:16</td><td>15–90 秒</td><td>必加，多數用戶靜音瀏覽</td></tr>
+      <tr><td>TikTok</td><td>9:16</td><td>15–60 秒</td><td>必加</td></tr>
+      <tr><td>官網形象影片</td><td>16:9</td><td>1–3 分鐘</td><td>依受眾與使用情境決定</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 沒有腳本怎麼辦</div>
+  <p>若素材是先拍再剪、沒有現成腳本，建議先花 10-15 分鐘寫一份「剪輯大綱」：列出每個段落要傳達的一句話重點與大致順序，再開始瀏覽素材，會比邊看邊想快很多。</p>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 忽略平台規格的代價</div>
+  <p>剪成橫式後才發現要投放 Reels，事後裁切經常造成構圖跑掉、重要畫面被裁掉，等於得重新剪一次。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎯 第二章測驗</span><span class="quiz-title">需求釐清判斷</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. Instagram Reels 為什麼幾乎「必須」加字幕？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">平台規定強制加字幕</button>
+      <button class="quiz-opt" data-correct="1">多數用戶習慣靜音瀏覽，沒字幕會漏掉內容</button>
+      <button class="quiz-opt" data-correct="0">字幕可以取代配樂</button>
+      <button class="quiz-opt" data-correct="0">字幕能增加影片時長</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 剪輯前確認「目標時長與核心訊息」的主要目的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">方便計算剪輯費用</button>
+      <button class="quiz-opt" data-correct="1">剪輯時能果斷取捨，避免捨不得刪而拖長時間</button>
+      <button class="quiz-opt" data-correct="0">決定要用哪台攝影機</button>
+      <button class="quiz-opt" data-correct="0">決定調色風格</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：專案範本與快捷鍵設定 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3: TEMPLATES & SHORTCUTS
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧰 第三章</div>
+  <h1>專案範本與快捷鍵設定<br>把重複工作系統化</h1>
+  <p class="desc">若剪輯工作具有重複性，建立標準專案範本與熟悉快捷鍵，能省下大量重複設定與操作時間。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔧</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">建立可重複使用的專案範本</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">💬</div><div class="card-title">字幕樣式模板</div><div class="card-body">固定字型、大小、描邊與位置，新專案直接套用，不用每次重調。</div></div>
+    <div class="card"><div class="card-icon">🏷️</div><div class="card-title">Logo 動畫 / 片頭片尾</div><div class="card-body">固定的開場與結尾動畫，統一品牌識別，也省去重新製作的時間。</div></div>
+    <div class="card"><div class="card-icon">🎨</div><div class="card-title">調色 LUT / 色彩配置</div><div class="card-body">預先建立好的色彩風格檔，套用後再微調即可，不必從零開始。</div></div>
+    <div class="card"><div class="card-icon">✨</div><div class="card-title">轉場與音樂淡入淡出預設</div><div class="card-body">常用轉場效果與音樂淡入淡出參數存成預設，一鍵套用。</div></div>
+  </div>
+  <div class="box box-success">
+    <div class="box-title">✅ 範本的價值</div>
+    <p>有了範本，每次新專案只需匯入素材套用範本，即可省下大量重複設定的時間，也能確保系列作品風格一致。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">快捷鍵優先</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>常用功能</th><th>操作方式</th></tr></thead>
+    <tbody>
+      <tr><td>分割片段</td><td>在時間軸游標處分割，取代拖曳裁切</td></tr>
+      <tr><td>波紋刪除</td><td>刪除片段同時自動補上空隙，不留黑畫面</td></tr>
+      <tr><td>標記重點 / 加入 Marker</td><td>粗剪時快速標記，之後不用重新瀏覽全部素材</td></tr>
+      <tr><td>逐格上一格 / 下一格</td><td>精細對點剪接時取代滑鼠拖曳</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 建議做法</div>
+    <p>花時間依照自己的操作習慣客製化快捷鍵配置，熟練後可將操作速度提升數倍，這是投資報酬率最高的練習之一。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">硬體與工作環境</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 硬體效能瓶頸提醒</div>
+    <p>若電腦效能不足，即使流程再完善也會被拖累。應評估儲存讀寫速度（建議使用 SSD）、記憶體容量與顯示卡編碼解碼能力，必要時搭配代理剪輯流程彌補硬體限制。</p>
+  </div>
+  <div class="card">
+    <div class="card-title">雙螢幕 / 多視窗配置</div>
+    <div class="card-body">一螢幕顯示時間軸，一螢幕顯示素材庫與監看畫面，減少切換視窗造成的時間耗損，也更容易掌握整體節奏。</div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧰 第三章測驗</span><span class="quiz-title">範本與效率工具</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 建立專案範本最主要的好處是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">讓檔案容量變小</button>
+      <button class="quiz-opt" data-correct="1">省下重複設定的時間，並確保系列作品風格一致</button>
+      <button class="quiz-opt" data-correct="0">讓輸出速度變快</button>
+      <button class="quiz-opt" data-correct="0">自動修正剪接錯誤</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 硬體效能不足時，最推薦搭配哪個流程來彌補？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">直接降低影片解析度輸出</button>
+      <button class="quiz-opt" data-correct="1">代理剪輯（Proxy Workflow）</button>
+      <button class="quiz-opt" data-correct="0">關閉字幕功能</button>
+      <button class="quiz-opt" data-correct="0">減少調色步驟</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：粗剪：先求有 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4: ROUGH CUT
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">✂️ 第四章</div>
+  <h1>粗剪 Rough Cut<br>先求有，再求好</h1>
+  <p class="desc">高效率的剪輯應遵循「先求有、再求好」的原則，避免一開始就陷入細節微調。粗剪階段追求速度而非美感。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔧</span>基礎</div>
+  </div>
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 粗剪的核心心法</div>
+  <p>先不管轉場、特效、調色，專注於「說故事的節奏」。這個階段追求的是速度而非美感，目的是盡快確認整體結構是否成立。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">粗剪四步驟</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">快速瀏覽所有素材</div><div class="step-desc">用 1.5-2 倍速快轉瀏覽一次，建立對素材的整體印象。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">標記重點片段</div><div class="step-desc">用 Marker / Favorite 標記可能會用到的片段，之後不用重新翻找。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">依腳本或大綱順序排列</div><div class="step-desc">將標記好的片段依序拖到時間軸上，先不管精細的進出點。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">形成骨架版本</div><div class="step-desc">完整看過一次骨架版本，確認整體結構與節奏是否成立，再進入精剪。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="box box-danger">
+  <div class="box-title">❌ 粗剪階段常見錯誤</div>
+  <ul>
+    <li>太早開始調色，結果後面剪接大幅調整，調色工夫白費</li>
+    <li>太早摳字幕逐字校對，結果段落被刪掉，字幕也跟著作廢</li>
+    <li>糾結轉場特效的細節，忽略了故事本身節奏是否成立</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">粗剪檢查點</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>整體結構是否符合原先設定的核心訊息？</li>
+        <li><span class="check-icon">✅</span>時長是否落在目標範圍附近（誤差可先容許）？</li>
+        <li><span class="check-icon">✅</span>是否有明顯冗長、可以整段刪除的部分？</li>
+        <li><span class="check-icon">✅</span>骨架版本完整看過一次，感覺節奏是否成立？</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">✂️ 第四章測驗</span><span class="quiz-title">粗剪觀念檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 粗剪階段最應該優先追求的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">畫面美感與調色風格</button>
+      <button class="quiz-opt" data-correct="1">說故事的節奏與整體結構</button>
+      <button class="quiz-opt" data-correct="0">字幕逐字校對</button>
+      <button class="quiz-opt" data-correct="0">轉場特效的細節</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼粗剪階段不建議太早調色？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">調色軟體在粗剪階段無法使用</button>
+      <button class="quiz-opt" data-correct="1">後續剪接若大幅調整，先前調色的工夫容易白費</button>
+      <button class="quiz-opt" data-correct="0">調色只能在精剪之前做</button>
+      <button class="quiz-opt" data-correct="0">客戶不喜歡看到調色</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：精剪：節奏與剪接技巧 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5: FINE CUT
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎞️ 第五章</div>
+  <h1>精剪 Fine Cut<br>節奏感與剪接技巧</h1>
+  <p class="desc">在骨架版本確定後，進行細部修剪，優化節奏並運用聲畫不同步的剪接技巧，讓對話與畫面切換更自然流暢。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🔧</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">精剪重點</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🎯</div><div class="card-title">進出點微調</div><div class="card-body">逐格調整每個鏡頭的入點與出點，去除多餘的空白與延遲。</div></div>
+    <div class="card"><div class="card-icon">🎵</div><div class="card-title">節奏優化</div><div class="card-body">依對話與音樂節拍調整剪點時機，讓切換更有韻律感。</div></div>
+    <div class="card"><div class="card-icon">🧹</div><div class="card-title">刪除贅字口誤</div><div class="card-body">去除「呃」「那個」等贅字與不必要的停頓，讓內容更緊湊。</div></div>
+    <div class="card"><div class="card-icon">🔀</div><div class="card-title">聲畫不同步剪接</div><div class="card-body">搭配 J-Cut、L-Cut 讓聲音與畫面不同時切換，過渡更自然。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常用剪接手法</div>
+  <div class="accordion">
+    <div class="acc-header" onclick="accToggle(this)"><span>① J-Cut（聲音先進）</span><span class="acc-arrow">▼</span></div>
+    <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">下一個畫面的聲音提前出現，觀眾會先聽到聲音再看到畫面，常用於引導觀眾期待下一個場景。</p></div>
+  </div>
+  <div class="accordion">
+    <div class="acc-header" onclick="accToggle(this)"><span>② L-Cut（畫面先進）</span><span class="acc-arrow">▼</span></div>
+    <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">畫面已經切到下一個鏡頭，但前一段的聲音（通常是對話）延續一小段，常用於訪談類剪輯讓過渡更自然。</p></div>
+  </div>
+  <div class="accordion">
+    <div class="acc-header" onclick="accToggle(this)"><span>③ 跳接 Jump Cut</span><span class="acc-arrow">▼</span></div>
+    <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">同一鏡位、同一主體之間直接跳過一段時間，常見於 Vlog 快節奏剪輯，能有效壓縮冗長內容。</p></div>
+  </div>
+  <div class="accordion">
+    <div class="acc-header" onclick="accToggle(this)"><span>④ 匹配剪接 Match Cut</span><span class="acc-arrow">▼</span></div>
+    <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">利用構圖、動作或形狀的相似性做轉場，讓兩個不同場景的切換顯得流暢有巧思。</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">剪接手法決策表</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>情境</th><th>建議手法</th></tr></thead>
+    <tbody>
+      <tr><td>訪談對話中想讓過渡更自然</td><td>L-Cut</td></tr>
+      <tr><td>想在切到新場景前先製造懸念</td><td>J-Cut</td></tr>
+      <tr><td>Vlog / 生活紀錄需要壓縮冗長片段</td><td>跳接 Jump Cut</td></tr>
+      <tr><td>想讓兩個場景的切換更有創意巧思</td><td>匹配剪接 Match Cut</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎞️ 第五章測驗</span><span class="quiz-title">剪接手法判斷</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 訪談影片中希望前一句話的聲音延續到下一個畫面，這是哪種手法？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">J-Cut</button>
+      <button class="quiz-opt" data-correct="1">L-Cut</button>
+      <button class="quiz-opt" data-correct="0">跳接 Jump Cut</button>
+      <button class="quiz-opt" data-correct="0">匹配剪接 Match Cut</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. Vlog 想壓縮冗長片段、同一鏡位跳過一段時間，適合使用？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">L-Cut</button>
+      <button class="quiz-opt" data-correct="0">匹配剪接 Match Cut</button>
+      <button class="quiz-opt" data-correct="1">跳接 Jump Cut</button>
+      <button class="quiz-opt" data-correct="0">J-Cut</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：聲音設計與混音 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6: SOUND
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔊 第六章</div>
+  <h1>聲音設計與混音<br>觀眾對聲音比畫面更敏感</h1>
+  <p class="desc">許多剪輯師容易忽略聲音的重要性，但觀眾對聲音品質的敏感度往往高於畫面，粗糙的收音會直接讓觀眾流失。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🚀</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">聲音處理四步驟</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">人聲降噪與正規化</div><div class="step-desc">先處理人聲，降噪、音量正規化，確保對白清晰可辨。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">加入背景音樂與音效</div><div class="step-desc">依段落情緒選擇合適的配樂，並補上必要的音效增加畫面說服力。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">音量平衡</div><div class="step-desc">注意音樂與人聲的音量平衡，人聲優先，音樂退居背景。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">依響度標準輸出</div><div class="step-desc">使用響度標準作為輸出依據，避免不同平台播放時音量忽大忽小。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">各平台建議響度標準</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>平台 / 用途</th><th>建議響度</th></tr></thead>
+    <tbody>
+      <tr><td>YouTube</td><td>約 -14 LUFS</td></tr>
+      <tr><td>Podcast（Spotify等）</td><td>約 -16 LUFS</td></tr>
+      <tr><td>Netflix 等串流影集</td><td>約 -27 LUFS</td></tr>
+      <tr><td>一般社群短影音</td><td>約 -14 ~ -16 LUFS</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);">實際數值會依平台政策調整，混音時建議先查詢目標平台最新標準。</p>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 常見錯誤</div>
+  <ul>
+    <li>背景音樂音量蓋過人聲，觀眾聽不清楚對白內容</li>
+    <li>忽略左右聲道平衡，手機喇叭播放時聲音明顯偏一邊</li>
+    <li>忘記幫收音品質不佳的片段做降噪，雜訊干擾觀看體驗</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔊 第六章測驗</span><span class="quiz-title">聲音處理觀念檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 混音時，人聲與背景音樂的音量原則應該是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">音樂優先，人聲退居背景</button>
+      <button class="quiz-opt" data-correct="1">人聲優先，音樂退居背景</button>
+      <button class="quiz-opt" data-correct="0">兩者音量完全相同</button>
+      <button class="quiz-opt" data-correct="0">音樂只在片頭片尾出現</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 使用響度標準（LUFS）輸出的主要目的？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">讓檔案容量變小</button>
+      <button class="quiz-opt" data-correct="1">避免不同平台播放時音量忽大忽小</button>
+      <button class="quiz-opt" data-correct="0">加快輸出速度</button>
+      <button class="quiz-opt" data-correct="0">自動加上背景音樂</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：調色：一級與二級 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7: COLOR GRADING
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎨 第七章</div>
+  <h1>調色 Color Grading<br>一級與二級調色</h1>
+  <p class="desc">調色應在畫面剪接確定後才進行，避免剪接過程中反覆調整浪費時間。先校正、再風格化，是效率與品質兼顧的做法。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🚀</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">一級調色 vs 二級調色</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">⚖️</div><div class="card-title">一級調色 Primary</div><div class="card-body">統一整體曝光、白平衡與對比，讓不同機身、不同時段拍攝的素材看起來一致。</div></div>
+    <div class="card"><div class="card-icon">🎭</div><div class="card-title">二級調色 Secondary</div><div class="card-body">在一級校正的基礎上，建立風格化的色調氛圍，例如電影感、清新明亮、復古懷舊等。</div></div>
+  </div>
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 LUT 使用建議</div>
+  <p>若專案量大，建立並套用 LUT（色彩查找表）可大幅加快此階段速度，套用後再依鏡頭微調，不必每顆鏡頭從零開始調整。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">常見色彩問題與解法</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>問題</th><th>解法</th></tr></thead>
+    <tbody>
+      <tr><td>膚色偏黃或偏紅</td><td>調整白平衡與色相，優先確保膚色自然</td></tr>
+      <tr><td>曝光不足、暗部死黑</td><td>拉高陰影與黑位，找回暗部細節</td></tr>
+      <tr><td>不同機身拍攝、色調不一致</td><td>先做一級校正統一基礎色調，再套用風格化 LUT</td></tr>
+      <tr><td>畫面整體偏灰、缺乏層次</td><td>適度提升對比與飽和度，但避免過度導致失真</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎨 第七章測驗</span><span class="quiz-title">調色觀念檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 調色最適合安排在哪個階段進行？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">粗剪之前</button>
+      <button class="quiz-opt" data-correct="1">畫面剪接確定之後</button>
+      <button class="quiz-opt" data-correct="0">匯出檔案之後</button>
+      <button class="quiz-opt" data-correct="0">與粗剪同時進行</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 一級調色（Primary）主要處理什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">建立電影感風格色調</button>
+      <button class="quiz-opt" data-correct="1">統一整體曝光、白平衡與對比</button>
+      <button class="quiz-opt" data-correct="0">加上字幕樣式</button>
+      <button class="quiz-opt" data-correct="0">調整音量大小</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：字幕與動態圖形 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8: SUBTITLES & MOTION GRAPHICS
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">💬 第八章</div>
+  <h1>字幕與動態圖形<br>讓內容更好懂也更好看</h1>
+  <p class="desc">字幕製作善用語音辨識可大幅提升速度；動態圖形範本化能同時節省時間並統一視覺風格。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🚀</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">字幕製作流程</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">語音辨識產生初稿</div><div class="step-desc">使用語音辨識軟體自動產生字幕初稿，比逐字手動輸入快上數倍。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">人工校對修正錯字</div><div class="step-desc">自動辨識難免有誤，人工逐句校對，特別留意專有名詞與人名。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">套用字幕樣式範本</div><div class="step-desc">套用第三章建立好的字幕樣式模板，統一字型、大小與位置。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">確認時間軸與安全框</div><div class="step-desc">檢查字幕停留時間是否足夠閱讀，並確認未超出畫面安全框範圍。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">動態圖形範本化</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🏷️</div><div class="card-title">標題卡模板</div><div class="card-body">章節開頭或重點提示使用的標題卡，固定樣式套用即可。</div></div>
+    <div class="card"><div class="card-icon">📛</div><div class="card-title">Lower Third 下標</div><div class="card-body">受訪者姓名職稱等資訊條，統一風格提升專業感。</div></div>
+    <div class="card"><div class="card-icon">🔀</div><div class="card-title">轉場圖卡</div><div class="card-body">段落之間的轉場動畫，範本化後可重複套用在系列影片中。</div></div>
+  </div>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 字幕常見錯誤</div>
+  <ul>
+    <li>單行字幕字數過多，觀眾來不及讀完就切到下一句</li>
+    <li>字幕停留時間不足，尤其是資訊量大的句子</li>
+    <li>字幕位置超出安全框，在部分裝置或平台上被裁切</li>
+    <li>簡繁體或用字習慣不一致，影響專業觀感</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">💬 第八章測驗</span><span class="quiz-title">字幕與動態圖形</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 使用語音辨識軟體產生字幕初稿的主要好處是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">完全不需要人工校對</button>
+      <button class="quiz-opt" data-correct="1">比逐字手動輸入快上數倍，再人工校對即可</button>
+      <button class="quiz-opt" data-correct="0">可以自動翻譯成多國語言</button>
+      <button class="quiz-opt" data-correct="0">能取代調色工作</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 字幕常見錯誤中，「超出安全框」指的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">字幕顏色太亮</button>
+      <button class="quiz-opt" data-correct="1">字幕位置在部分裝置或平台上被裁切</button>
+      <button class="quiz-opt" data-correct="0">字幕字體太小</button>
+      <button class="quiz-opt" data-correct="0">字幕出現時間太早</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：輸出與品管檢查 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9: EXPORT & QC
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📤 第九章</div>
+  <h1>輸出與品管檢查<br>避免重工的最後一道防線</h1>
+  <p class="desc">輸出前的檢查往往被忽略，卻是避免「重工」的關鍵一步。建立固定的檢查清單，能大幅降低上架後才發現問題的風險。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>12 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🚀</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">輸出前檢查清單</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>完整播放一次成品，確認無跳格、音畫不同步、字幕錯字。</li>
+        <li><span class="check-icon">✅</span>確認輸出格式、解析度、編碼（如 H.264 / H.265）、影格率符合平台要求。</li>
+        <li><span class="check-icon">✅</span>針對不同平台輸出對應版本（直式給 Reels，橫式給 YouTube），避免事後裁切構圖跑掉。</li>
+        <li><span class="check-icon">✅</span>保留專案檔與素材備份，並將輸出檔案依版本命名歸檔，方便日後追蹤。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">各平台輸出規格建議</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>平台</th><th>解析度</th><th>常用編碼</th><th>影格率</th></tr></thead>
+    <tbody>
+      <tr><td>YouTube</td><td>1920×1080 或以上</td><td>H.264</td><td>與原始拍攝一致（如 24/25/30fps）</td></tr>
+      <tr><td>Instagram Reels / TikTok</td><td>1080×1920</td><td>H.264</td><td>30fps</td></tr>
+      <tr><td>官網 / 內部使用</td><td>依用途而定，常見 1080p</td><td>H.264 / H.265</td><td>與原始拍攝一致</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);">實際規格會因平台政策更新而調整，輸出前建議再次確認官方最新建議值。</p>
+</div>
+
+<div class="box box-danger">
+  <div class="box-title">❌ 沒做品管的代價</div>
+  <p>上架後才被觀眾發現字幕跑版、音畫不同步，不僅需要重新輸出與上傳，也會直接影響觀眾對內容專業度的觀感，甚至造成平台審核或下架風險。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📤 第九章測驗</span><span class="quiz-title">輸出品管檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 輸出前完整播放一次成品的主要目的？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">確認檔案大小</button>
+      <button class="quiz-opt" data-correct="1">確認無跳格、音畫不同步、字幕錯字等問題</button>
+      <button class="quiz-opt" data-correct="0">測試電腦效能</button>
+      <button class="quiz-opt" data-correct="0">計算影片時長</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼要針對不同平台輸出對應的版本？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">增加檔案數量看起來比較專業</button>
+      <button class="quiz-opt" data-correct="1">避免事後裁切造成構圖跑掉，重要畫面被裁掉</button>
+      <button class="quiz-opt" data-correct="0">不同平台需要不同字幕語言</button>
+      <button class="quiz-opt" data-correct="0">方便計算觀看數據</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：常見陷阱與風險管理 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10: PITFALLS & RISK MANAGEMENT
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚠️ 第十章</div>
+  <h1>常見陷阱與風險管理<br>剪輯師最容易踩的坑</h1>
+  <p class="desc">流程再完善，若忽略版權、備份、硬體與溝通管理，仍可能讓專案翻車。本章整理六大常見陷阱與對策。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>專家</div>
+  </div>
+</div>
+
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 版權與授權問題</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">背景音樂、字型、素材若非原創或未取得授權，容易造成版權爭議甚至下架風險。建議建立內部素材授權清單，並優先使用有明確商用授權的音樂庫與字型。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 備份與容錯機制（3-2-1 原則）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">專案檔損毀、硬碟故障是剪輯師的噩夢。建議至少三份備份、兩種不同儲存媒介、一份異地備份（雲端或外接硬碟），並開啟剪輯軟體的自動儲存與版本快照功能。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 硬體效能瓶頸</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">若電腦效能不足，即使流程再完善也會被拖累。應評估儲存讀寫速度（建議 SSD）、記憶體容量與顯示卡編碼解碼能力，必要時投資代理剪輯工作流程以彌補硬體限制。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 溝通與修改次數失控</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">客戶或團隊的修改意見若未事先規範次數與範圍，容易陷入無止盡的修改迴圈。建議在專案初期就明訂修改輪數（例如兩輪修改），並以書面或表單方式收集具體修改意見，避免口頭描述模糊造成誤解。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑤ 忽略節奏感與觀眾注意力</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">剪輯技巧再純熟，若忽略觀眾的注意力曲線（例如開頭三秒是否抓住眼球），仍會影響成效。建議剪輯時同步思考「若我是觀眾，會不會在這裡跳出」，適時加快節奏或刪減冗長片段。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑥ 過度依賴特效掩蓋剪接問題</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">轉場特效、動態圖形應是輔助敘事的工具，而非用來掩蓋剪接邏輯不順的問題。若故事節奏本身有問題，應回到粗剪階段調整結構，而非在精剪階段用特效硬撐。</p>
+  </div>
+</div>
+
+<div class="section" style="margin-top:32px;">
+  <div class="section-title">風險與對策總表</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>風險</th><th>對策</th></tr></thead>
+    <tbody>
+      <tr><td>音樂 / 字型版權爭議</td><td>建立授權清單，優先使用商用授權素材庫</td></tr>
+      <tr><td>檔案損毀、硬碟故障</td><td>3-2-1 備份原則，開啟自動儲存與版本快照</td></tr>
+      <tr><td>電腦效能不足拖累流程</td><td>升級儲存與記憶體，搭配代理剪輯工作流程</td></tr>
+      <tr><td>修改意見無止盡</td><td>明訂修改輪數，書面收集具體意見</td></tr>
+      <tr><td>觀眾中途跳出</td><td>剪輯時同步以觀眾視角檢視節奏</td></tr>
+      <tr><td>用特效掩蓋剪接問題</td><td>回到粗剪階段調整結構，而非硬加特效</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⚠️ 第十章測驗</span><span class="quiz-title">風險管理總複習</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「3-2-1 備份原則」指的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">3 個資料夾、2 種格式、1 個雲端帳號</button>
+      <button class="quiz-opt" data-correct="1">至少三份備份、兩種不同儲存媒介、一份異地備份</button>
+      <button class="quiz-opt" data-correct="0">3 小時備份一次、2 台電腦、1 個硬碟</button>
+      <button class="quiz-opt" data-correct="0">3 種字型、2 種音樂、1 種調色風格</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 修改意見無止盡的問題，最根本的預防方式是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">全部修改要求都照單全收</button>
+      <button class="quiz-opt" data-correct="1">專案初期就明訂修改輪數，並以書面方式收集意見</button>
+      <button class="quiz-opt" data-correct="0">拒絕接受任何修改意見</button>
+      <button class="quiz-opt" data-correct="0">修改次數收費但不設上限</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 若發現故事節奏本身有問題，正確的處理方式是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">加更多轉場特效掩蓋問題</button>
+      <button class="quiz-opt" data-correct="1">回到粗剪階段調整結構</button>
+      <button class="quiz-opt" data-correct="0">直接進入調色階段</button>
+      <button class="quiz-opt" data-correct="0">加快輸出速度盡快結案</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>

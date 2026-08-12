@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常溫投資學院｜18 堂課程地圖</title>
+<style>
+  :root {
+    --clay: #d4a59a;
+    --clay-light: #f0ddd9;
+    --clay-dark: #b8826e;
+    --sage: #8aab8a;
+    --sage-light: #d4e8d4;
+    --sand: #e8d5b7;
+    --sand-dark: #c9a97a;
+    --charcoal: #2c2c2c;
+    --mid: #5c5c5c;
+    --soft: #8c8c8c;
+    --bg: #faf8f5;
+    --white: #ffffff;
+    --new-tool: #f0c05a;
+    --new-tool-light: #fdf3d0;
+    --exist-tool: #8aab8a;
+    --exist-tool-light: #d4e8d4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'PingFang TC', 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--charcoal);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--charcoal);
+    color: white;
+    padding: 40px 32px 32px;
+    text-align: center;
+  }
+  header .brand {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 12px;
+  }
+  header h1 {
+    font-size: clamp(22px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  header p {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 24px;
+  }
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #ccc;
+  }
+  .legend-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-exist { background: var(--exist-tool); }
+  .dot-new   { background: var(--new-tool); }
+
+  /* ── Main layout ── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Phase block ── */
+  .phase {
+    margin-bottom: 48px;
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid;
+  }
+  .phase-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .phase-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .phase-subtitle {
+    font-size: 13px;
+    color: var(--soft);
+    margin-left: auto;
+    text-align: right;
+  }
+
+  /* phase colours */
+  .p0 .phase-header { border-color: #c0876e; }
+  .p0 .phase-tag { background: var(--clay); color: white; }
+  .p1 .phase-header { border-color: var(--sand-dark); }
+  .p1 .phase-tag { background: var(--sand-dark); color: white; }
+  .p2 .phase-header { border-color: #6b8f71; }
+  .p2 .phase-tag { background: var(--sage); color: white; }
+  .p3 .phase-header { border-color: #5a7fa8; }
+  .p3 .phase-tag { background: #5a7fa8; color: white; }
+  .p4 .phase-header { border-color: #8a6ba8; }
+  .p4 .phase-tag { background: #8a6ba8; color: white; }
+  .p5 .phase-header { border-color: #a86b6b; }
+  .p5 .phase-tag { background: #a86b6b; color: white; }
+
+  /* ── Lesson cards grid ── */
+  .lessons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    border: 1.5px solid #e8e4de;
+    overflow: hidden;
+    transition: transform .18s, box-shadow .18s;
+    cursor: pointer;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.09);
+  }
+  .card.active { border-color: var(--clay); }
+
+  .card-top {
+    padding: 16px 18px 12px;
+  }
+  .card-num-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .card-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--soft);
+    letter-spacing: 1px;
+  }
+  .phase-pip {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .p0 .phase-pip { background: var(--clay); }
+  .p1 .phase-pip { background: var(--sand-dark); }
+  .p2 .phase-pip { background: var(--sage); }
+  .p3 .phase-pip { background: #5a7fa8; }
+  .p4 .phase-pip { background: #8a6ba8; }
+  .p5 .phase-pip { background: #a86b6b; }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--soft);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .card-desc {
+    font-size: 12.5px;
+    color: var(--mid);
+    line-height: 1.7;
+    display: none;
+    margin-bottom: 12px;
+  }
+  .card.expanded .card-desc { display: block; }
+
+  /* ── Tool badge ── */
+  .card-bottom {
+    padding: 10px 18px 14px;
+    border-top: 1px solid #f0ece6;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tool-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: opacity .15s;
+  }
+  .tool-badge:hover { opacity: .8; }
+  .tool-exist {
+    background: var(--exist-tool-light);
+    color: #3d6e3d;
+    border: 1px solid #b0d0b0;
+  }
+  .tool-new {
+    background: var(--new-tool-light);
+    color: #7a5f00;
+    border: 1px solid #e8d080;
+  }
+  .tool-icon { font-size: 13px; }
+  .tool-badge .badge-tag {
+    font-size: 9px;
+    font-weight: 700;
+    background: rgba(0,0,0,.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: .5px;
+  }
+
+  .expand-hint {
+    font-size: 11px;
+    color: var(--soft);
+    margin-top: 6px;
+    transition: color .15s;
+  }
+  .card:hover .expand-hint { color: var(--clay); }
+  .card.expanded .expand-hint { display: none; }
+
+  /* ── Summary bar ── */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .stat {
+    background: white;
+    border: 1.5px solid #e8e4de;
+    border-radius: 10px;
+    padding: 16px 18px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--clay-dark);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--soft);
+  }
+
+  /* ── Dev priority section ── */
+  .priority-section {
+    margin-top: 56px;
+  }
+  .priority-section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e8e4de;
+  }
+  .priority-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .priority-card {
+    background: white;
+    border: 1.5px solid #e8e4de;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .prio-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .prio-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .prio-info p  { font-size: 12px; color: var(--soft); line-height: 1.5; }
+  .prio-lesson  { font-size: 11px; color: var(--clay-dark); font-weight: 600; margin-top: 4px; }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    padding: 32px;
+    border-top: 1px solid #e8e4de;
+  }
+
+  @media (max-width: 600px) {
+    .phase-subtitle { display: none; }
+    .lessons { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Ambient Edit Studio · 常溫編集所</div>
+  <h1>常溫投資學院｜18 堂課程地圖</h1>
+  <p>從財商覺醒到財務自由，一條為投資小白設計的完整學習路徑</p>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-exist"></div>現有工具</div>
+    <div class="legend-item"><div class="legend-dot dot-new"></div>建議開發工具</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Stats -->
+  <div class="summary">
+    <div class="stat"><div class="stat-num">18</div><div class="stat-label">課程總堂數</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">學習階段</div></div>
+    <div class="stat"><div class="stat-num">10</div><div class="stat-label">現有工具（含延伸應用）</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-label">建議開發新工具</div></div>
+  </div>
+
+  <!-- ════ Phase 0 ════ -->
+  <div class="phase p0">
+    <div class="phase-header">
+      <div class="phase-tag">Phase 0</div>
+      <div class="phase-title">財商覺醒</div>
+      <div class="phase-subtitle">第 1–3 堂　現有工具完整覆蓋 ✅</div>
+    </div>
+    <div class="lessons">
+
+      <div class="card p0" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 01</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">你的收入，哪種最自由？</div>
+          <div class="card-subtitle">用四象限看懂主動與被動收入的本質差異</div>
+          <div class="card-desc">理解 ESBI 四象限（雇員、自雇者、企業主、投資者）的核心差異，找出自己目前所在象限，計算「真實時薪」與「被動收入覆蓋率」。大多數人把時間賣給公司換錢，投資者讓錢替自己工作，真正的財富是選擇權。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/cashflow-quadrant.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">🔧</span>現金流四象限<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card p0" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 02</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">這件東西值你幾小時的人生？</div>
+          <div class="card-subtitle">用時間重新定義每一筆支出的代價</div>
+          <div class="card-desc">學會在每次消費前問「這值我工作幾小時？」。節流不是吝嗇，而是把生命時間分配給更值得的事。每省下一筆錢，就是多一顆投資的子彈。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/time-value-of-money.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">⏱</span>時間價值換算<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card p0" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 03</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">先救火，再致富</div>
+          <div class="card-subtitle">認識財務優先順序，蓋好地基再蓋高樓</div>
+          <div class="card-desc">理解四層財務金字塔（防護→積累→增值→傳承），知道「先保護再投資」為什麼是正確順序。沒有緊急預備金就去買股票，等於在沙地上蓋房子。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/money-stack.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">🏛</span>理財金字塔<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ Phase 1 ════ -->
+  <div class="phase p1">
+    <div class="phase-header">
+      <div class="phase-tag">Phase 1</div>
+      <div class="phase-title">財務體質打底</div>
+      <div class="phase-subtitle">第 4–6 堂　現有 1 個 + 新開發 2 個</div>
+    </div>
+    <div class="lessons">
+
+      <div class="card p1" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 04</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">薪水不夠用？是分配出了問題</div>
+          <div class="card-subtitle">設計你的個人薪資分配系統</div>
+          <div class="card-desc">學習固定支出 vs 變動支出的分類方式，設計屬於自己的收支比例（如 50% 生活 / 20% 儲蓄 / 30% 投資），找出每月可用於投資的「子彈金額」。不是賺夠多才能存錢，而是先存錢再花剩下的。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/daily-budget.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">💰</span>薪資分配計算<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card p1" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 05</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">你的財務安全氣囊夠厚嗎？</div>
+          <div class="card-subtitle">緊急預備金：投資前最重要的一筆錢</div>
+          <div class="card-desc">理解緊急預備金（3-6 個月生活費）的重要性，計算自己具體需要多少金額，知道它應存放在哪裡。有了緊急預備金，你才能在市場下跌時安心持有、不必恐慌賣股。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <div class="tool-badge tool-new">
+            <span class="tool-icon">🆕</span>緊急預備金計算器<span class="badge-tag">待開發</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p1" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 06</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">先把破洞補起來</div>
+          <div class="card-subtitle">認識「壞債」，還清高利率負債再投資</div>
+          <div class="card-desc">區分好債與壞債，計算信用卡循環的真實利息成本，建立雪球法或雪崩法還款計畫。信用卡循環利率高達 15-20%，任何投資報酬都很難超過它，還清壞債等於保證報酬率 20%。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <div class="tool-badge tool-new">
+            <span class="tool-icon">🆕</span>負債還清計畫器<span class="badge-tag">待開發</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ Phase 2 ════ -->
+  <div class="phase p2">
+    <div class="phase-header">
+      <div class="phase-tag">Phase 2</div>
+      <div class="phase-title">投資前置準備</div>
+      <div class="phase-subtitle">第 7–9 堂　現有 1 個 + 新開發 2 個</div>
+    </div>
+    <div class="lessons">
+
+      <div class="card p2" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 07</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">你能接受帳面虧損多少？</div>
+          <div class="card-subtitle">找出你的投資風險屬性</div>
+          <div class="card-desc">理解風險承受度（財務能力 + 心理承受力），知道保守型/穩健型/積極型投資者的差異，根據風險屬性找到適合自己的股債配置比例。不適合自己的策略，再好也沒用。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <div class="tool-badge tool-new">
+            <span class="tool-icon">🆕</span>風險承受度評估問卷<span class="badge-tag">待開發</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p2" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 08</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">不投資，才是最大的風險</div>
+          <div class="card-subtitle">通膨如何無聲無息吃掉你的財富</div>
+          <div class="card-desc">理解通膨對購買力的長期侵蝕，計算「不投資」情境下 10/20/30 年後存款的真實價值。把 100 萬放在存款帳戶 30 年，購買力可能只剩一半。什麼都不做，是最確定的虧損。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <div class="tool-badge tool-new">
+            <span class="tool-icon">🆕</span>通膨購買力計算器<span class="badge-tag">待開發</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p2" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 09</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">讓時間幫你賺錢</div>
+          <div class="card-subtitle">複利是世界第八大奇蹟，你用到了嗎？</div>
+          <div class="card-desc">理解複利 vs 單利的本質差異，用數字感受「提早 5 年開始」的驚人差距，建立「越早開始越好」的緊迫感。投資最重要的三要素：本金、報酬率、時間。時間是最公平的變數，但大多數人浪費了它。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/compound-interest.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">📈</span>複利股價計算<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ Phase 3 ════ -->
+  <div class="phase p3">
+    <div class="phase-header">
+      <div class="phase-tag">Phase 3</div>
+      <div class="phase-title">認識投資工具</div>
+      <div class="phase-subtitle">第 10–12 堂　現有 1 個 + 新開發 2 個</div>
+    </div>
+    <div class="lessons">
+
+      <div class="card p3" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 10</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">ETF：小白最友善的投資起點</div>
+          <div class="card-subtitle">用一支 ETF 買下整個市場</div>
+          <div class="card-desc">理解 ETF 的運作原理（被動追蹤指數），比較市值型 ETF（0050）vs 高股息 ETF（0056、00878）的差異，知道各類型適合哪種目標。不需要選個股，也能參與市場成長。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <div class="tool-badge tool-new">
+            <span class="tool-icon">🆕</span>ETF 比較工具<span class="badge-tag">待開發</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p3" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 11</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">個股怎麼看？三個數字先搞懂</div>
+          <div class="card-subtitle">本益比、殖利率、股價淨值比入門</div>
+          <div class="card-desc">理解 P/E（多少年回本）、殖利率（每年配多少）、P/B（買貴還是便宜），用三個數字初步評估個股是否值得投資。買股票是買公司的一部分，先看懂基本數字再下手。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <div class="tool-badge tool-new">
+            <span class="tool-icon">🆕</span>個股基本估值計算器<span class="badge-tag">待開發</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p3" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 12</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">定期定額：不擇時，勝大多數人</div>
+          <div class="card-subtitle">用 DCA 策略對抗市場波動</div>
+          <div class="card-desc">理解定期定額（DCA）的核心邏輯：不擇時，降低平均成本。了解「市場下跌其實是買便宜」的正確心態，學會追蹤自己的平均持股成本。長期下來往往勝過絕大多數擇時操作。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/stock-analysis.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">📊</span>定期定額成本分析<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ Phase 4 ════ -->
+  <div class="phase p4">
+    <div class="phase-header">
+      <div class="phase-tag">Phase 4</div>
+      <div class="phase-title">建立存股計畫</div>
+      <div class="phase-subtitle">第 13–15 堂　現有 2 個 + 新開發 1 個</div>
+    </div>
+    <div class="lessons">
+
+      <div class="card p4" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 13</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">打造你的第一個被動收入組合</div>
+          <div class="card-subtitle">把股息目標變成具體的存股計畫</div>
+          <div class="card-desc">理解「股息現金流」的複利效果，設定月領股息目標（如月領 5,000 元），反推需要持有多少股票才能達成目標。被動收入不是夢，而是一道數學題，全部都可以算出來。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/dividend-investing.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">💎</span>存股加薪計算<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card p4" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 14</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">股息再投入：讓被動收入自己繁殖</div>
+          <div class="card-subtitle">用股息買更多股票，啟動財富飛輪</div>
+          <div class="card-desc">理解「股息再投入（DRIP）」的複利加速效果，比較「領現金花掉」vs「再投入買股」的長期差距，建立紀律性再投入的執行習慣。每次配息都是下一個複利循環的起點。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/dividend-investing.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">💎</span>存股加薪計算（延伸）<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card p4" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 15</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">雞蛋別放同一個籃子</div>
+          <div class="card-subtitle">資產配置：用比例管理風險</div>
+          <div class="card-desc">理解資產配置的核心邏輯（分散降低單一資產風險），學習不同年齡段的股/債/現金建議比例，了解「再平衡」的時機與操作。100% 股票不等於最高報酬，適當配置讓你在下跌時不恐慌。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <div class="tool-badge tool-new">
+            <span class="tool-icon">🆕</span>資產配置計算器<span class="badge-tag">待開發</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ Phase 5 ════ -->
+  <div class="phase p5">
+    <div class="phase-header">
+      <div class="phase-tag">Phase 5</div>
+      <div class="phase-title">長期退休規劃</div>
+      <div class="phase-subtitle">第 16–18 堂　現有 2 個 + 新開發 1 個</div>
+    </div>
+    <div class="lessons">
+
+      <div class="card p5" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 16</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">退休需要多少錢？</div>
+          <div class="card-subtitle">用 4% 法則算出你的財務自由數字</div>
+          <div class="card-desc">理解 4% 法則（每年提領總資產 4% 可維持 30 年不耗盡），計算財務自由門檻 = 年支出 ÷ 4%，理解通膨對退休金的長期影響。財務自由不是夢，它是年支出的 25 倍，一個可計算的具體目標。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/retirement.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">🎯</span>退休規劃計算機<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card p5" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 17</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">財務自由的最短路徑</div>
+          <div class="card-subtitle">FIRE 運動：提早退休不是妄想</div>
+          <div class="card-desc">理解 FIRE（Financial Independence, Retire Early）的核心精神，學習如何透過提高儲蓄率加速財務自由進程。儲蓄率才是決定財務自由速度最關鍵的變數，把儲蓄率從 20% 提高到 40%，退休時間可能縮短 10 年以上。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <a class="tool-badge tool-exist" href="https://www.ambientedit.com/retirement.html" target="_blank" onclick="event.stopPropagation()">
+            <span class="tool-icon">🎯</span>退休規劃計算機（延伸）<span class="badge-tag">現有</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card p5" onclick="toggle(this)">
+        <div class="card-top">
+          <div class="card-num-row">
+            <span class="card-num">LESSON 18</span>
+            <div class="phase-pip"></div>
+          </div>
+          <div class="card-title">財富的最後一哩路</div>
+          <div class="card-subtitle">稅務規劃：讓到手的股息更多</div>
+          <div class="card-desc">理解台灣股息所得稅的計算邏輯（合併計稅 vs 分開計稅），計算健保補充保費對股息的影響，學習合法的稅務優化策略。投資的終極目標是「到手的錢最多」，了解稅務讓每一分股息真正進口袋。</div>
+          <div class="expand-hint">點擊展開說明 ↓</div>
+        </div>
+        <div class="card-bottom">
+          <div class="tool-badge tool-new">
+            <span class="tool-icon">🆕</span>股息稅務試算器<span class="badge-tag">待開發</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Dev priority section -->
+  <div class="priority-section">
+    <h2>🛠 新工具開發優先順序</h2>
+    <div class="priority-list">
+
+      <div class="priority-card">
+        <div class="prio-icon">🔴</div>
+        <div class="prio-info">
+          <h4>緊急預備金計算器</h4>
+          <p>輸入月支出，輸出 3/6 個月安全水位、缺口與達標時間</p>
+          <div class="prio-lesson">對應 第 5 堂　最高優先</div>
+        </div>
+      </div>
+
+      <div class="priority-card">
+        <div class="prio-icon">🔴</div>
+        <div class="prio-info">
+          <h4>風險承受度評估問卷</h4>
+          <p>8 題互動問卷 → 保守/穩健/積極屬性 + 建議股債比</p>
+          <div class="prio-lesson">對應 第 7 堂　最高優先</div>
+        </div>
+      </div>
+
+      <div class="priority-card">
+        <div class="prio-icon">🔴</div>
+        <div class="prio-info">
+          <h4>ETF 比較工具</h4>
+          <p>比較 0050/0056/00878 等殖利率、費用率、適合族群</p>
+          <div class="prio-lesson">對應 第 10 堂　最高優先</div>
+        </div>
+      </div>
+
+      <div class="priority-card">
+        <div class="prio-icon">🟡</div>
+        <div class="prio-info">
+          <h4>通膨購買力計算器</h4>
+          <p>視覺化存款在通膨下 10/20/30 年後的真實購買力衰退</p>
+          <div class="prio-lesson">對應 第 8 堂　中優先</div>
+        </div>
+      </div>
+
+      <div class="priority-card">
+        <div class="prio-icon">🟡</div>
+        <div class="prio-info">
+          <h4>個股基本估值計算器</h4>
+          <p>輸入股價/EPS/配息/淨值 → 自動計算 P/E、殖利率、P/B</p>
+          <div class="prio-lesson">對應 第 11 堂　中優先</div>
+        </div>
+      </div>
+
+      <div class="priority-card">
+        <div class="prio-icon">🟡</div>
+        <div class="prio-info">
+          <h4>資產配置計算器</h4>
+          <p>根據年齡與風險屬性計算建議股債比，提供再平衡建議</p>
+          <div class="prio-lesson">對應 第 15 堂　中優先</div>
+        </div>
+      </div>
+
+      <div class="priority-card">
+        <div class="prio-icon">🟢</div>
+        <div class="prio-info">
+          <h4>負債還清計畫器</h4>
+          <p>雪球法 vs 雪崩法比較、利息節省試算、還款時間表</p>
+          <div class="prio-lesson">對應 第 6 堂　低優先</div>
+        </div>
+      </div>
+
+      <div class="priority-card">
+        <div class="prio-icon">🟢</div>
+        <div class="prio-info">
+          <h4>股息稅務試算器</h4>
+          <p>合併 vs 分開計稅比較、健保補充費、稅後淨額計算</p>
+          <div class="prio-lesson">對應 第 18 堂　低優先</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  常溫編集所 Ambient Edit Studio &nbsp;·&nbsp; 投資學院課程地圖 &nbsp;·&nbsp; 2026<br>
+  <span style="color:#ccc">把複雜的計算交給程式，將時間留給生活中的美好事物。</span>
+</footer>
+
+<script>
+  function toggle(card) {
+    card.classList.toggle('expanded');
+    card.classList.toggle('active');
+  }
+</script>
+
+</body>
+</html>
