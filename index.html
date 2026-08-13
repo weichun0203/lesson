@@ -3,7 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>網站導覽入口</title>
+    <title>內容資源中心｜投資理財 × 行銷企劃 × 影音創作 × GAS 教學</title>
+    <meta name="description" content="內容資源中心總覽：投資理財入門與課程地圖、行銷企劃書指南、短影音策略與剪輯 SOP、問卷調查課程、Google Apps Script（GAS）開發教學，一站找到所有學習資源。">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="內容資源中心｜投資理財 × 行銷企劃 × 影音創作 × GAS 教學">
+    <meta property="og:description" content="投資理財、行銷企劃、短影音創作、問卷調查、Google Apps Script 教學等課程總覽，依分類快速找到你需要的內容。">
+
+    <!-- Structured Data: ItemList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "內容資源中心課程列表",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Google Apps Script 開發教學", "url": "gas_line_systems.html"},
+        {"@type": "ListItem", "position": 2, "name": "投資新手入門", "url": "invest-begin.html"},
+        {"@type": "ListItem", "position": 3, "name": "投資課程", "url": "invest.html"},
+        {"@type": "ListItem", "position": 4, "name": "投資課程地圖", "url": "invest_course_map.html"},
+        {"@type": "ListItem", "position": 5, "name": "行銷企劃書指南", "url": "marketing-plan-guide.html"},
+        {"@type": "ListItem", "position": 6, "name": "短影音策略", "url": "shorts_strategy.html"},
+        {"@type": "ListItem", "position": 7, "name": "問卷調查課程", "url": "survey_course.html"},
+        {"@type": "ListItem", "position": 8, "name": "影片剪輯 SOP", "url": "video-editing-sop.html"},
+        {"@type": "ListItem", "position": 9, "name": "短影音鉤子設計課程", "url": "video-hook-design-course.html"}
+      ]
+    }
+    </script>
+
     <style>
         :root {
             --bg-color: #0f172a;
@@ -19,7 +46,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 40px 20px;
+            padding: 40px 20px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -27,20 +54,56 @@
         }
         header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
+            max-width: 640px;
         }
         h1 {
-            font-size: 2.2rem;
+            font-size: 2.1rem;
             margin-bottom: 10px;
             color: #fff;
         }
-        p {
+        header p {
             color: var(--text-muted);
             font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Search */
+        .search-wrap {
+            width: 100%;
+            max-width: 480px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .search-wrap input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        .search-wrap input:focus {
+            border-color: var(--accent-color);
+        }
+        .search-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        .search-wrap .icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+            font-size: 0.95rem;
         }
 
         /* Category filter tabs */
-        .filters {
+        nav.filters {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
@@ -53,10 +116,14 @@
             color: var(--text-muted);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 999px;
-            padding: 8px 18px;
+            padding: 10px 18px;
+            min-height: 44px;
             font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .filter-btn:hover {
             color: var(--text-color);
@@ -68,13 +135,21 @@
             font-weight: 600;
             border-color: var(--accent-color);
         }
+        .filter-btn .count {
+            font-size: 0.78rem;
+            opacity: 0.75;
+        }
 
+        main {
+            width: 100%;
+            max-width: 900px;
+            padding-bottom: 40px;
+        }
         .container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             width: 100%;
-            max-width: 900px;
         }
         .card {
             background-color: var(--card-bg);
@@ -85,6 +160,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            display: block;
         }
         .card:hover {
             transform: translateY(-4px);
@@ -104,7 +180,7 @@
             border-radius: 999px;
             margin-bottom: 10px;
         }
-        .card h3 {
+        .card h2 {
             margin: 0 0 8px 0;
             font-size: 1.2rem;
             color: var(--accent-color);
@@ -126,129 +202,239 @@
             color: var(--text-muted);
             padding: 40px 0;
         }
+
+        /* CTA footer */
+        .cta {
+            width: 100%;
+            background-color: var(--card-bg);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 36px 20px;
+            text-align: center;
+        }
+        .cta h2 {
+            margin: 0 0 8px 0;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+        .cta p {
+            color: var(--text-muted);
+            margin: 0 0 18px 0;
+        }
+        .cta a.cta-btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #0f172a;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+        .cta a.cta-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.6rem; }
+            .filter-btn { font-size: 0.85rem; padding: 9px 14px; }
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>導覽入口網站</h1>
-        <p>請選擇分類，或直接點擊卡片以快速前往對應的頁面</p>
+        <h1>內容資源中心</h1>
+        <p>投資理財、行銷企劃、短影音創作、問卷調查與 Google Apps Script（GAS）開發教學，依分類或關鍵字快速找到你需要的內容。</p>
     </header>
 
-    <div class="filters" id="filters">
-        <button class="filter-btn active" data-filter="all">全部</button>
-        <button class="filter-btn" data-filter="invest">投資理財</button>
-        <button class="filter-btn" data-filter="marketing">行銷內容</button>
-        <button class="filter-btn" data-filter="video">影音創作</button>
-        <button class="filter-btn" data-filter="survey">問卷調查</button>
-        <button class="filter-btn" data-filter="tech">技術工具</button>
+    <div class="search-wrap">
+        <span class="icon" aria-hidden="true">🔍</span>
+        <input type="text" id="searchInput" placeholder="搜尋課程名稱或關鍵字..." aria-label="搜尋課程">
     </div>
 
-    <div class="container" id="cardContainer">
-        <!-- Google Apps Script -->
-        <a href="gas_line_systems.html" class="card" data-category="tech">
-            <span class="tag">技術工具</span>
-            <h3>Google Apps Script 開發教學</h3>
-            <p class="desc">GAS（Google Apps Script）自動化與系統整合教學。</p>
-            <span class="filename">gas_line_systems.html</span>
-        </a>
+    <nav class="filters" id="filters" aria-label="課程分類篩選">
+        <button class="filter-btn active" data-filter="all">全部 <span class="count" data-count-for="all"></span></button>
+        <button class="filter-btn" data-filter="invest">投資理財 <span class="count" data-count-for="invest"></span></button>
+        <button class="filter-btn" data-filter="marketing">行銷內容 <span class="count" data-count-for="marketing"></span></button>
+        <button class="filter-btn" data-filter="video">影音創作 <span class="count" data-count-for="video"></span></button>
+        <button class="filter-btn" data-filter="survey">問卷調查 <span class="count" data-count-for="survey"></span></button>
+        <button class="filter-btn" data-filter="tech">技術工具 <span class="count" data-count-for="tech"></span></button>
+    </nav>
 
-        <!-- Invest Begin -->
-        <a href="invest-begin.html" class="card" data-category="invest">
-            <span class="tag">投資理財</span>
-            <h3>投資新手入門</h3>
-            <p class="desc">從零開始認識投資的基本觀念與準備事項。</p>
-            <span class="filename">invest-begin.html</span>
-        </a>
+    <main>
+        <div class="container" id="cardContainer">
+            <!-- Google Apps Script -->
+            <a href="gas_line_systems.html" class="card" data-category="tech">
+                <span class="tag">技術工具</span>
+                <h2>Google Apps Script 開發教學</h2>
+                <p class="desc">GAS（Google Apps Script）自動化與系統整合教學。</p>
+                <span class="filename">gas_line_systems.html</span>
+            </a>
 
-        <!-- Invest -->
-        <a href="invest.html" class="card" data-category="invest">
-            <span class="tag">投資理財</span>
-            <h3>投資課程</h3>
-            <p class="desc">完整投資課程內容總覽。</p>
-            <span class="filename">invest.html</span>
-        </a>
+            <!-- Invest Begin -->
+            <a href="invest-begin.html" class="card" data-category="invest">
+                <span class="tag">投資理財</span>
+                <h2>投資新手入門</h2>
+                <p class="desc">從零開始認識投資的基本觀念與準備事項。</p>
+                <span class="filename">invest-begin.html</span>
+            </a>
 
-        <!-- Invest Course Map -->
-        <a href="invest_course_map.html" class="card" data-category="invest">
-            <span class="tag">投資理財</span>
-            <h3>投資課程地圖</h3>
-            <p class="desc">投資課程整體架構與學習路徑地圖。</p>
-            <span class="filename">invest_course_map.html</span>
-        </a>
+            <!-- Invest -->
+            <a href="invest.html" class="card" data-category="invest">
+                <span class="tag">投資理財</span>
+                <h2>投資課程</h2>
+                <p class="desc">完整投資課程內容總覽。</p>
+                <span class="filename">invest.html</span>
+            </a>
 
-        <!-- Marketing Plan Guide -->
-        <a href="marketing-plan-guide.html" class="card" data-category="marketing">
-            <span class="tag">行銷內容</span>
-            <h3>行銷企劃書指南</h3>
-            <p class="desc">如何撰寫一份完整且具說服力的行銷企劃書。</p>
-            <span class="filename">marketing-plan-guide.html</span>
-        </a>
+            <!-- Invest Course Map -->
+            <a href="invest_course_map.html" class="card" data-category="invest">
+                <span class="tag">投資理財</span>
+                <h2>投資課程地圖</h2>
+                <p class="desc">投資課程整體架構與學習路徑地圖。</p>
+                <span class="filename">invest_course_map.html</span>
+            </a>
 
-        <!-- Shorts Strategy -->
-        <a href="shorts_strategy.html" class="card" data-category="video">
-            <span class="tag">影音創作</span>
-            <h3>短影音策略</h3>
-            <p class="desc">短影音內容規劃與經營策略。</p>
-            <span class="filename">shorts_strategy.html</span>
-        </a>
+            <!-- Marketing Plan Guide -->
+            <a href="marketing-plan-guide.html" class="card" data-category="marketing">
+                <span class="tag">行銷內容</span>
+                <h2>行銷企劃書指南</h2>
+                <p class="desc">如何撰寫一份完整且具說服力的行銷企劃書。</p>
+                <span class="filename">marketing-plan-guide.html</span>
+            </a>
 
-        <!-- Survey Course -->
-        <a href="survey_course.html" class="card" data-category="survey">
-            <span class="tag">問卷調查</span>
-            <h3>問卷調查課程</h3>
-            <p class="desc">問卷設計與調查方法教學。</p>
-            <span class="filename">survey_course.html</span>
-        </a>
+            <!-- Shorts Strategy -->
+            <a href="shorts_strategy.html" class="card" data-category="video">
+                <span class="tag">影音創作</span>
+                <h2>短影音策略</h2>
+                <p class="desc">短影音內容規劃與經營策略。</p>
+                <span class="filename">shorts_strategy.html</span>
+            </a>
 
-        <!-- Video Editing SOP -->
-        <a href="video-editing-sop.html" class="card" data-category="video">
-            <span class="tag">影音創作</span>
-            <h3>影片剪輯 SOP</h3>
-            <p class="desc">標準化影片剪輯流程與作業規範。</p>
-            <span class="filename">video-editing-sop.html</span>
-        </a>
+            <!-- Survey Course -->
+            <a href="survey_course.html" class="card" data-category="survey">
+                <span class="tag">問卷調查</span>
+                <h2>問卷調查課程</h2>
+                <p class="desc">問卷設計與調查方法教學。</p>
+                <span class="filename">survey_course.html</span>
+            </a>
 
-        <!-- Video Hook Design Course -->
-        <a href="video-hook-design-course.html" class="card" data-category="video">
-            <span class="tag">影音創作</span>
-            <h3>短影音鉤子設計課程</h3>
-            <p class="desc">如何設計吸引觀眾停留的開頭鉤子。</p>
-            <span class="filename">video-hook-design-course.html</span>
-        </a>
-    </div>
+            <!-- Video Editing SOP -->
+            <a href="video-editing-sop.html" class="card" data-category="video">
+                <span class="tag">影音創作</span>
+                <h2>影片剪輯 SOP</h2>
+                <p class="desc">標準化影片剪輯流程與作業規範。</p>
+                <span class="filename">video-editing-sop.html</span>
+            </a>
+
+            <!-- Video Hook Design Course -->
+            <a href="video-hook-design-course.html" class="card" data-category="video">
+                <span class="tag">影音創作</span>
+                <h2>短影音鉤子設計課程</h2>
+                <p class="desc">如何設計吸引觀眾停留的開頭鉤子。</p>
+                <span class="filename">video-hook-design-course.html</span>
+            </a>
+        </div>
+    </main>
+
+    <section class="cta">
+        <h2>有問題想直接詢問？</h2>
+        <p>歡迎透過官方管道聯繫我們，取得更完整的課程建議。</p>
+        <a href="#" class="cta-btn">立即聯繫</a>
+    </section>
 
     <script>
         const filterButtons = document.querySelectorAll('.filter-btn');
         const cards = document.querySelectorAll('.card');
         const container = document.getElementById('cardContainer');
+        const searchInput = document.getElementById('searchInput');
 
+        // 計算每個分類的數量並顯示在按鈕上
+        function updateCounts() {
+            const counts = { all: cards.length };
+            cards.forEach(card => {
+                const cat = card.dataset.category;
+                counts[cat] = (counts[cat] || 0) + 1;
+            });
+            document.querySelectorAll('[data-count-for]').forEach(el => {
+                const key = el.dataset.countFor;
+                el.textContent = counts[key] ? `(${counts[key]})` : '(0)';
+            });
+        }
+        updateCounts();
+
+        function getActiveFilter() {
+            const activeBtn = document.querySelector('.filter-btn.active');
+            return activeBtn ? activeBtn.dataset.filter : 'all';
+        }
+
+        function applyFilters() {
+            const filter = getActiveFilter();
+            const keyword = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const matchesCategory = filter === 'all' || card.dataset.category === filter;
+                const text = card.textContent.toLowerCase();
+                const matchesKeyword = keyword === '' || text.includes(keyword);
+                const show = matchesCategory && matchesKeyword;
+                card.classList.toggle('hidden', !show);
+                if (show) visibleCount++;
+            });
+
+            let emptyState = container.querySelector('.empty-state');
+            if (visibleCount === 0) {
+                if (!emptyState) {
+                    emptyState = document.createElement('div');
+                    emptyState.className = 'empty-state';
+                    container.appendChild(emptyState);
+                }
+                emptyState.textContent = keyword
+                    ? `找不到符合「${searchInput.value.trim()}」的內容`
+                    : '此分類目前沒有內容';
+            } else if (emptyState) {
+                emptyState.remove();
+            }
+        }
+
+        // 分類按鈕點擊：更新 active 狀態 + 更新網址 query string
         filterButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
                 const filter = btn.dataset.filter;
-                let visibleCount = 0;
-
-                cards.forEach(card => {
-                    const match = filter === 'all' || card.dataset.category === filter;
-                    card.classList.toggle('hidden', !match);
-                    if (match) visibleCount++;
-                });
-
-                let emptyState = container.querySelector('.empty-state');
-                if (visibleCount === 0) {
-                    if (!emptyState) {
-                        emptyState = document.createElement('div');
-                        emptyState.className = 'empty-state';
-                        emptyState.textContent = '此分類目前沒有內容';
-                        container.appendChild(emptyState);
-                    }
-                } else if (emptyState) {
-                    emptyState.remove();
+                const url = new URL(window.location);
+                if (filter === 'all') {
+                    url.searchParams.delete('category');
+                } else {
+                    url.searchParams.set('category', filter);
                 }
+                history.pushState({}, '', url);
+
+                applyFilters();
             });
         });
+
+        // 搜尋框輸入即時篩選
+        searchInput.addEventListener('input', applyFilters);
+
+        // 頁面載入時，依網址上的 category 參數還原篩選狀態
+        function restoreFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const category = params.get('category');
+            if (category) {
+                const targetBtn = document.querySelector(`.filter-btn[data-filter="${category}"]`);
+                if (targetBtn) {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    targetBtn.classList.add('active');
+                }
+            }
+            applyFilters();
+        }
+        restoreFromURL();
+
+        // 支援瀏覽器上一頁/下一頁
+        window.addEventListener('popstate', restoreFromURL);
     </script>
 </body>
 </html>
