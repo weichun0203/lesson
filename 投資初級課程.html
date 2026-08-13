@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投資初級課程｜把觀念變成穩定的投資習慣</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+.prereq{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:12px 16px;margin-bottom:24px;font-size:12.5px;color:#fde68a;display:flex;gap:8px;align-items:flex-start;}
+
+.candle-demo{display:flex;align-items:flex-end;gap:18px;justify-content:center;padding:24px 12px;background:#0B1220;border-radius:10px;border:1px solid var(--border);margin:16px 0;}
+.candle-item{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.candle-wick{width:2px;background:currentColor;}
+.candle-body{width:22px;border-radius:2px;}
+.candle-label{font-size:11px;color:var(--text-muted);text-align:center;max-width:90px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🌿 投資初級課程</div>
+    <div class="sidebar-title">投資初級課程<br>把觀念變成穩定的投資習慣</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'從新手到初級，你該養成的習慣', icon:'🗺️', time:'5 分鐘', level:'初級', content: renderCh0 },
+  { id:1, title:'ETF深度認識', subtitle:'市值型/產業型/主題型、內扣費用、追蹤誤差', icon:'🧺', time:'18 分鐘', level:'初級', content: renderCh1 },
+  { id:2, title:'債券不只一種', subtitle:'公債/公司債/投資等級/高收益債的風險光譜', icon:'📜', time:'16 分鐘', level:'初級', content: renderCh2 },
+  { id:3, title:'懶人組合實作', subtitle:'建立你的第一個多資產投資組合', icon:'🥗', time:'16 分鐘', level:'初級', content: renderCh3 },
+  { id:4, title:'看懂對帳單與績效', subtitle:'報酬率怎麼算，含息 vs 價格報酬', icon:'🧾', time:'16 分鐘', level:'初級', content: renderCh4 },
+  { id:5, title:'財報初認識', subtitle:'不談比率，先學會看趨勢圖', icon:'📈', time:'16 分鐘', level:'初級', content: renderCh5 },
+  { id:6, title:'K線基礎與圖表閱讀入門', subtitle:'看得懂圖，還不做交易判斷', icon:'🕯️', time:'18 分鐘', level:'初級', content: renderCh6 },
+  { id:7, title:'再平衡實作', subtitle:'多久做一次、怎麼判斷該不該調整', icon:'⚖️', time:'14 分鐘', level:'初級', content: renderCh7 },
+  { id:8, title:'進階定期定額', subtitle:'大跌該加碼還是停扣？', icon:'📉', time:'14 分鐘', level:'初級', content: renderCh8 },
+  { id:9, title:'投資新聞與資訊判讀', subtitle:'分辨資訊、分析，還是廣告', icon:'📰', time:'16 分鐘', level:'初級', content: renderCh9 },
+  { id:10, title:'寫下你的個人投資守則', subtitle:'總複習：簡易版IPS', icon:'📝', time:'16 分鐘', level:'總複習', content: renderCh10 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('invest_junior_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('invest_junior_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// CHAPTER 0: 課程總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>投資初級課程<br>把觀念變成穩定的投資習慣</h1>
+  <p class="desc">這是「投資小白入門課程」的下一步。入門課教你「為什麼要投資、風險是什麼、怎麼開戶」；初級課的任務是把這些觀念變成你每個月都會重複執行的習慣，同時補齊工具細節，並第一次接觸「看圖表」這件事。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 3 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>11 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適合已完成入門課程、開始定期投資3-6個月以上者</div>
+  </div>
+</div>
+
+<div class="prereq">📌 <div><b>建議先修：</b>本課程假設你已完成「投資小白入門課程」，熟悉風險與報酬的關係、基本工具（股票/ETF/基金/債券）、簡化版股債配置、定期定額、以及常見心理陷阱與詐騙警訊。若尚未熟悉，建議先完成入門課程。</div></div>
+
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">大類ETF與債券光譜</div></div>
+    <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">套可直接套用的懶人組合</div></div>
+    <div class="stat-card"><div class="stat-num">6+</div><div class="stat-label">K線基礎型態</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">🧺 工具細節補齊（第1-2章）</div>
+        <div class="step-desc">深入認識ETF的分類與費用結構、債券的風險光譜，讓你選工具時不再只憑名字猜測。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">🥗 實際動手配置（第3-4章）</div>
+        <div class="step-desc">用懶人組合模板建立第一個多資產投資組合，並學會看懂對帳單、計算真實績效。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">📈 第一次接觸圖表判讀（第5-6章）</div>
+        <div class="step-desc">學會看財報趨勢圖、認識K線基礎，重點是「看得懂」，還不需要做任何交易判斷。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">⚖️ 持續管理的習慣（第7-9章）</div>
+        <div class="step-desc">學習再平衡的實際做法、市場大跌時該怎麼應對、以及如何判讀投資新聞與資訊來源的可信度。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">📝 整合成習慣（第10章）</div>
+        <div class="step-desc">把所學整合成一份簡易版的「個人投資守則」，作為未來所有決策的參考依據。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">如何使用本課程</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>按順序學習：先補齊工具知識（第1-2章），再動手建立組合（第3章）會更踏實。</li>
+        <li><span class="check-icon">✅</span>做完每章測驗：60分以上才算過關。</li>
+        <li><span class="check-icon">✅</span>邊學邊操作：第4章開始，建議打開你自己的證券帳戶對帳單，實際練習計算。</li>
+        <li><span class="check-icon">✅</span>K線章節請保持謹慎：這一章的目的是「看懂圖」，不是教你做短線交易。</li>
+        <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 開始前的提醒</div>
+    <p>本課程屬於一般性理財教育內容，不構成對任何個別商品或標的的投資建議，也不保證任何報酬。技術圖表判讀在本課程僅作為「認識工具」之用，實際投資決策仍應以長期資產配置與分散風險為核心原則。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1: ETF深度認識
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧺 第一章</div>
+  <h1>ETF深度認識<br>市值型、產業型、主題型的差異</h1>
+  <p class="desc">入門課程告訴你「ETF是一籃子股票」，這一章帶你認識ETF的不同分類方式，以及挑選ETF時真正該看的兩個關鍵數字：內扣費用與追蹤誤差。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">ETF的三種常見分類</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🌍</div>
+      <div class="card-title">市值型ETF</div>
+      <div class="card-body">追蹤大盤指數（如台灣加權指數、S&P 500），持股是市場上市值最大的一群公司，高度分散、產業自然分佈。是最適合作為「核心部位」的類型。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏭</div>
+      <div class="card-title">產業型ETF</div>
+      <div class="card-body">只投資特定產業（如半導體、金融、生技），分散度低於市值型，報酬與該產業景氣高度連動，波動通常較大。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💡</div>
+      <div class="card-title">主題型ETF</div>
+      <div class="card-body">圍繞特定趨勢或概念（如AI、電動車、ESG）選股，題材新穎、行銷聲量大，但成分股變動可能較頻繁，長期績效不確定性較高，需特別留意費用與追蹤品質。</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 給初級投資人的建議</div>
+    <p>市值型ETF適合作為長期核心部位；產業型與主題型可以是「衛星部位」，用你能承受的較小比例參與特定機會，而不是把大部分資金都投入單一題材。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">熱門ETF範例參考</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">以下列出市場上較廣為人知、規模較大的ETF供你對照分類概念，方便你在券商App搜尋時有具體名稱可查詢，<b>並非投資建議或推薦</b>，實際是否適合仍需依你自己的配置需求與風險承受度判斷。</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>分類</th><th>市場</th><th>代表ETF範例</th><th>追蹤標的（概念）</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="2">市值型／大盤型</td><td>台股</td><td>0050（元大台灣50）、006208（富邦台50）</td><td>台灣市值前50大公司</td></tr>
+      <tr><td>美股</td><td>VOO／SPY（追蹤S&P 500）、VTI（追蹤美國全市場）</td><td>美國大型或全市場股票</td></tr>
+      <tr><td rowspan="2">全球分散型</td><td>美股</td><td>VT（Vanguard全世界股票）</td><td>涵蓋已開發與新興市場的全球股票</td></tr>
+      <tr><td>美股</td><td>VXUS／VEA（美國以外已開發＋新興市場）</td><td>用於搭配美股部位做跨國分散</td></tr>
+      <tr><td>高股息型</td><td>台股</td><td>0056（元大高股息）、00878（國泰永續高股息）、00919（群益台灣精選高股息）</td><td>篩選高股息殖利率的台股成分股</td></tr>
+      <tr><td>科技／產業型</td><td>美股</td><td>QQQ（那斯達克100，科技股集中）</td><td>集中在特定產業或指數，波動通常較大盤型高</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 提醒</div>
+    <p>以上僅為市場上知名度較高、規模較大的範例，用來幫助你把「市值型／全球型／高股息型／產業型」這些分類概念與實際商品名稱連結起來，不代表這些標的保證獲利，也不代表適合每一個人。挑選時仍請依第一章教的費用率、追蹤誤差等原則自行評估，且ETF成分股與規模排名會隨時間變動，實際資訊請以你使用的券商平台或發行機構公告的最新資料為準。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">挑選ETF的兩個關鍵數字</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>指標</th><th>意義</th><th>怎麼看</th></tr></thead>
+    <tbody>
+      <tr><td>總開銷比率（費用率）</td><td>每年從基金資產中扣除的管理與相關費用比例</td><td>同類型ETF中，費用率越低，長期複利下越有利，但也要留意規模與流動性是否足夠</td></tr>
+      <tr><td>追蹤誤差</td><td>ETF實際報酬與其追蹤指數報酬之間的落差</td><td>誤差越小代表ETF越能貼近指數表現，是衡量基金公司管理能力的重要指標</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="formula">長期成本影響示意：費用率每差0.5%，20年後資產可能相差超過10%</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見誤區</div>
+    <p>不要只看「規模大小」或「近一年報酬率」挑ETF。規模小的新ETF可能流動性較差；短期報酬率高，可能只是剛好搭上某個題材熱潮，不代表長期穩定性。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">其他挑選時要留意的細節</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>成分股是否夠分散，還是集中在少數幾檔權值股？</li>
+    <li><span class="check-icon">✅</span>配息方式：現金配息或直接再投入，是否符合你的資金需求？</li>
+    <li><span class="check-icon">✅</span>是否有貨幣避險版本，避險與不避險的費用與報酬會不同。</li>
+    <li><span class="check-icon">✅</span>基金規模與日均成交量，避免流動性不足導致買賣價差過大。</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧺 第一章測驗</span><span class="quiz-title">ETF深度認識檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 市值型ETF與主題型ETF相比，最主要的差異是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">主題型ETF保證報酬比較高</button>
+      <button class="quiz-opt" data-correct="1">市值型ETF高度分散、產業自然分佈，主題型ETF集中在特定趨勢、波動與不確定性通常較高</button>
+      <button class="quiz-opt" data-correct="0">兩者完全沒有差異</button>
+      <button class="quiz-opt" data-correct="0">市值型ETF只能投資債券</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 挑選ETF時，「追蹤誤差」代表什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">ETF規模的大小</button>
+      <button class="quiz-opt" data-correct="1">ETF實際報酬與其追蹤指數報酬之間的落差，越小代表越貼近指數表現</button>
+      <button class="quiz-opt" data-correct="0">ETF未來一定會上漲的機率</button>
+      <button class="quiz-opt" data-correct="0">投資人買賣ETF的手續費高低</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：債券不只一種 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2: 債券不只一種
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📜 第二章</div>
+  <h1>債券不只一種<br>公債、公司債、投資等級、高收益債的風險光譜</h1>
+  <p class="desc">入門課程把債券當成「相對安全」的資產，但債券其實也有從很安全到很不安全的完整光譜。這一章帶你認識不同類型債券的風險差異。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>16 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">依發行者分類</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>類型</th><th>發行者</th><th>相對風險</th><th>特性</th></tr></thead>
+    <tbody>
+      <tr><td>公債（政府債）</td><td>國家政府</td><td>較低（依國家信用而異）</td><td>通常被視為該國幣別中最安全的資產之一</td></tr>
+      <tr><td>投資等級公司債</td><td>信用評等較高的企業</td><td>中低</td><td>違約風險較低，利率通常略高於公債</td></tr>
+      <tr><td>高收益債（垃圾債）</td><td>信用評等較低的企業</td><td>中高</td><td>利率明顯較高以補償較高的違約風險，波動度也較接近股票</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見誤解</div>
+    <p>「債券」這個名字本身不代表安全。高收益債在市場恐慌時，價格波動可能與股票同步下跌，並不具備分散股票風險的效果，投資前務必確認自己買的是哪一種債券。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">熱門債券ETF範例參考</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">同樣提供幾檔市場上較知名的債券ETF範例，方便你對照分類概念，<b>並非投資建議</b>。</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>分類</th><th>市場</th><th>代表ETF範例</th></tr></thead>
+    <tbody>
+      <tr><td>美國公債（長天期）</td><td>台股複委託／美股</td><td>00679B（元大美債20年）、TLT（美國20年期以上公債）</td></tr>
+      <tr><td>美國公債（短中天期）</td><td>美股</td><td>SHY（1-3年期）、IEI（3-7年期）</td></tr>
+      <tr><td>投資等級公司債</td><td>台股複委託／美股</td><td>00720B（元大投資級公司債）、LQD（美國投資級公司債）</td></tr>
+      <tr><td>高收益債</td><td>美股</td><td>HYG、JNK（美國高收益公司債）</td></tr>
+      <tr><td>整體債券市場</td><td>美股</td><td>BND、AGG（美國整體投資等級債券市場）</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 提醒</div>
+    <p>債券ETF名稱中的「天期」（如20年、1-3年）就是存續期間長短的線索，天期越長通常代表利率敏感度越高、價格波動也可能越大。實際選擇仍須搭配自己的配置目的，且商品內容可能隨時間調整，請以發行機構最新公告為準。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">存續期間（Duration）：利率敏感度的簡單概念</div>
+  <div class="box box-info">
+    <div class="box-title">💡 概念說明</div>
+    <p>存續期間可以理解為「債券價格對利率變動的敏感程度」，數字越大代表利率變動時，債券價格波動幅度越大。到期時間越長的債券，存續期間通常也越長。若擔心升息風險，可考慮存續期間較短的債券或債券ETF。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">債券在投資組合中的角色</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🛡️</div>
+      <div class="card-title">緩衝股票波動</div>
+      <div class="card-body">公債與投資等級公司債，在股市大跌時往往較為抗跌甚至上漲，能降低整體投資組合的波動幅度。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💵</div>
+      <div class="card-title">提供穩定現金流</div>
+      <div class="card-body">透過配息，債券可以提供相對可預期的現金流，適合有固定資金需求（如退休後）的投資人。</div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📜 第二章測驗</span><span class="quiz-title">債券光譜觀念檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 高收益債（垃圾債）為什麼利率通常比公債高？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為政府強制規定</button>
+      <button class="quiz-opt" data-correct="1">因為發行企業信用評等較低，違約風險較高，需要更高利率補償投資人</button>
+      <button class="quiz-opt" data-correct="0">因為高收益債完全沒有風險</button>
+      <button class="quiz-opt" data-correct="0">因為高收益債的存續期間一定最短</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於「存續期間」，下列敘述何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">存續期間與利率變動完全無關</button>
+      <button class="quiz-opt" data-correct="1">存續期間越長，債券價格對利率變動越敏感</button>
+      <button class="quiz-opt" data-correct="0">存續期間只適用於股票</button>
+      <button class="quiz-opt" data-correct="0">存續期間越長代表債券越安全</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：懶人組合實作 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3: 懶人組合實作
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🥗 第三章</div>
+  <h1>懶人組合實作<br>建立你的第一個多資產投資組合</h1>
+  <p class="desc">「懶人組合」指的是用少數幾檔ETF，就能建立一個具備基本分散效果的投資組合，不需要每天研究、也不需要挑選幾十檔標的。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>16 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三種常見懶人組合模板</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>模板</th><th>組成概念</th><th>特性</th></tr></thead>
+    <tbody>
+      <tr><td>二資產組合</td><td>股票型ETF ＋ 債券型ETF</td><td>最簡單，只需決定股債比例，適合剛開始的初級投資人</td></tr>
+      <tr><td>三資產組合</td><td>本國股票ETF ＋ 海外股票ETF ＋ 債券ETF</td><td>加入跨國分散，降低單一市場集中風險</td></tr>
+      <tr><td>四資產組合</td><td>本國股票 ＋ 海外股票 ＋ 債券 ＋ 現金／貨幣市場基金</td><td>再加入流動性部位，因應短期資金需求或再平衡彈性</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 選擇原則</div>
+    <p>組合檔數不是越多越好。研究顯示，超過一定數量後，再增加持股對分散效果的邊際貢獻很小，卻會增加管理的複雜度。對初級投資人而言，2-4檔ETF通常已經足夠建立一個合理分散的組合。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">動手設計你的組合：四個步驟</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">回顧你的風險承受度（入門課第二章）</div>
+        <div class="step-desc">依你的年齡、資金用途時間、心理承受度，決定大致的股債比例。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">選擇要不要跨國配置</div>
+        <div class="step-desc">只投資本國市場較簡單，但集中度較高；加入海外市場能分散單一國家風險，但需承擔匯率波動。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">依第一章原則挑選具體ETF</div>
+        <div class="step-desc">用費用率、追蹤誤差、規模與流動性作為篩選標準，選出2-4檔具體標的。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">寫下你的配置比例並記錄</div>
+        <div class="step-desc">明確寫下每檔標的的目標比例（例如股70%／債30%），作為未來再平衡（第七章）的依據。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">組合範例（僅供參考，非投資建議）</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🌱</div>
+      <div class="card-title">穩健型示意</div>
+      <div class="card-body">本國股票型ETF 40%（如0050）／ 海外股票型ETF 30%（如VT或VOO）／ 債券型ETF 30%（如00679B或BND）。波動相對較低，適合風險承受度中等、資金5年內可能會用到的情境。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚀</div>
+      <div class="card-title">積極型示意</div>
+      <div class="card-body">本國股票型ETF 30%（如0050）／ 海外股票型ETF 50%（如VT或VTI）／ 債券型ETF 20%（如BND）。波動相對較高，適合風險承受度較高、資金10年以上才會用到的情境。</div>
+    </div>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>模板</th><th>具體範例組合</th></tr></thead>
+    <tbody>
+      <tr><td>二資產組合</td><td>0050（台股）＋ 00679B（美債）；或 VTI（美股）＋ BND（美債）</td></tr>
+      <tr><td>三資產組合</td><td>0050（台股）＋ VT（全球股票）＋ BND（美債）</td></tr>
+      <tr><td>四資產組合</td><td>0050（台股）＋ VOO（美股）＋ VXUS（美國以外股票）＋ BND（美債）</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 提醒</div>
+    <p>以上僅為示意組合與市場上常見的ETF範例，用來幫助你把模板概念具體化，<b>並非投資建議或推薦</b>。實際比例與標的選擇應依你個人的財務狀況、風險承受度與投資目標決定，並沒有適用所有人的標準答案，且ETF成分與規模會隨時間變動，請以最新公開資訊為準。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🥗 第三章測驗</span><span class="quiz-title">懶人組合實作檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 關於懶人組合的檔數，下列敘述何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">檔數越多，分散效果一定越好，應該持有越多檔越好</button>
+      <button class="quiz-opt" data-correct="1">超過一定數量後，再增加持股對分散效果的邊際貢獻很小，卻會增加管理複雜度</button>
+      <button class="quiz-opt" data-correct="0">懶人組合只能用一檔ETF組成</button>
+      <button class="quiz-opt" data-correct="0">檔數多寡與分散效果完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 設計投資組合的第一步應該是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">先看哪一檔ETF最近漲最多</button>
+      <button class="quiz-opt" data-correct="1">回顧自己的風險承受度，決定大致的股債比例</button>
+      <button class="quiz-opt" data-correct="0">直接複製別人的組合，不需要調整</button>
+      <button class="quiz-opt" data-correct="0">先決定要不要使用槓桿</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：看懂對帳單與績效 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4: 看懂對帳單與績效
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧾 第四章</div>
+  <h1>看懂對帳單與績效計算<br>報酬率怎麼算，含息 vs 價格報酬</h1>
+  <p class="desc">很多投資人只看「股價漲了多少」，卻忽略配息也是報酬的一部分，甚至算錯自己真正的報酬率。這一章教你正確計算與檢視自己的投資績效。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>16 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">價格報酬 vs 含息（總）報酬</div>
+  <div class="formula">價格報酬 = （賣出價格－買進價格）÷ 買進價格
+含息總報酬 = （賣出價格＋期間領到的股利／配息－買進價格）÷ 買進價格</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見誤區</div>
+    <p>新聞常引用的指數漲跌幅，多半只是「價格報酬」，沒有計入股利再投入的效果。長期而言，含息總報酬通常明顯高於純價格報酬，比較不同商品或指數表現時，務必確認基準是否一致。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">單筆 vs 分批投入的報酬率計算</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">單筆投入：簡單報酬率</div>
+      <div class="card-body">只要用「目前市值」與「當初投入金額」相減再除以投入金額，即可算出簡單報酬率，計算方式直觀。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📆</div>
+      <div class="card-title">定期定額：需用加權方式計算</div>
+      <div class="card-body">因為每期投入時間點不同，不能直接套用單筆公式，通常需要用「內部報酬率（IRR）」等加權方式，才能反映每筆資金實際承受市場波動的時間長短。多數券商App會提供這類計算功能，不需要自己手算。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">對帳單常見欄位</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>欄位</th><th>意思</th></tr></thead>
+    <tbody>
+      <tr><td>成交均價</td><td>多次買進後，計算出的平均每股取得成本</td></tr>
+      <tr><td>市值</td><td>目前持股數量乘以目前市場價格</td></tr>
+      <tr><td>未實現損益</td><td>市值與取得成本的差額，尚未賣出，屬於「帳面」損益</td></tr>
+      <tr><td>已實現損益</td><td>已經賣出部位，實際入袋或認列的損益</td></tr>
+      <tr><td>累積配息</td><td>持有期間收到的現金股利／配息總額</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">建立定期檢視的習慣</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>建議每季或每半年檢視一次投資組合，而非每天緊盯。</li>
+    <li><span class="check-icon">✅</span>檢視時同時看「含息總報酬」與「目前配置比例」，而不只是損益金額。</li>
+    <li><span class="check-icon">✅</span>把每期檢視結果簡單記錄下來，方便日後回顧與比較。</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧾 第四章測驗</span><span class="quiz-title">績效計算觀念檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「含息總報酬」與「價格報酬」的差別是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">兩者完全相同</button>
+      <button class="quiz-opt" data-correct="1">含息總報酬還包含期間領到的股利／配息，價格報酬只計算價差</button>
+      <button class="quiz-opt" data-correct="0">價格報酬一定高於含息總報酬</button>
+      <button class="quiz-opt" data-correct="0">含息總報酬只適用於債券</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 「未實現損益」指的是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">已經賣出並實際入袋的損益</button>
+      <button class="quiz-opt" data-correct="1">尚未賣出、目前市值與取得成本之間的帳面差額</button>
+      <button class="quiz-opt" data-correct="0">下一期預計會發放的股利</button>
+      <button class="quiz-opt" data-correct="0">券商預估的未來報酬</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：財報初認識 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5: 財報初認識
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📈 第五章</div>
+  <h1>財報初認識<br>不談比率，先學會看趨勢圖</h1>
+  <p class="desc">深度財報分析（比率、估值）會留到中級課程，這一章只做「初步認識」：學會看營收與獲利的成長趨勢圖，建立基本的財報敏感度。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>16 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">兩個最容易上手的觀察指標</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <div class="card-title">營收（月營收／季營收）</div>
+      <div class="card-body">公司賣出商品或服務所得到的總金額，通常每月或每季公布。觀察重點是「趨勢」：近1-2年是持續成長、持平，還是衰退？</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title">稅後淨利／EPS</div>
+      <div class="card-body">扣除所有成本費用後的最終獲利。觀察重點同樣是趨勢，並留意獲利成長速度是否與營收成長速度一致，落差過大可能代表成本結構出現變化。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">看趨勢圖時的三個提問</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">方向是往上、持平，還是往下？</div>
+        <div class="step-desc">先不管精確數字，用「圖形的形狀」建立第一直覺印象。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">是否有明顯的季節性？</div>
+        <div class="step-desc">某些產業（如零售、觀光）營收本來就有淡旺季，單月數字下滑不一定代表警訊，需要跟去年同期比較。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">趨勢轉折點附近有沒有發生什麼事？</div>
+        <div class="step-desc">若營收或獲利出現明顯轉折，可以進一步查詢當時是否有產業變化、重大事件或公司公告，而不是只看數字本身。</div>
+      </div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 這一章的定位</div>
+    <p>本章只培養「看圖」的敏感度，還不涉及本益比、ROE等比率計算，也不要求你據此做買賣決策。目的是讓你在進入中級課程學習完整財報分析之前，先熟悉財報數字長什麼樣子。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📈 第五章測驗</span><span class="quiz-title">財報初認識檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 看到某零售公司單月營收較上月下滑，最合理的第一步是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">立刻認定公司經營出問題並賣出持股</button>
+      <button class="quiz-opt" data-correct="1">先確認是否有季節性因素，並與去年同期做比較</button>
+      <button class="quiz-opt" data-correct="0">完全不需要理會任何營收數字</button>
+      <button class="quiz-opt" data-correct="0">直接用本益比公式計算合理股價</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 本章對於財報學習的定位是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">要求學會完整的財務比率分析並據此買賣</button>
+      <button class="quiz-opt" data-correct="1">先培養看懂營收獲利趨勢圖的敏感度，比率分析留待中級課程</button>
+      <button class="quiz-opt" data-correct="0">財報內容與投資完全無關，可以忽略</button>
+      <button class="quiz-opt" data-correct="0">只需要看公司的股價走勢，不需要看財報</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：K線基礎與圖表閱讀入門 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6: K線基礎與圖表閱讀入門
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🕯️ 第六章</div>
+  <h1>K線基礎與圖表閱讀入門<br>看得懂圖，還不做交易判斷</h1>
+  <p class="desc">這是本課程第一次接觸「技術面」的內容。目標只有一個：讓你打開股價走勢圖時，看得懂上面在畫什麼，而不是感到一片茫然。完整的技術分析判讀方法，會留到中級與高級課程。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="box box-warning" style="margin-bottom:24px;">
+  <div class="box-title">⚠️ 這一章不是教你做短線交易</div>
+  <p>認識K線的目的，是讓你未來查看任何股票、ETF的走勢圖時，能理解圖上的基本資訊，並在後面章節學習更完整判讀方式時有基礎可以銜接。本章不會教你任何買賣訊號，請勿僅憑本章內容做交易決策。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">一根K線代表什麼</div>
+  <p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">每一根K線記錄一段固定時間（例如一天，稱為「日K」；一週稱為「週K」）內的四個價格：開盤價、收盤價、最高價、最低價。</p>
+  <div class="candle-demo">
+    <div class="candle-item" style="color:#EF4444;">
+      <div class="candle-wick" style="height:14px;"></div>
+      <div class="candle-body" style="height:60px;background:#EF4444;"></div>
+      <div class="candle-wick" style="height:10px;"></div>
+      <div class="candle-label">紅K（收盤高於開盤）</div>
+    </div>
+    <div class="candle-item" style="color:#10B981;">
+      <div class="candle-wick" style="height:10px;"></div>
+      <div class="candle-body" style="height:60px;background:#10B981;"></div>
+      <div class="candle-wick" style="height:14px;"></div>
+      <div class="candle-label">綠K（收盤低於開盤）</div>
+    </div>
+    <div class="candle-item" style="color:#F59E0B;">
+      <div class="candle-wick" style="height:36px;"></div>
+      <div class="candle-body" style="height:6px;background:#F59E0B;"></div>
+      <div class="candle-wick" style="height:36px;"></div>
+      <div class="candle-label">十字線（開收盤價接近）</div>
+    </div>
+  </div>
+  <p style="color:var(--text-muted);font-size:13px;">（台股慣例紅色表示上漲、綠色表示下跌，美股慣例則常相反，用綠色表示上漲、紅色表示下跌，實際顏色定義依看盤軟體設定而異，重點是理解「實體」與「影線」代表的價格區間，而非只記顏色。）</p>
+</div>
+
+<div class="section">
+  <div class="section-title">K線的組成部位</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>部位</th><th>代表意義</th></tr></thead>
+    <tbody>
+      <tr><td>實體（粗的方塊）</td><td>開盤價與收盤價之間的區間</td></tr>
+      <tr><td>上影線</td><td>當期最高價與實體上緣之間的距離</td></tr>
+      <tr><td>下影線</td><td>當期最低價與實體下緣之間的距離</td></tr>
+      <tr><td>實體長度</td><td>反映當期價格變動的幅度大小</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">認識簡單趨勢線</div>
+  <div class="box box-info">
+    <div class="box-title">💡 什麼是趨勢線</div>
+    <p>把一段時間內股價的高點（或低點）用一條直線連起來，可以粗略觀察價格是處於「上升趨勢」（低點越墊越高）、「下降趨勢」（高點越走越低），還是「盤整」（在一個區間內來回震盪）。這只是一個初步的視覺化工具，不是精準的預測方法。</p>
+  </div>
+  <div class="card">
+    <div class="card-body">初級階段，建議你只需要練習「用眼睛判斷這段時間股價大致是漲、跌，還是橫盤」，不需要急著學習畫線的精確技巧或依此下單，這些會在中級、高級課程的技術分析章節深入介紹。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">認識成交量的基本樣貌</div>
+  <p style="color:var(--text-muted);font-size:14px;">走勢圖下方常會搭配一排長條圖，代表每個時間單位的成交量（買賣的股數或金額）。目前你只需要知道：成交量突然放大，代表當時交易活躍、市場關注度提高；這一部分的深入應用會在中級課程介紹。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🕯️ 第六章測驗</span><span class="quiz-title">K線基礎檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. K線的「實體」部分代表什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">當期的最高價與最低價</button>
+      <button class="quiz-opt" data-correct="1">開盤價與收盤價之間的區間</button>
+      <button class="quiz-opt" data-correct="0">當期的成交量大小</button>
+      <button class="quiz-opt" data-correct="0">未來股價的預測區間</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 本章學習K線與趨勢線的主要目的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">學會精準預測股價漲跌，立刻進行短線交易</button>
+      <button class="quiz-opt" data-correct="1">看得懂走勢圖的基本資訊，作為後續中高階課程技術分析的基礎</button>
+      <button class="quiz-opt" data-correct="0">完全取代財報分析，成為唯一的判斷依據</button>
+      <button class="quiz-opt" data-correct="0">計算公司的本益比</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：再平衡實作 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7: 再平衡實作
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚖️ 第七章</div>
+  <h1>再平衡實作<br>多久做一次、怎麼判斷該不該調整</h1>
+  <p class="desc">中階課程介紹過再平衡的概念，這一章聚焦在「實際怎麼做」：多久檢查一次、偏離多少該調整、調整時該注意什麼。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>14 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">兩種常見的再平衡時機規則</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📅</div>
+      <div class="card-title">定期再平衡</div>
+      <div class="card-body">固定每半年或每年檢查一次配置比例，不論當下市場如何都照表操課。優點是簡單、不需要一直盯盤；缺點是可能錯過期間內的大幅偏離。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📏</div>
+      <div class="card-title">門檻式再平衡</div>
+      <div class="card-body">設定一個偏離門檻（例如±5個百分點），只要配置比例偏離超過門檻就進行調整，不受固定時間限制。優點是能更即時反映市場大幅波動；缺點是需要更頻繁地檢查比例。</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 給初級投資人的建議</div>
+    <p>對大多數初級投資人而言，「每年一次的定期再平衡」已經足夠，不需要過度頻繁地調整，避免因小幅波動就反覆進出，反而增加交易成本與心理負擔。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">再平衡的具體操作步驟</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">計算目前各資產的實際比例</div>
+        <div class="step-desc">用第四章學到的方法，計算股票、債券等各部位目前的市值占比。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">比較實際比例與原本設定的目標比例</div>
+        <div class="step-desc">找出偏離最多的資產類別，通常是漲多的部位占比過高。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">賣出偏多的部位、買進偏少的部位</div>
+        <div class="step-desc">若有新增資金，也可以優先把新資金投入占比偏低的部位，減少賣出既有部位的交易成本與稅負。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">記錄本次再平衡的結果</div>
+        <div class="step-desc">寫下調整前後的比例與理由，方便下次檢視時參考。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 提醒</div>
+  <p>再平衡本質上是「逢高減碼、逢低加碼」的紀律性做法，過程中可能會覺得「賣掉表現好的資產」不太直覺，但這正是再平衡控制風險、維持原定配置的核心價值所在。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⚖️ 第七章測驗</span><span class="quiz-title">再平衡實作檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「門檻式再平衡」的做法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">完全不管配置比例，只憑感覺調整</button>
+      <button class="quiz-opt" data-correct="1">設定一個偏離門檻，超過門檻才進行調整，不受固定時間限制</button>
+      <button class="quiz-opt" data-correct="0">每天都要檢查並調整一次</button>
+      <button class="quiz-opt" data-correct="0">只在市場下跌時才需要再平衡</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 若有新增資金要投入，再平衡時較有效率的做法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">全部投入目前占比最高的資產</button>
+      <button class="quiz-opt" data-correct="1">優先投入目前占比偏低的部位，減少賣出既有部位的成本與稅負</button>
+      <button class="quiz-opt" data-correct="0">新增資金不需要納入再平衡考量</button>
+      <button class="quiz-opt" data-correct="0">一定要先全部賣光再重新買進</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：進階定期定額 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8: 進階定期定額
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📉 第八章</div>
+  <h1>進階定期定額<br>大跌該加碼還是停扣？</h1>
+  <p class="desc">市場大跌時是初級投資人最容易動搖的時刻。這一章討論幾種常見的應對方式，幫助你在真正遇到時，能依原則行動而非臨時恐慌。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>14 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">市場大跌時的三種常見反應</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>做法</th><th>邏輯</th><th>風險</th></tr></thead>
+    <tbody>
+      <tr><td>停止扣款</td><td>擔心繼續虧損而暫停投入</td><td>違背定期定額「逢低買更多股數」的核心邏輯，長期報酬可能因此受損</td></tr>
+      <tr><td>維持原定扣款金額</td><td>依原計畫持續投入，不因短期波動改變行為</td><td>需要一定的心理紀律，短期可能持續看到帳面虧損擴大</td></tr>
+      <tr><td>加碼扣款</td><td>認為價格更便宜、是加碼的好機會</td><td>前提是有明確的額外資金來源，且不影響緊急預備金與生活資金</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 停止扣款的常見陷阱</div>
+    <p>停止扣款往往發生在市場已經下跌一段時間、情緒最恐慌的時候，這剛好是定期定額「應該持續買進」的時機。若因為害怕而暫停，反而可能錯過之後反彈時累積的股數，長期下來影響最終報酬。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">建立「大跌應對原則」的做法</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">在市場平靜時，先寫下你的原則</div>
+        <div class="step-desc">例如：「無論市場漲跌，我都會持續原定金額扣款，不因短期新聞而暫停」。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">確認緊急預備金是否充足</div>
+        <div class="step-desc">緊急預備金足夠，才能安心讓投資部位維持長期不動，不會被迫在低點贖回應急。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">若考慮加碼，先設定具體條件</div>
+        <div class="step-desc">例如「大盤從高點下跌超過20%，且我有額外可運用資金時，才考慮加碼」，避免臨時起意做出超出能力範圍的投入。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="box box-success">
+  <div class="box-title">✅ 重點提醒</div>
+  <p>對大多數初級投資人而言，「維持原計畫、不停扣、不因恐慌做重大改變」已經是很好的策略。加碼與否是進階選項，不是必要條件，重點是不要在原本設定好的紀律之外，因情緒做出反向決策（停止扣款）。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📉 第八章測驗</span><span class="quiz-title">市場大跌應對檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 市場大跌時「停止定期定額扣款」最主要的風險是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">完全沒有任何風險</button>
+      <button class="quiz-opt" data-correct="1">違背逢低買進更多股數的核心邏輯，可能錯過之後反彈時累積的部位</button>
+      <button class="quiz-opt" data-correct="0">會讓手續費立刻增加</button>
+      <button class="quiz-opt" data-correct="0">會讓帳戶被鎖定無法交易</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 考慮在大跌時「加碼」，前提條件應該是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">動用緊急預備金全部投入</button>
+      <button class="quiz-opt" data-correct="1">有明確的額外資金來源，且不影響緊急預備金與生活資金</button>
+      <button class="quiz-opt" data-correct="0">借錢投入以放大槓桿效果</button>
+      <button class="quiz-opt" data-correct="0">完全不需要任何前提，越快加碼越好</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：投資新聞與資訊判讀 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9: 投資新聞與資訊判讀
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📰 第九章</div>
+  <h1>投資新聞與資訊判讀<br>分辨資訊、分析，還是廣告</h1>
+  <p class="desc">網路上充斥各種「投資分析」內容，這一章教你分辨資訊來源的性質，避免被包裝成分析的行銷內容誤導。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>16 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>初級</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三種常見的內容類型</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📄</div>
+      <div class="card-title">事實性資訊</div>
+      <div class="card-body">如公司公告、財報數字、經濟數據，屬於客觀事實，較少涉及主觀判斷，是分析的基礎素材。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <div class="card-title">分析與觀點</div>
+      <div class="card-body">基於事實資訊做出的推論與判斷，例如「這項數據可能反映產業轉折」。分析本身帶有主觀性，不同分析師可能有不同結論，需要交叉比對。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📢</div>
+      <div class="card-title">行銷與廣告內容</div>
+      <div class="card-body">目的是導流到特定商品、課程或服務，即使包裝成「分析」或「教學」，核心目的是銷售，需要特別留意其中是否有選擇性呈現資訊的情況。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">辨識廣告偽裝成分析的警訊</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>內容最後導向「加入付費社群」「購買課程」「下載特定App開戶」。</li>
+    <li><span class="check-icon">✅</span>只呈現對某個結論有利的數據，忽略反面資訊。</li>
+    <li><span class="check-icon">✅</span>用強烈情緒字眼（「錯過就後悔一輩子」）取代具體數據論證。</li>
+    <li><span class="check-icon">✅</span>發布者身分不透明，看不出是否具備相關專業背景或利益關係揭露。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">建立自己的資訊查核習慣</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">先問：這是事實、分析，還是廣告？</div>
+        <div class="step-desc">看到任何投資相關內容，先做基本分類，再決定要花多少時間與信任程度看待。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">交叉比對多個獨立來源</div>
+        <div class="step-desc">同一個議題，嘗試找2-3個不同立場或背景的來源，觀察是否有一致的事實基礎，還是各說各話。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">回到自己的投資守則檢視</div>
+        <div class="step-desc">任何外部資訊或建議，最終都應該對照你自己（或第十章即將寫下）的投資守則，而不是直接跟隨。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📰 第九章測驗</span><span class="quiz-title">資訊判讀能力檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 內容中出現「只呈現對某個結論有利的數據，忽略反面資訊」，這是什麼警訊？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">代表內容一定完全客觀中立</button>
+      <button class="quiz-opt" data-correct="1">可能是廣告或帶有特定立場的內容，需要進一步查證</button>
+      <button class="quiz-opt" data-correct="0">代表這是官方公告，可以完全信任</button>
+      <button class="quiz-opt" data-correct="0">與內容可信度完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 面對任何外部投資建議或分析，最合理的做法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只要來源聽起來很專業，就直接照做</button>
+      <button class="quiz-opt" data-correct="1">交叉比對多個來源，並對照自己的投資守則後再決定</button>
+      <button class="quiz-opt" data-correct="0">完全不看任何外部資訊</button>
+      <button class="quiz-opt" data-correct="0">只看情緒最強烈、標題最聳動的內容</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：寫下你的個人投資守則 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10: 寫下你的個人投資守則
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第十章</div>
+  <h1>寫下你的個人投資守則<br>總複習：簡易版投資政策聲明書（IPS）</h1>
+  <p class="desc">恭喜你完成初級課程！這一章帶你把前面所學整合成一份簡易版的「個人投資守則」，這是專業投資機構常用的「投資政策聲明書（IPS）」的簡化版本，未來遇到任何市場波動或誘惑，都可以回來對照。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>16 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">個人投資守則的六個要素</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>要素</th><th>要回答的問題</th></tr></thead>
+    <tbody>
+      <tr><td>投資目標</td><td>這筆錢是為了什麼目標？（退休／購屋／子女教育等）</td></tr>
+      <tr><td>投資期限</td><td>大約什麼時候會需要動用這筆資金？</td></tr>
+      <tr><td>風險承受度</td><td>我能接受帳面下跌多少百分比而不驚慌？</td></tr>
+      <tr><td>資產配置</td><td>股票、債券等各占多少比例？是否跨國配置？</td></tr>
+      <tr><td>投入與再平衡方式</td><td>用定期定額還是單筆？多久檢視並再平衡一次？</td></tr>
+      <tr><td>應對規則</td><td>市場大跌時該怎麼做？看到熱門標的該怎麼判斷？</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你的個人投資守則檢查表</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>我已明確寫下這筆投資的目標與大約使用時間。</li>
+    <li><span class="check-icon">✅</span>我已用第一、二章學到的知識，選定具體的ETF與債券配置比例。</li>
+    <li><span class="check-icon">✅</span>我已建立至少一個懶人組合，並記錄目標配置比例（第三章）。</li>
+    <li><span class="check-icon">✅</span>我知道如何計算含息總報酬，並看得懂自己的對帳單（第四章）。</li>
+    <li><span class="check-icon">✅</span>我已決定再平衡的時機規則，定期或門檻式（第七章）。</li>
+    <li><span class="check-icon">✅</span>我已寫下市場大跌時的應對原則，避免臨時恐慌停扣（第八章）。</li>
+    <li><span class="check-icon">✅</span>我知道如何分辨事實、分析與廣告內容（第九章）。</li>
+  </ul>
+  <div class="box box-info">
+    <div class="box-title">💡 建議行動</div>
+    <p>把這份守則寫在筆記本、備忘錄或試算表中，並在每次做重大投資決策前先拿出來對照。你不需要一次寫得很完美，隨著經驗累積，可以逐步修訂內容。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+  <div class="quiz-card" style="margin-top:0;">
+    <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">投資初級課程總複習</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 挑選ETF時，「總開銷比率」與「追蹤誤差」分別反映什麼？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">兩者都只反映公司過去的股價漲跌幅</button>
+        <button class="quiz-opt" data-correct="1">總開銷比率反映每年被扣除的費用，追蹤誤差反映ETF貼近指數表現的程度</button>
+        <button class="quiz-opt" data-correct="0">兩者都保證未來報酬率</button>
+        <button class="quiz-opt" data-correct="0">只有主題型ETF需要考慮這兩個指標</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 關於高收益債（垃圾債），下列敘述何者正確？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">與公債風險完全相同，可以互相替代</button>
+        <button class="quiz-opt" data-correct="1">信用風險較高，市場恐慌時價格波動可能接近股票，分散效果較弱</button>
+        <button class="quiz-opt" data-correct="0">完全沒有違約風險</button>
+        <button class="quiz-opt" data-correct="0">利率一定比公債低</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q3. 市場大跌時，對定期定額投資人較合理的做法是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">立刻停止所有扣款，等市場穩定再說</button>
+        <button class="quiz-opt" data-correct="1">在確保緊急預備金充足的前提下，依原計畫持續扣款</button>
+        <button class="quiz-opt" data-correct="0">把緊急預備金全部投入以搶反彈</button>
+        <button class="quiz-opt" data-correct="0">立即轉換成衍生性金融商品操作</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q4. 本課程學習K線與趨勢線的定位是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">已足以獨立做出短線交易決策</button>
+        <button class="quiz-opt" data-correct="1">建立基礎圖表判讀能力，作為中高階技術分析課程的銜接基礎</button>
+        <button class="quiz-opt" data-correct="0">與投資決策完全無關，純粹知識性介紹</button>
+        <button class="quiz-opt" data-correct="0">用來取代財報與估值分析</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ 免責聲明：本課程內容僅為一般性理財教育之用，旨在協助建立穩定的投資習慣與工具判讀能力，不構成對任何個別商品或標的的投資建議，亦不保證任何報酬。K線與圖表內容僅作認識用途，不建議僅憑本課程內容進行短線交易決策。過去績效不代表未來表現，所有投資均有虧損本金的可能。做出實際投資決策前，請依自身財務狀況、風險承受能力審慎評估，必要時可諮詢合格的理財顧問或金融機構。
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>
