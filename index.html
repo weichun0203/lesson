@@ -13,7 +13,7 @@
             --accent-color: #38bdf8;
             --accent-hover: #0ea5e9;
         }
-
+        * { box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
@@ -25,21 +25,48 @@
             align-items: center;
             min-height: 100vh;
         }
-
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
-
         h1 {
             font-size: 2.2rem;
             margin-bottom: 10px;
             color: #fff;
         }
-
         p {
             color: var(--text-muted);
             font-size: 1rem;
+        }
+
+        /* Category filter tabs */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 36px;
+            max-width: 900px;
+        }
+        .filter-btn {
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filter-btn:hover {
+            color: var(--text-color);
+            border-color: var(--accent-color);
+        }
+        .filter-btn.active {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            font-weight: 600;
+            border-color: var(--accent-color);
         }
 
         .container {
@@ -49,7 +76,6 @@
             width: 100%;
             max-width: 900px;
         }
-
         .card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -60,77 +86,169 @@
             transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
         .card:hover {
             transform: translateY(-4px);
             background-color: #273548;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
             border-color: var(--accent-color);
         }
-
+        .card.hidden {
+            display: none;
+        }
+        .card .tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            color: var(--accent-color);
+            background: rgba(56, 189, 248, 0.12);
+            padding: 2px 10px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
         .card h3 {
             margin: 0 0 8px 0;
             font-size: 1.2rem;
             color: var(--accent-color);
         }
-
-        .card span {
+        .card p.desc {
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+        .card span.filename {
             font-size: 0.85rem;
             color: var(--text-muted);
             word-break: break-all;
         }
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 0;
+        }
     </style>
 </head>
 <body>
-
     <header>
         <h1>導覽入口網站</h1>
-        <p>請點擊下方卡片以快速前往對應的頁面</p>
+        <p>請選擇分類，或直接點擊卡片以快速前往對應的頁面</p>
     </header>
 
-    <div class="container">
-        <!-- Gas Line Systems -->
-        <a href="gas_line_systems.html" class="card">
-            <h3>瓦斯管線系統</h3>
-            <span>gas_line_systems.html</span>
+    <div class="filters" id="filters">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="invest">投資理財</button>
+        <button class="filter-btn" data-filter="marketing">行銷內容</button>
+        <button class="filter-btn" data-filter="video">影音創作</button>
+        <button class="filter-btn" data-filter="survey">問卷調查</button>
+        <button class="filter-btn" data-filter="tech">技術工具</button>
+    </div>
+
+    <div class="container" id="cardContainer">
+        <!-- Google Apps Script -->
+        <a href="gas_line_systems.html" class="card" data-category="tech">
+            <span class="tag">技術工具</span>
+            <h3>Google Apps Script 開發教學</h3>
+            <p class="desc">GAS（Google Apps Script）自動化與系統整合教學。</p>
+            <span class="filename">gas_line_systems.html</span>
+        </a>
+
+        <!-- Invest Begin -->
+        <a href="invest-begin.html" class="card" data-category="invest">
+            <span class="tag">投資理財</span>
+            <h3>投資新手入門</h3>
+            <p class="desc">從零開始認識投資的基本觀念與準備事項。</p>
+            <span class="filename">invest-begin.html</span>
+        </a>
+
+        <!-- Invest -->
+        <a href="invest.html" class="card" data-category="invest">
+            <span class="tag">投資理財</span>
+            <h3>投資課程</h3>
+            <p class="desc">完整投資課程內容總覽。</p>
+            <span class="filename">invest.html</span>
         </a>
 
         <!-- Invest Course Map -->
-        <a href="invest_course_map.html" class="card">
+        <a href="invest_course_map.html" class="card" data-category="invest">
+            <span class="tag">投資理財</span>
             <h3>投資課程地圖</h3>
-            <span>invest_course_map.html</span>
+            <p class="desc">投資課程整體架構與學習路徑地圖。</p>
+            <span class="filename">invest_course_map.html</span>
         </a>
 
         <!-- Marketing Plan Guide -->
-        <a href="marketing-plan-guide.html" class="card">
+        <a href="marketing-plan-guide.html" class="card" data-category="marketing">
+            <span class="tag">行銷內容</span>
             <h3>行銷企劃書指南</h3>
-            <span>marketing-plan-guide.html</span>
+            <p class="desc">如何撰寫一份完整且具說服力的行銷企劃書。</p>
+            <span class="filename">marketing-plan-guide.html</span>
         </a>
 
         <!-- Shorts Strategy -->
-        <a href="shorts_strategy.html" class="card">
+        <a href="shorts_strategy.html" class="card" data-category="video">
+            <span class="tag">影音創作</span>
             <h3>短影音策略</h3>
-            <span>shorts_strategy.html</span>
+            <p class="desc">短影音內容規劃與經營策略。</p>
+            <span class="filename">shorts_strategy.html</span>
         </a>
 
         <!-- Survey Course -->
-        <a href="survey_course (1).html" class="card">
+        <a href="survey_course.html" class="card" data-category="survey">
+            <span class="tag">問卷調查</span>
             <h3>問卷調查課程</h3>
-            <span>survey_course (1).html</span>
+            <p class="desc">問卷設計與調查方法教學。</p>
+            <span class="filename">survey_course.html</span>
         </a>
 
         <!-- Video Editing SOP -->
-        <a href="video-editing-sop.html" class="card">
+        <a href="video-editing-sop.html" class="card" data-category="video">
+            <span class="tag">影音創作</span>
             <h3>影片剪輯 SOP</h3>
-            <span>video-editing-sop.html</span>
+            <p class="desc">標準化影片剪輯流程與作業規範。</p>
+            <span class="filename">video-editing-sop.html</span>
         </a>
 
         <!-- Video Hook Design Course -->
-        <a href="video-hook-design-course.html" class="card">
+        <a href="video-hook-design-course.html" class="card" data-category="video">
+            <span class="tag">影音創作</span>
             <h3>短影音鉤子設計課程</h3>
-            <span>video-hook-design-course.html</span>
+            <p class="desc">如何設計吸引觀眾停留的開頭鉤子。</p>
+            <span class="filename">video-hook-design-course.html</span>
         </a>
     </div>
 
+    <script>
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.card');
+        const container = document.getElementById('cardContainer');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const match = filter === 'all' || card.dataset.category === filter;
+                    card.classList.toggle('hidden', !match);
+                    if (match) visibleCount++;
+                });
+
+                let emptyState = container.querySelector('.empty-state');
+                if (visibleCount === 0) {
+                    if (!emptyState) {
+                        emptyState = document.createElement('div');
+                        emptyState.className = 'empty-state';
+                        emptyState.textContent = '此分類目前沒有內容';
+                        container.appendChild(emptyState);
+                    }
+                } else if (emptyState) {
+                    emptyState.remove();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
