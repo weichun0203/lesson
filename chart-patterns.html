@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技術分析型態學完全指南｜K線、反轉型態、整理型態、指標與量價</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:1200px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+.prereq{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:12px 16px;margin-bottom:24px;font-size:12.5px;color:#fde68a;display:flex;gap:8px;align-items:flex-start;}
+.chart-demo{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:16px;margin:16px 0;}
+.pattern-svg{width:100%;height:auto;display:block;}
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+.mini-card{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;}
+.mini-card .cap{font-size:11px;color:var(--text-muted);margin-top:6px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">📐 技術分析型態學</div>
+    <div class="sidebar-title">技術分析型態學完全指南<br>K線、反轉、整理、缺口、指標</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>閱讀進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一節</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一節 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'總覽', subtitle:'為什麼要學型態學，以及怎麼用', icon:'🗺️', time:'5 分鐘', content: renderCh0 },
+  { id:1, title:'K線型態基礎', subtitle:'單根K線與組合K線', icon:'🕯️', time:'20 分鐘', content: renderCh1 },
+  { id:2, title:'反轉型態', subtitle:'頭肩頂/底、雙頂/雙底、三重頂/底、圓弧、V型', icon:'🔄', time:'24 分鐘', content: renderCh2 },
+  { id:3, title:'整理型態', subtitle:'三角收斂、旗形、楔形、矩形、杯柄型', icon:'📐', time:'22 分鐘', content: renderCh3 },
+  { id:4, title:'缺口理論', subtitle:'普通缺口、突破缺口、逃逸缺口、竭盡缺口', icon:'🕳️', time:'14 分鐘', content: renderCh4 },
+  { id:5, title:'動能與震盪指標', subtitle:'RSI、MACD、KD、布林通道', icon:'📡', time:'22 分鐘', content: renderCh5 },
+  { id:6, title:'量價關係與型態確認', subtitle:'成交量如何驗證型態的可信度', icon:'📊', time:'16 分鐘', content: renderCh6 },
+  { id:7, title:'型態失敗與風險管理', subtitle:'假突破、停損設定、部位控管', icon:'🛑', time:'16 分鐘', content: renderCh7 },
+  { id:8, title:'實戰整合與總複習', subtitle:'型態速查表與檢查清單', icon:'📋', time:'18 分鐘', content: renderCh8 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('ta_patterns_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('ta_patterns_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本節核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// 0: 總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 總覽</div>
+  <h1>技術分析型態學完全指南<br>K線、反轉型態、整理型態、缺口與指標</h1>
+  <p class="desc">這份指南把技術分析中最核心的「型態辨識」能力，從K線基礎一路延伸到動能指標與量價確認，並附上大量圖示，幫助你建立系統化的圖表判讀能力。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總閱讀時間：約 2.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>9 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適合已有基礎、想系統化整理技術分析知識者</div>
+  </div>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 使用本指南前的心理建設</div>
+  <p>技術分析反映的是「過去」的價格與成交量行為模式，並不能保證「未來」會重複相同的走勢。任何型態或指標都可能失敗，本指南的目的是幫助你建立辨識能力與風險意識，不構成投資建議，也不保證任何交易績效。技術分析建議搭配基本面分析與嚴謹的風險管理一起使用，而非單獨作為交易依據。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">內容地圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">🕯️ K線基礎（第1章）</div>
+        <div class="step-desc">從單根K線的意義，到常見的多根K線組合型態，這是所有技術分析的最小單位。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">🔄📐 型態學核心（第2-3章）</div>
+        <div class="step-desc">反轉型態告訴你趨勢可能要變盤了，整理型態告訴你市場正在盤整蓄力，這是本指南份量最重的部分。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">🕳️ 缺口理論（第4章）</div>
+        <div class="step-desc">價格跳空留下的缺口，往往透露出市場情緒的線索。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">📡📊 指標與量價（第5-6章）</div>
+        <div class="step-desc">用RSI、MACD、KD、布林通道等指標，搭配成交量，交叉驗證型態的可信度。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">🛑📋 風控與整合（第7-8章）</div>
+        <div class="step-desc">認識型態失敗的常見情況，並用一份速查表把所有內容整合成可實際操作的檢查流程。</div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+}
+
+// ============================================================
+// 1: K線型態基礎
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🕯️ 第一章</div>
+  <h1>K線型態基礎<br>單根K線與組合K線</h1>
+  <p class="desc">所有技術分析都建立在K線之上。這一章先複習單根K線的意義，再介紹幾種最常見、辨識度最高的單根與組合K線型態。</p>
+  <div class="meta"><div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">單根K線的基本結構</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="15" x2="60" y2="35" stroke="#EF4444" stroke-width="2"/><rect x="45" y="35" width="30" height="55" fill="#EF4444"/><line x1="60" y1="90" x2="60" y2="120" stroke="#EF4444" stroke-width="2"/>
+      <text x="20" y="135" fill="#94A3B8" font-size="10">上影線／實體／下影線</text>
+      <line x1="180" y1="30" x2="180" y2="45" stroke="#10B981" stroke-width="2"/><rect x="165" y="45" width="30" height="45" fill="#10B981"/><line x1="180" y1="90" x2="180" y2="110" stroke="#10B981" stroke-width="2"/>
+    </svg>
+  </div>
+  <p style="color:var(--text-muted);font-size:12.5px;">紅K：收盤高於開盤（台股慣例）；綠K：收盤低於開盤。實體代表開盤收盤區間，影線代表當期最高最低價。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">常見單根K線型態</div>
+  <div class="mini-grid">
+    <div class="mini-card">
+      <svg viewBox="0 0 100 100" width="100%"><line x1="50" y1="10" x2="50" y2="30" stroke="#94A3B8" stroke-width="3"/><rect x="42" y="30" width="16" height="8" fill="#94A3B8"/><line x1="50" y1="38" x2="50" y2="90" stroke="#94A3B8" stroke-width="3"/></svg>
+      <div class="cap"><b>槌子線（Hammer）</b><br>下影線長、實體小，出現在下跌末端，可能暗示止跌</div>
+    </div>
+    <div class="mini-card">
+      <svg viewBox="0 0 100 100" width="100%"><line x1="50" y1="10" x2="50" y2="62" stroke="#94A3B8" stroke-width="3"/><rect x="42" y="62" width="16" height="8" fill="#94A3B8"/><line x1="50" y1="70" x2="50" y2="90" stroke="#94A3B8" stroke-width="3"/></svg>
+      <div class="cap"><b>吊人線（Hanging Man）</b><br>與槌子線形狀相同，出現在上漲末端，可能暗示轉弱</div>
+    </div>
+    <div class="mini-card">
+      <svg viewBox="0 0 100 100" width="100%"><line x1="50" y1="10" x2="50" y2="45" stroke="#94A3B8" stroke-width="3"/><rect x="42" y="45" width="16" height="8" fill="#94A3B8"/><line x1="50" y1="53" x2="50" y2="52" stroke="#94A3B8" stroke-width="3"/></svg>
+      <div class="cap"><b>流星線（Shooting Star）</b><br>上影線長、實體小、幾乎無下影線，出現在上漲末端，可能暗示轉弱</div>
+    </div>
+    <div class="mini-card">
+      <svg viewBox="0 0 100 100" width="100%"><line x1="50" y1="10" x2="50" y2="90" stroke="#94A3B8" stroke-width="3"/><line x1="35" y1="48" x2="65" y2="48" stroke="#94A3B8" stroke-width="4"/></svg>
+      <div class="cap"><b>十字線（Doji）</b><br>開收盤價幾乎相同，代表多空力道接近平衡，趨勢可能出現猶豫</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見組合K線型態</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🟢🔴</div>
+      <div class="card-title">多頭吞噬（Bullish Engulfing）</div>
+      <div class="card-body">下跌趨勢中，一根小綠K之後出現一根實體完全包覆前一根的大紅K，代表買方力道明顯壓過賣方，常被視為偏多反轉訊號。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔴🟢</div>
+      <div class="card-title">空頭吞噬（Bearish Engulfing）</div>
+      <div class="card-body">上漲趨勢中，一根小紅K之後出現一根實體完全包覆前一根的大綠K，代表賣方力道明顯壓過買方，常被視為偏空反轉訊號。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">☁️</div>
+      <div class="card-title">烏雲罩頂（Dark Cloud Cover）</div>
+      <div class="card-body">上漲趨勢中，紅K之後出現一根開盤跳高但收盤卻深入前一根紅K實體中段以下的綠K，暗示買氣轉弱，賣壓開始出現。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌅</div>
+      <div class="card-title">曙光乍現（Piercing Line）</div>
+      <div class="card-body">烏雲罩頂的鏡像型態，下跌趨勢中出現開低但收盤深入前一根綠K實體中段以上的紅K，暗示賣壓減弱，買方開始進場。</div>
+    </div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 提醒</div>
+    <p>單根或雙根K線型態的訊號效力通常較短暫，建議搭配所在的趨勢位置（是否真的處於下跌或上漲末端）與後續K線的確認（如隔日是否持續同方向），而不要看到單一型態就直接進出場。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🕯️ 第一章測驗</span><span class="quiz-title">K線型態基礎檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「槌子線」與「吊人線」形狀相同，如何區分兩者的意義？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">兩者意義完全相同，不需要區分</button>
+      <button class="quiz-opt" data-correct="1">依出現位置區分：出現在下跌末端稱槌子線（偏多），出現在上漲末端稱吊人線（偏空）</button>
+      <button class="quiz-opt" data-correct="0">依顏色區分，紅色一定是槌子線</button>
+      <button class="quiz-opt" data-correct="0">依成交量大小區分</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 「多頭吞噬」型態的關鍵特徵是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">兩根K線大小完全相同</button>
+      <button class="quiz-opt" data-correct="1">下跌趨勢中，一根大紅K的實體完全包覆前一根小綠K的實體</button>
+      <button class="quiz-opt" data-correct="0">只能出現在上漲趨勢中</button>
+      <button class="quiz-opt" data-correct="0">與成交量完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：反轉型態 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 2: 反轉型態
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔄 第二章</div>
+  <h1>反轉型態<br>頭肩頂/底、雙頂/雙底、三重頂/底、圓弧、V型</h1>
+  <p class="desc">反轉型態暗示原本的趨勢可能即將結束、反轉方向。這一章完整收錄最常見的幾種反轉型態。</p>
+  <div class="meta"><div class="meta-item"><span class="meta-icon">⏱️</span>24 分鐘</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">頭肩頂 / 頭肩底</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="10,110 60,60 110,90 160,20 210,90 260,60 310,110 390,115" fill="none" stroke="#06B6D4" stroke-width="2.5"/>
+      <line x1="60" y1="60" x2="260" y2="60" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <text x="55" y="45" fill="#94A3B8" font-size="11">左肩</text><text x="150" y="15" fill="#94A3B8" font-size="11">頭</text><text x="255" y="45" fill="#94A3B8" font-size="11">右肩</text>
+      <text x="140" y="130" fill="#94A3B8" font-size="11">頸線</text>
+    </svg>
+  </div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">📉</div><div class="card-title">頭肩頂</div><div class="card-body">上漲趨勢末端出現，由左肩、頭（最高點）、右肩三個高點組成。跌破頸線（伴隨量增）常視為轉空訊號。</div></div>
+    <div class="card"><div class="card-icon">📈</div><div class="card-title">頭肩底</div><div class="card-body">頭肩頂的鏡像，下跌趨勢末端出現。突破頸線常視為轉多訊號。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">雙頂（M頭）/ 雙底（W底）</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="10,110 90,30 170,80 250,30 330,110 390,120" fill="none" stroke="#EF4444" stroke-width="2.5"/>
+      <line x1="90" y1="80" x2="250" y2="80" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <text x="70" y="20" fill="#94A3B8" font-size="11">頂1</text><text x="235" y="20" fill="#94A3B8" font-size="11">頂2</text><text x="150" y="95" fill="#94A3B8" font-size="11">頸線</text>
+    </svg>
+  </div>
+  <div class="table-wrap">
+  <table><thead><tr><th>型態</th><th>出現位置</th><th>常見解讀（僅供參考）</th></tr></thead>
+  <tbody>
+    <tr><td>雙頂（M頭）</td><td>上漲趨勢末端，兩次觸及相近高點後回落</td><td>跌破頸線常視為偏空訊號</td></tr>
+    <tr><td>雙底（W底）</td><td>下跌趨勢末端，兩次觸及相近低點後反彈</td><td>突破頸線常視為偏多訊號</td></tr>
+  </tbody></table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三重頂 / 三重底</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="10,110 70,30 120,75 170,32 220,75 270,30 320,110 390,118" fill="none" stroke="#10B981" stroke-width="2.5"/>
+      <line x1="70" y1="75" x2="270" y2="75" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="5,4"/>
+    </svg>
+  </div>
+  <div class="card">
+    <div class="card-body">三重頂／三重底是雙頂／雙底的延伸，出現三次相近的高點或低點才跌破／突破頸線。相較雙頂雙底，三重型態的形成時間更長、確認訊號通常更強，但也較少見。判讀邏輯與雙頂雙底相同：留意頸線是否被有效跌破或突破，並搭配成交量確認。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">圓弧頂 / 圓弧底</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 20 100 Q 200 10 380 100" fill="none" stroke="#F59E0B" stroke-width="2.5"/>
+      <text x="160" y="120" fill="#94A3B8" font-size="11">圓弧頂：緩慢、漸進式的趨勢反轉</text>
+    </svg>
+  </div>
+  <div class="card">
+    <div class="card-body">與頭肩頂、雙頂等「明確轉折點」型態不同，圓弧頂／圓弧底反映的是一個緩慢、漸進式的趨勢轉變過程，沒有明顯的單一轉折高低點，成交量通常在圓弧中段最低、兩端逐漸放大。這種型態的形成通常需要較長時間，判讀上更需要耐心觀察整體弧形是否成立，而非某一天的價格變化。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">V型反轉</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="20,20 200,120 380,20" fill="none" stroke="#EF4444" stroke-width="2.5"/>
+      <text x="150" y="135" fill="#94A3B8" font-size="11">急跌後急速反彈，無明顯打底過程</text>
+    </svg>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ V型反轉的特殊性</div>
+    <p>V型反轉沒有像其他型態一樣的打底或整理過程，價格急跌後又急速反彈，通常發生在市場受到單一重大意外消息衝擊後又迅速消化（如短期恐慌性拋售後的修正）。這種型態難以在發生當下即時辨識，多半是事後回顧才能確認，實務上不建議把「猜測V型反轉即將發生」作為交易策略的核心依據。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔄 第二章測驗</span><span class="quiz-title">反轉型態檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 圓弧頂與頭肩頂最主要的差異是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">兩者完全相同</button>
+      <button class="quiz-opt" data-correct="1">圓弧頂是緩慢漸進的趨勢轉變，沒有明確的單一轉折高點；頭肩頂則有清楚的左肩、頭、右肩轉折點</button>
+      <button class="quiz-opt" data-correct="0">圓弧頂只會出現在債券市場</button>
+      <button class="quiz-opt" data-correct="0">頭肩頂完全不需要頸線確認</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於V型反轉，下列敘述何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">可以在發生前就精準預測其確切時間點</button>
+      <button class="quiz-opt" data-correct="1">通常難以在發生當下即時辨識，多半是事後回顧才能確認</button>
+      <button class="quiz-opt" data-correct="0">V型反轉一定會有明顯的打底整理過程</button>
+      <button class="quiz-opt" data-correct="0">V型反轉與市場意外消息完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：整理型態 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 3: 整理型態
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📐 第三章</div>
+  <h1>整理型態<br>三角收斂、旗形、楔形、矩形、杯柄型</h1>
+  <p class="desc">整理型態通常代表市場處於「蓄力」階段，價格在原趨勢中暫時休息，最終多半會朝原趨勢方向延續（但也可能反轉）。</p>
+  <div class="meta"><div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">三角收斂（對稱／上升／下降）</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="10,30 90,90 150,45 200,80 240,58 270,72 290,63" fill="none" stroke="#10B981" stroke-width="2.5"/>
+      <line x1="10" y1="30" x2="290" y2="63" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="90" y1="90" x2="290" y2="63" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <text x="140" y="20" fill="#94A3B8" font-size="11">對稱三角：高點漸低、低點漸高</text>
+    </svg>
+  </div>
+  <div class="table-wrap">
+  <table><thead><tr><th>類型</th><th>圖形特徵</th><th>常見解讀（僅供參考）</th></tr></thead>
+  <tbody>
+    <tr><td>對稱三角</td><td>高點漸低、低點漸高，呈對稱收斂</td><td>方向不明，突破方向決定後續走勢，中性型態</td></tr>
+    <tr><td>上升三角</td><td>高點大致持平（形成水平壓力線）、低點漸高</td><td>買方力道逐漸增強，常被視為偏多型態</td></tr>
+    <tr><td>下降三角</td><td>低點大致持平（形成水平支撐線）、高點漸低</td><td>賣方力道逐漸增強，常被視為偏空型態</td></tr>
+  </tbody></table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">旗形（Flag）與楔形（Wedge）</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="10,120 60,40 90,55 120,42 150,58 180,45 210,60 240,20" fill="none" stroke="#06B6D4" stroke-width="2.5"/>
+      <line x1="60" y1="40" x2="180" y2="42" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <line x1="90" y1="55" x2="210" y2="60" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="4,3"/>
+      <text x="60" y="30" fill="#94A3B8" font-size="10">旗形：平行通道式的小幅整理</text>
+    </svg>
+  </div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🚩</div><div class="card-title">旗形</div><div class="card-body">在一段急漲或急跌之後（旗竿），價格進入一個與原趨勢方向相反、呈現平行通道的小幅整理（旗面），整理後通常會延續原本旗竿的方向繼續前進。整理時間通常較短（數天到數週）。</div></div>
+    <div class="card"><div class="card-icon">📏</div><div class="card-title">楔形</div><div class="card-body">與三角收斂類似都是收斂型態，但楔形的兩條邊界線方向一致（同時向上或同時向下傾斜），而非一上一下。上升楔形常出現在漲勢末端，可能偏空；下降楔形常出現在跌勢末端，可能偏多，與整理方向相反的解讀，是楔形較特殊之處。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">矩形（Rectangle）</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+      <line x1="20" y1="30" x2="380" y2="30" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="20" y1="90" x2="380" y2="90" stroke="#10B981" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <polyline points="20,60 60,30 100,90 140,32 180,88 220,30 260,90 300,32 340,88 380,60" fill="none" stroke="#06B6D4" stroke-width="2.5"/>
+    </svg>
+  </div>
+  <div class="card">
+    <div class="card-body">價格在一個明確的水平上緣（壓力）與下緣（支撐）之間來回震盪，形成箱型／矩形整理。這種型態代表買賣雙方力道在這個區間內大致平衡，直到某一方力道勝出、價格向上或向下突破箱型邊界，通常伴隨成交量放大確認。矩形整理可能出現在趨勢中的休息階段，也可能是趨勢反轉前的醞釀。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">杯柄型（Cup and Handle）</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 20 40 Q 150 120 280 40" fill="none" stroke="#F59E0B" stroke-width="2.5"/>
+      <polyline points="280,40 310,55 340,45 370,35" fill="none" stroke="#F59E0B" stroke-width="2.5"/>
+      <text x="80" y="130" fill="#94A3B8" font-size="10">杯身（圓弧打底）</text>
+      <text x="290" y="70" fill="#94A3B8" font-size="10">柄（小幅回檔）</text>
+    </svg>
+  </div>
+  <div class="card">
+    <div class="card-body">杯柄型是一種偏多的整理／打底型態：先形成一個類似圓弧底的「杯身」（緩慢打底後回升接近前波高點），接著在高點附近出現一段幅度較小、時間較短的回檔整理（「柄」），最後向上突破柄的高點時，常被視為偏多的延續訊號。這個型態常見於成長股在經歷一段修正整理後重新回到多頭格局的過程中。</div>
+  </div>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 整理型態的共同提醒</div>
+  <p>整理型態的「突破方向」才是關鍵，型態本身只是告訴你「市場正在猶豫、蓄力」，不代表突破方向一定會如教科書所述發生。務必等待實際突破且有成交量確認後再判斷，而非提前預測突破方向並提前佈局。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📐 第三章測驗</span><span class="quiz-title">整理型態檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「上升三角」型態的圖形特徵是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">高點與低點都同步走高</button>
+      <button class="quiz-opt" data-correct="1">高點大致持平形成水平壓力線，低點則逐漸墊高</button>
+      <button class="quiz-opt" data-correct="0">高點與低點都同步走低</button>
+      <button class="quiz-opt" data-correct="0">與買賣雙方力道完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 「杯柄型」型態中的「柄」代表什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">杯身圓弧打底的起始點</button>
+      <button class="quiz-opt" data-correct="1">杯身回升至高點附近後，出現的一段幅度較小、時間較短的回檔整理</button>
+      <button class="quiz-opt" data-correct="0">與成交量完全無關的裝飾線條</button>
+      <button class="quiz-opt" data-correct="0">代表趨勢一定會反轉向下</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：缺口理論 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 4: 缺口理論
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🕳️ 第四章</div>
+  <h1>缺口理論<br>普通缺口、突破缺口、逃逸缺口、竭盡缺口</h1>
+  <p class="desc">當股價跳空開盤、與前一日收盤價之間出現一段沒有交易發生的「空隙」，就形成了缺口。不同位置出現的缺口，往往代表不同的市場意義。</p>
+  <div class="meta"><div class="meta-item"><span class="meta-icon">⏱️</span>14 分鐘</div></div>
+</div>
+
+<div class="chart-demo">
+  <svg class="pattern-svg" viewBox="0 0 420 160" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="80" width="20" height="20" fill="#10B981"/>
+    <rect x="60" y="30" width="20" height="20" fill="#10B981"/>
+    <rect x="60" y="50" width="4" height="30" fill="#334155" stroke-dasharray="2,2"/>
+    <text x="85" y="45" fill="#F59E0B" font-size="10">普通缺口</text>
+    <rect x="130" y="90" width="20" height="15" fill="#10B981"/>
+    <rect x="170" y="40" width="20" height="15" fill="#EF4444"/>
+    <text x="195" y="55" fill="#F59E0B" font-size="10">突破缺口</text>
+    <rect x="240" y="45" width="20" height="12" fill="#EF4444"/>
+    <rect x="280" y="15" width="20" height="12" fill="#EF4444"/>
+    <text x="305" y="30" fill="#F59E0B" font-size="10">逃逸缺口</text>
+    <rect x="330" y="15" width="20" height="10" fill="#EF4444"/>
+    <rect x="370" y="55" width="20" height="12" fill="#10B981"/>
+    <text x="330" y="80" fill="#F59E0B" font-size="10">竭盡缺口(後續回填)</text>
+  </svg>
+</div>
+
+<div class="section">
+  <div class="section-title">四種缺口類型</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>缺口類型</th><th>常見出現位置</th><th>常見解讀（僅供參考）</th></tr></thead>
+    <tbody>
+      <tr><td>普通缺口</td><td>整理區間內，無明顯趨勢意義</td><td>通常會在短時間內被回填，較少作為交易依據</td></tr>
+      <tr><td>突破缺口</td><td>價格突破整理型態（如矩形、三角收斂）邊界時出現</td><td>常伴隨成交量放大，代表突破的力道較強，較不容易被回填</td></tr>
+      <tr><td>逃逸缺口（中繼缺口）</td><td>出現在明確趨勢的中段</td><td>代表趨勢動能強勁，市場急於朝原方向前進，常被視為趨勢會延續的訊號</td></tr>
+      <tr><td>竭盡缺口</td><td>出現在一段長期趨勢的末端</td><td>可能代表最後一波追價力道的宣洩，隨後常出現回填甚至反轉，需留意趨勢是否即將結束</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 判斷缺口類型的實用方法</div>
+    <p>缺口類型往往需要「事後」搭配其出現的位置（整理區間內、突破點、趨勢中段、趨勢末端）才能較準確判斷，同一個缺口在剛出現的當下，有時難以立即確定是逃逸缺口還是竭盡缺口，需要觀察後續價格是否延續原趨勢，或反而開始回填、反轉。</p>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 「缺口必回補」是常見迷思</div>
+    <p>坊間常有「缺口一定會回補」的說法，但這並非絕對定律，尤其是突破缺口與逃逸缺口在強勢趨勢中，可能長時間甚至永遠不會被完全回補。過度相信這個說法而進行逆勢交易（例如做空等待缺口回補），可能承擔與趨勢方向相反的風險。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🕳️ 第四章測驗</span><span class="quiz-title">缺口理論檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「逃逸缺口」與「竭盡缺口」的主要差異是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">兩者完全相同，無法區分</button>
+      <button class="quiz-opt" data-correct="1">逃逸缺口出現在趨勢中段代表動能強勁，竭盡缺口出現在趨勢末端可能代表追價力道即將宣洩結束</button>
+      <button class="quiz-opt" data-correct="0">逃逸缺口只出現在下跌趨勢</button>
+      <button class="quiz-opt" data-correct="0">竭盡缺口保證趨勢會立即反轉</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於「缺口必回補」的說法，下列敘述何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">這是絕對定律，所有缺口都一定會在短期內回補</button>
+      <button class="quiz-opt" data-correct="1">並非絕對定律，突破缺口與逃逸缺口在強勢趨勢中可能長時間不會被完全回補</button>
+      <button class="quiz-opt" data-correct="0">只有普通缺口才需要考慮是否回補</button>
+      <button class="quiz-opt" data-correct="0">缺口回補與趨勢方向完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：動能與震盪指標 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 5: 動能與震盪指標
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📡 第五章</div>
+  <h1>動能與震盪指標<br>RSI、MACD、KD、布林通道</h1>
+  <p class="desc">型態學觀察的是價格的「形狀」，這一章介紹的指標則是用數學方式量化價格的「動能」與「波動範圍」，作為型態判讀的交叉驗證工具。</p>
+  <div class="meta"><div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">RSI 相對強弱指標</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
+      <line x1="10" y1="25" x2="400" y2="25" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,4"/><text x="365" y="21" fill="#EF4444" font-size="10">70超買</text>
+      <line x1="10" y1="105" x2="400" y2="105" stroke="#10B981" stroke-width="1" stroke-dasharray="4,4"/><text x="365" y="120" fill="#10B981" font-size="10">30超賣</text>
+      <polyline points="20,80 60,50 100,20 140,40 180,70 220,115 260,128 300,95 340,60 380,45" fill="none" stroke="#F59E0B" stroke-width="2.5"/>
+    </svg>
+  </div>
+  <p style="color:var(--text-muted);font-size:12.5px;">0-100之間震盪，70以上超買、30以下超賣，適合搭配趨勢方向一起判讀，強勢股可能長期停留在超買區。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">MACD 指數平滑異同移動平均線</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
+      <line x1="10" y1="80" x2="400" y2="80" stroke="#334155" stroke-width="1"/>
+      <rect x="16" y="80" width="10" height="10" fill="#EF4444" opacity="0.5"/><rect x="36" y="65" width="10" height="15" fill="#EF4444"/>
+      <rect x="56" y="80" width="10" height="10" fill="#10B981" opacity="0.5"/><rect x="76" y="80" width="10" height="20" fill="#10B981"/><rect x="96" y="80" width="10" height="28" fill="#10B981"/>
+      <rect x="116" y="80" width="10" height="15" fill="#10B981" opacity="0.5"/><rect x="136" y="70" width="10" height="10" fill="#EF4444" opacity="0.5"/>
+      <rect x="156" y="50" width="10" height="30" fill="#EF4444"/><rect x="176" y="35" width="10" height="45" fill="#EF4444"/>
+      <polyline points="20,60 60,65 100,75 140,60 180,40 220,50 260,68 300,85 340,80 380,62" fill="none" stroke="#F59E0B" stroke-width="2"/>
+      <polyline points="20,65 60,62 100,70 140,62 180,48 220,55 260,72 300,80 340,78 380,68" fill="none" stroke="#06B6D4" stroke-width="2"/>
+      <text x="300" y="20" fill="#F59E0B" font-size="10">DIF線</text><text x="300" y="34" fill="#06B6D4" font-size="10">訊號線</text>
+    </svg>
+  </div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🔀</div><div class="card-title">黃金/死亡交叉</div><div class="card-body">DIF由下往上穿越訊號線為偏多訊號，由上往下穿越為偏空訊號。</div></div>
+    <div class="card"><div class="card-icon">📐</div><div class="card-title">背離</div><div class="card-body">股價創新高但MACD未同步創高（頂背離），或股價創新低但MACD未同步破低（底背離），可能暗示動能減弱。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">KD 隨機指標</div>
+  <div class="card">
+    <div class="card-body">由K值與D值組成，範圍同樣是0-100，常以80以上視為超買、20以下視為超賣，K值向上穿越D值為黃金交叉，向下穿越為死亡交叉。KD反應速度通常比MACD更靈敏，訊號更頻繁，但雜訊也較多，適合搭配較長天期指標交叉確認。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">布林通道（Bollinger Bands）</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 20 100 Q 120 40 220 70 T 400 50" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <path d="M 20 130 Q 120 70 220 100 T 400 80" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <path d="M 20 70 Q 120 10 220 40 T 400 20" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <polyline points="20,105 60,80 100,95 140,50 180,85 220,65 260,105 300,60 340,90 380,45" fill="none" stroke="#06B6D4" stroke-width="2.5"/>
+      <text x="20" y="20" fill="#10B981" font-size="10">上軌（中軌+2倍標準差）</text>
+      <text x="20" y="140" fill="#EF4444" font-size="10">下軌（中軌-2倍標準差）</text>
+    </svg>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 概念說明</div>
+    <p>布林通道由三條線組成：中軌（通常是20日均線）、上軌與下軌（中軌加減2倍標準差）。通道寬度會隨市場波動度變化：波動加大時通道張開，波動縮小時通道收窄（稱為「縮口」，常被視為醞釀變盤的訊號之一）。價格觸及上軌不代表一定要下跌，觸及下軌也不代表一定要反彈，在強勢趨勢中價格可能沿著上軌或下軌行進一段時間（稱為「軌道走勢」）。</p>
+  </div>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 指標使用的共同提醒</div>
+  <p>所有動能與震盪指標都是根據「過去」的價格數據計算，本質上具有一定的落後性，且不同指標之間常會出現互相矛盾的訊號。建議選定少數幾個你熟悉的指標深入理解其計算邏輯與侷限，而非同時堆疊大量指標卻缺乏一致的判讀框架。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📡 第五章測驗</span><span class="quiz-title">動能與震盪指標檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 布林通道「縮口」現象通常代表什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">股價一定會立刻大漲</button>
+      <button class="quiz-opt" data-correct="1">市場波動度縮小，通道收窄，常被視為醞釀變盤的訊號之一</button>
+      <button class="quiz-opt" data-correct="0">與後續走勢完全無關</button>
+      <button class="quiz-opt" data-correct="0">代表公司即將公布財報</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼建議選定少數幾個熟悉的指標，而非同時堆疊大量指標？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為指標越多，判讀一定越準確</button>
+      <button class="quiz-opt" data-correct="1">不同指標常會出現互相矛盾的訊號，缺乏一致框架容易造成判斷混亂</button>
+      <button class="quiz-opt" data-correct="0">因為軟體限制最多只能顯示一個指標</button>
+      <button class="quiz-opt" data-correct="0">與判讀品質完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：量價關係與型態確認 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 6: 量價關係與型態確認
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📊 第六章</div>
+  <h1>量價關係與型態確認<br>成交量如何驗證型態的可信度</h1>
+  <p class="desc">前面幾章介紹的所有型態，幾乎都提到「需搭配成交量確認」。這一章統整量價關係在型態確認上的具體應用方式。</p>
+  <div class="meta"><div class="meta-item"><span class="meta-icon">⏱️</span>16 分鐘</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">為什麼型態需要成交量確認</div>
+  <div class="box box-info">
+    <div class="box-title">💡 核心邏輯</div>
+    <p>價格型態只反映「價格」這一個維度，成交量則反映「有多少參與者、多少資金真正投入這個價格變動」。一個沒有成交量支撐的突破，可能只是少數交易造成的價格波動，缺乏廣泛市場共識，較容易失敗；而伴隨成交量放大的突破，代表更多市場參與者認同這個方向，訊號的可信度通常較高。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">各型態的成交量確認要點</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>型態</th><th>成交量確認重點</th></tr></thead>
+    <tbody>
+      <tr><td>頭肩頂/底、雙頂/雙底</td><td>跌破或突破頸線時，應伴隨成交量放大；反之量能低迷的假突破訊號較不可靠</td></tr>
+      <tr><td>三角收斂、矩形整理</td><td>整理期間成交量通常會逐漸萎縮，直到突破時放大，是確認真突破的重要線索</td></tr>
+      <tr><td>旗形</td><td>旗竿階段（急漲急跌）成交量通常很大，旗面整理階段成交量萎縮，突破旗面時應再度放大</td></tr>
+      <tr><td>缺口</td><td>突破缺口與逃逸缺口通常伴隨成交量明顯放大；量能不足的缺口較可能只是普通缺口，容易被回補</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">「量價背離」的警示意義</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見的量價背離情境</div>
+    <p>股價創新高，但成交量卻未同步放大甚至萎縮，稱為「價量背離」，暗示追價力道可能不如表面看起來強勁，是需要提高警覺的訊號之一。類似地，股價創新低但成交量卻未明顯放大，也可能暗示賣壓已經接近尾聲。這種量價背離的判讀邏輯，與第五章MACD指標的「背離」概念相通，只是換成用實際成交量而非計算出來的指標數值來觀察。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📊 第六章測驗</span><span class="quiz-title">量價關係檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 為什麼技術型態的突破，通常建議搭配成交量放大確認？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為成交量與型態完全無關</button>
+      <button class="quiz-opt" data-correct="1">成交量放大代表更多市場參與者認同這個方向，突破的可信度通常較高，缺乏量能的突破較容易失敗</button>
+      <button class="quiz-opt" data-correct="0">因為成交量越大，股價一定會創歷史新高</button>
+      <button class="quiz-opt" data-correct="0">成交量只在下跌時才需要參考</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 「價量背離」中，股價創新高但成交量未同步放大，暗示什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">代表這是最強勁的上漲訊號，應立即大量買進</button>
+      <button class="quiz-opt" data-correct="1">追價力道可能不如表面看起來強勁，是需要提高警覺的訊號之一</button>
+      <button class="quiz-opt" data-correct="0">與後續走勢完全無關</button>
+      <button class="quiz-opt" data-correct="0">代表公司財報一定會大幅成長</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：型態失敗與風險管理 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 7: 型態失敗與風險管理
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🛑 第七章</div>
+  <h1>型態失敗與風險管理<br>假突破、停損設定、部位控管</h1>
+  <p class="desc">再完美的型態，都有失敗的可能。這一章討論如何辨識「假突破」，以及型態交易中不可或缺的風險管理原則。</p>
+  <div class="meta"><div class="meta-item"><span class="meta-icon">⏱️</span>16 分鐘</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">假突破（False Breakout）</div>
+  <div class="chart-demo">
+    <svg class="pattern-svg" viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg">
+      <line x1="10" y1="50" x2="400" y2="50" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <text x="330" y="45" fill="#EF4444" font-size="10">壓力線</text>
+      <polyline points="20,90 80,55 140,88 200,50 240,35 270,60 310,85 360,95 400,100" fill="none" stroke="#06B6D4" stroke-width="2.5"/>
+      <circle cx="240" cy="35" r="4" fill="#F59E0B"/>
+      <text x="200" y="20" fill="#F59E0B" font-size="10">假突破後迅速拉回，跌破原壓力線</text>
+    </svg>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 假突破的常見特徵</div>
+    <p>價格短暫突破壓力或頸線，但沒有成交量放大確認，且很快又拉回到原本的區間內，這種情況稱為「假突破」，是型態交易者最常遇到的挫折之一。假突破常見於：整體大盤氛圍不佳、成交量明顯不足、或是主力刻意誘多／誘空的情境。</p>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>降低假突破誤判的做法</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>等待收盤價確認</td><td>不因盤中瞬間觸及或突破關鍵價位就立即行動，等待該根K線收盤價是否確實站穩或跌破</td></tr>
+      <tr><td>要求成交量同步放大</td><td>突破時若成交量沒有明顯放大，可信度應打折扣</td></tr>
+      <tr><td>觀察突破後的持續性</td><td>可等待突破後1-3根K線是否持續站穩在新的區間，而非突破當下立即全力進場</td></tr>
+      <tr><td>設定明確的失敗條件</td><td>若突破後又迅速跌回原區間一定幅度，視為假突破成立，執行停損</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">停損設定的常見方法</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">📏</div><div class="card-title">固定百分比停損</div><div class="card-body">設定進場價下跌一定百分比（如8%）即停損出場，方法簡單直觀，但沒有考慮個別標的的波動特性。</div></div>
+    <div class="card"><div class="card-icon">🧱</div><div class="card-title">關鍵價位停損</div><div class="card-body">依型態的頸線、支撐位等關鍵技術價位設定停損點，若價格有效跌破該價位即出場，較能反映型態邏輯本身的失敗條件。</div></div>
+    <div class="card"><div class="card-icon">📊</div><div class="card-title">波動度調整停損</div><div class="card-body">依標的近期波動幅度（如平均真實區間ATR）動態調整停損距離，波動大的標的給予較寬的停損空間，避免被正常波動雜訊洗出場。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">部位大小與風險控管的整合</div>
+  <div class="box box-success">
+    <div class="box-title">✅ 核心原則</div>
+    <p>技術分析交易的部位大小，應該與「停損距離」連動決定，而非固定投入相同金額。停損距離越遠（代表這筆交易的潛在風險越大），應相應縮小投入的部位；停損距離越近，可以相對放大部位，但整體目標是讓「單筆交易若觸發停損，虧損金額占總資金的比例維持在你能接受的固定範圍內」（例如每筆交易最大虧損不超過總資金的1-2%），這與高級與專業級課程介紹的破產風險、部位大小控管概念完全一致。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🛑 第七章測驗</span><span class="quiz-title">型態失敗與風控檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 降低假突破誤判的常見做法，下列何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只要盤中瞬間觸及關鍵價位就立即全力進場</button>
+      <button class="quiz-opt" data-correct="1">等待收盤價確認，並要求突破時成交量同步放大</button>
+      <button class="quiz-opt" data-correct="0">完全忽略成交量，只看價格是否觸及關鍵價位</button>
+      <button class="quiz-opt" data-correct="0">假突破無法透過任何方法降低誤判機率</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼部位大小應該與停損距離連動決定，而非固定投入相同金額？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為固定金額投入永遠是最佳做法</button>
+      <button class="quiz-opt" data-correct="1">讓每筆交易若觸發停損，虧損金額占總資金比例維持在可接受的固定範圍內，控制整體風險</button>
+      <button class="quiz-opt" data-correct="0">與資金管理完全無關</button>
+      <button class="quiz-opt" data-correct="0">停損距離越遠，應該投入越多資金以攤平成本</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：實戰整合與總複習 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 8: 實戰整合與總複習
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📋 第八章</div>
+  <h1>實戰整合與總複習<br>型態速查表與檢查清單</h1>
+  <p class="desc">最後一章把整份指南濃縮成一份速查表與實戰檢查清單，方便你日後快速對照複習。</p>
+  <div class="meta"><div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">型態速查表</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>分類</th><th>型態</th><th>常見偏向</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="4">反轉型態</td><td>頭肩頂 / 三重頂 / 雙頂（M頭）</td><td>偏空（跌破頸線確認）</td></tr>
+      <tr><td>頭肩底 / 三重底 / 雙底（W底）</td><td>偏多（突破頸線確認）</td></tr>
+      <tr><td>圓弧頂</td><td>偏空（緩慢轉弱）</td></tr>
+      <tr><td>圓弧底</td><td>偏多（緩慢轉強）</td></tr>
+      <tr><td rowspan="5">整理型態</td><td>對稱三角</td><td>中性，依突破方向決定</td></tr>
+      <tr><td>上升三角</td><td>偏多</td></tr>
+      <tr><td>下降三角</td><td>偏空</td></tr>
+      <tr><td>旗形 / 楔形（順勢方向）</td><td>延續原趨勢方向</td></tr>
+      <tr><td>杯柄型</td><td>偏多（突破柄部高點確認）</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">實戰檢查清單</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>先確認目前處於什麼樣的大趨勢（多時間框架分析），型態訊號應優先與主要趨勢方向一致。</li>
+    <li><span class="check-icon">✅</span>辨識出型態後，先不急著行動，等待關鍵價位（頸線/壓力/支撐）被有效突破或跌破，且收盤價確認。</li>
+    <li><span class="check-icon">✅</span>檢查突破當下的成交量是否明顯放大，量能不足需提高警覺。</li>
+    <li><span class="check-icon">✅</span>交叉比對至少一個動能指標（RSI/MACD/KD）是否與型態訊號方向一致，留意是否有背離現象。</li>
+    <li><span class="check-icon">✅</span>設定明確的停損價位（通常是型態失敗的判定價位），並依停損距離反推合理的部位大小。</li>
+    <li><span class="check-icon">✅</span>技術面訊號應與基本面分析（財報、估值、護城河）交叉確認，而非單獨作為交易依據。</li>
+    <li><span class="check-icon">✅</span>記錄每次型態交易的判斷依據與結果，定期回顧，找出自己判讀上最容易犯的錯誤模式。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">全內容總複習</div>
+  <div class="quiz-card" style="margin-top:0;">
+    <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">技術分析型態學總複習</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 「多頭吞噬」與「烏雲罩頂」的差異是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">兩者完全相同</button>
+        <button class="quiz-opt" data-correct="1">多頭吞噬出現在下跌末端、暗示偏多反轉；烏雲罩頂出現在上漲趨勢中，暗示買氣轉弱</button>
+        <button class="quiz-opt" data-correct="0">兩者都只能出現在上漲趨勢中</button>
+        <button class="quiz-opt" data-correct="0">與趨勢位置完全無關</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 頭肩頂型態中，判斷趨勢是否真的轉空的關鍵是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">只要出現左肩、頭、右肩三個高點就代表確認轉空</button>
+        <button class="quiz-opt" data-correct="1">頸線是否被有效跌破，且伴隨成交量放大確認</button>
+        <button class="quiz-opt" data-correct="0">與成交量完全無關</button>
+        <button class="quiz-opt" data-correct="0">只需要看K線顏色即可判斷</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q3. 「逃逸缺口」出現在趨勢中段，通常代表什麼？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">趨勢即將結束反轉</button>
+        <button class="quiz-opt" data-correct="1">趨勢動能強勁，市場急於朝原方向前進，常視為趨勢延續訊號</button>
+        <button class="quiz-opt" data-correct="0">與趨勢動能完全無關</button>
+        <button class="quiz-opt" data-correct="0">保證缺口會在隔天立刻回補</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q4. 假突破常見的判斷方式是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">只要盤中觸及關鍵價位就視為真突破</button>
+        <button class="quiz-opt" data-correct="1">觀察收盤價是否確實站穩、成交量是否放大、以及突破後是否有持續性</button>
+        <button class="quiz-opt" data-correct="0">假突破無法被辨識，只能事後接受結果</button>
+        <button class="quiz-opt" data-correct="0">與成交量完全無關的現象</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ 免責聲明：本指南內容僅為一般性技術分析教育之用，介紹K線型態、反轉型態、整理型態、缺口理論、動能指標與量價關係等圖表判讀知識，不構成對任何個別商品、標的或交易策略的投資建議，亦不保證任何報酬或勝率。任何技術型態或指標訊號都可能失敗，過去的價格行為模式不保證未來會重複發生。技術分析建議搭配基本面分析與嚴謹的風險管理（如停損設定、部位大小控管）一起使用，實際交易前請審慎評估自身財務狀況與風險承受能力。
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>
