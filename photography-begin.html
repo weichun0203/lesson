@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>攝影入門完全指南｜從看懂相機到拍出好照片</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:600px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.diagram-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;}
+.diagram-wrap svg{max-width:100%;height:auto;}
+.diagram-caption{font-size:12px;color:var(--text-muted);margin-top:10px;line-height:1.6;}
+.diagram-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+.analogy-box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border:1px dashed var(--accent);background:rgba(245,158,11,.06);}
+.analogy-title{font-weight:700;font-size:13px;margin-bottom:6px;color:var(--accent);display:flex;align-items:center;gap:6px;}
+.analogy-box p{font-size:13px;color:var(--text);line-height:1.7;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">📷 攝影入門</div>
+    <div class="sidebar-title">攝影入門完全指南<br>從看懂相機到拍出好照片</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// 共用表格渲染工具
+// ============================================================
+function renderTable(headers, rows){
+  return `<div class="table-wrap"><table>
+    <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+// ============================================================
+// 視覺化圖解（SVG）產生函式
+// ============================================================
+function diagram(svgInner, viewBox, caption){
+  return `<div class="diagram-wrap">
+    <svg viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg">${svgInner}</svg>
+    ${caption?`<div class="diagram-caption">${caption}</div>`:''}
+  </div>`;
+}
+
+// ① 曝光三角關係圖
+function diagramExposureTriangle(){
+  const svg = `
+    <line x1="250" y1="55" x2="80" y2="330" stroke="var(--border)" stroke-width="2"/>
+    <line x1="250" y1="55" x2="420" y2="330" stroke="var(--border)" stroke-width="2"/>
+    <line x1="80" y1="330" x2="420" y2="330" stroke="var(--border)" stroke-width="2"/>
+    <circle cx="250" cy="215" r="62" fill="var(--surface2)" stroke="var(--secondary)" stroke-width="2" stroke-dasharray="5 4"/>
+    <text x="250" y="208" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">曝光值</text>
+    <text x="250" y="228" text-anchor="middle" font-size="12" fill="var(--text-muted)">(亮度)</text>
+
+    <circle cx="250" cy="55" r="34" fill="var(--primary)"/>
+    <text x="250" y="60" text-anchor="middle" font-size="16" fill="#fff">🔵</text>
+    <text x="250" y="105" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">光圈</text>
+    <text x="250" y="122" text-anchor="middle" font-size="11" fill="var(--text-muted)">進光量 + 景深</text>
+
+    <circle cx="80" cy="330" r="34" fill="var(--secondary)"/>
+    <text x="80" y="335" text-anchor="middle" font-size="16" fill="#0F172A">⏱️</text>
+    <text x="80" y="378" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">快門速度</text>
+    <text x="80" y="395" text-anchor="middle" font-size="11" fill="var(--text-muted)">曝光時間 + 動態感</text>
+
+    <circle cx="420" cy="330" r="34" fill="var(--accent)"/>
+    <text x="420" y="335" text-anchor="middle" font-size="16" fill="#0F172A">✨</text>
+    <text x="420" y="378" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">ISO</text>
+    <text x="420" y="395" text-anchor="middle" font-size="11" fill="var(--text-muted)">感光度 + 雜訊</text>
+  `;
+  return diagram(svg, "0 0 500 410", "三個頂點互相牽動：改變其中一個，就需要調整另外兩個來維持相同的曝光值");
+}
+
+// ② 水龍頭比喻圖
+function diagramWaterAnalogy(){
+  const svg = `
+    <text x="83" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="var(--primary)">光圈＝水管粗細</text>
+    <rect x="53" y="55" width="60" height="18" rx="9" fill="var(--surface2)" stroke="var(--primary)" stroke-width="2"/>
+    <rect x="63" y="85" width="40" height="18" rx="9" fill="var(--surface2)" stroke="var(--primary)" stroke-width="2"/>
+    <text x="83" y="122" text-anchor="middle" font-size="11" fill="var(--text-muted)">管子越粗，水流越多</text>
+
+    <text x="250" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="var(--secondary)">快門＝水龍頭開多久</text>
+    <circle cx="250" cy="80" r="30" fill="none" stroke="var(--secondary)" stroke-width="3"/>
+    <line x1="250" y1="80" x2="250" y2="58" stroke="var(--secondary)" stroke-width="3"/>
+    <line x1="250" y1="80" x2="268" y2="88" stroke="var(--secondary)" stroke-width="3"/>
+    <text x="250" y="122" text-anchor="middle" font-size="11" fill="var(--text-muted)">開越久，接到的水越多</text>
+
+    <text x="417" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">ISO＝訊號放大器</text>
+    <rect x="392" y="60" width="16" height="35" fill="var(--surface2)" stroke="var(--accent)" stroke-width="2"/>
+    <path d="M420 95 L432 55 L444 95 Z" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    <text x="417" y="122" text-anchor="middle" font-size="11" fill="var(--text-muted)">把接到的水「放大」看，雜質也放大</text>
+  `;
+  return diagram(svg, "0 0 500 140", "水管粗細×開多久×放大程度，三者共同決定最後接到多少水（曝光量）");
+}
+
+// ③ 拍攝模式轉盤
+function diagramModeDial(){
+  const pts = [
+    {x:250,y:60,label:'AUTO',sub:'全自動'},
+    {x:390,y:170,label:'P',sub:'程式自動'},
+    {x:338,y:335,label:'Av/A',sub:'光圈優先'},
+    {x:162,y:335,label:'Tv/S',sub:'快門優先'},
+    {x:110,y:170,label:'M',sub:'手動'},
+  ];
+  const nodes = pts.map(p=>`
+    <circle cx="${p.x}" cy="${p.y}" r="38" fill="var(--surface2)" stroke="var(--primary)" stroke-width="2"/>
+    <text x="${p.x}" y="${p.y+2}" text-anchor="middle" font-size="15" font-weight="800" fill="var(--text)">${p.label}</text>
+    <text x="${p.x}" y="${p.y+50}" text-anchor="middle" font-size="11" fill="var(--text-muted)">${p.sub}</text>
+  `).join('');
+  return diagram(`
+    <circle cx="250" cy="200" r="150" fill="none" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 4"/>
+    ${nodes}
+  `, "0 0 500 410", "從左到右控制權遞增：AUTO完全交給相機，M完全由你決定光圈快門ISO");
+}
+
+// ④ 光圈大小與景深
+function diagramAperture(){
+  const svg = `
+    <text x="125" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">大光圈 f/1.8</text>
+    <circle cx="125" cy="100" r="66" fill="#0B1220" stroke="var(--primary)" stroke-width="3"/>
+    <circle cx="125" cy="100" r="20" fill="var(--primary)"/>
+    <text x="125" y="150" text-anchor="middle" font-size="11" fill="var(--text-muted)">開口大，進光多，景深淺</text>
+
+    <text x="375" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">小光圈 f/16</text>
+    <circle cx="375" cy="100" r="66" fill="#0B1220" stroke="var(--primary)" stroke-width="3"/>
+    <circle cx="375" cy="100" r="55" fill="var(--primary)"/>
+    <text x="375" y="150" text-anchor="middle" font-size="11" fill="var(--text-muted)">開口小，進光少，景深深</text>
+
+    <defs><filter id="dofBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+    <g filter="url(#dofBlur)">
+      <rect x="20" y="205" width="210" height="55" fill="var(--surface2)"/>
+      <rect x="40" y="215" width="18" height="35" fill="var(--accent)"/>
+      <rect x="90" y="210" width="18" height="45" fill="var(--secondary)"/>
+      <rect x="180" y="212" width="18" height="40" fill="var(--danger)"/>
+    </g>
+    <circle cx="125" cy="232" r="14" fill="var(--success)"/>
+    <text x="125" y="275" text-anchor="middle" font-size="11" fill="var(--text-muted)">主體清楚，背景模糊一片</text>
+
+    <rect x="270" y="205" width="210" height="55" fill="var(--surface2)"/>
+    <rect x="290" y="215" width="18" height="35" fill="var(--accent)"/>
+    <rect x="340" y="210" width="18" height="45" fill="var(--secondary)"/>
+    <rect x="430" y="212" width="18" height="40" fill="var(--danger)"/>
+    <circle cx="375" cy="232" r="14" fill="var(--success)"/>
+    <text x="375" y="275" text-anchor="middle" font-size="11" fill="var(--text-muted)">主體與背景都清晰</text>
+  `;
+  return diagram(svg, "0 0 500 285", "光圈開口大小就像相機的瞳孔：開越大，背景越模糊（散景）；開越小，前後景都清晰");
+}
+
+// ⑤ 快門速度與動態模糊
+function diagramShutterMotion(){
+  const trail = (cx,cy,n,dx)=>{
+    let s='';
+    for(let i=n;i>=0;i--){
+      s += `<circle cx="${cx-i*dx}" cy="${cy}" r="14" fill="var(--secondary)" opacity="${(1-(i/(n+1))*0.85).toFixed(2)}"/>`;
+    }
+    return s;
+  };
+  const svg = `
+    <text x="83" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">1/1000秒（高速）</text>
+    <rect x="20" y="45" width="126" height="90" rx="8" fill="var(--surface2)"/>
+    ${trail(83,90,0,0)}
+    <text x="83" y="155" text-anchor="middle" font-size="11" fill="var(--text-muted)">完全凝結，銳利清楚</text>
+
+    <text x="250" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">1/30秒（中速）</text>
+    <rect x="187" y="45" width="126" height="90" rx="8" fill="var(--surface2)"/>
+    ${trail(280,90,4,14)}
+    <text x="250" y="155" text-anchor="middle" font-size="11" fill="var(--text-muted)">出現輕微拖影</text>
+
+    <text x="417" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">1秒以上（長曝光）</text>
+    <rect x="354" y="45" width="126" height="90" rx="8" fill="var(--surface2)"/>
+    <line x1="365" y1="90" x2="470" y2="90" stroke="var(--secondary)" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+    ${trail(470,90,0,0)}
+    <text x="417" y="155" text-anchor="middle" font-size="11" fill="var(--text-muted)">拍出流動光軌/絲滑水流</text>
+  `;
+  return diagram(svg, "0 0 500 165", "快門就像眼皮眨眼的速度：眨得快，畫面凝結清楚；眼皮開很久不眨，動態的東西會拖出殘影");
+}
+
+// ⑥ ISO 與雜訊顆粒感
+function diagramISONoise(){
+  const grain = (baseX, count, maxOp)=>{
+    let s='';
+    for(let i=0;i<count;i++){
+      const x = baseX + 8 + ((Math.sin(i*12.9898)*43758.5453)%1+1)%1*134;
+      const y = 45 + ((Math.sin(i*78.233)*12345.678)%1+1)%1*80;
+      const op = (((Math.sin(i*37.719)+1)/2)*maxOp).toFixed(2);
+      const r = 1.4 + (((Math.sin(i*5.37)+1)/2))*1.6;
+      s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="var(--danger)" opacity="${op}"/>`;
+    }
+    return s;
+  };
+  const svg = `
+    <text x="83" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">ISO 100</text>
+    <rect x="20" y="45" width="126" height="80" rx="8" fill="#1a2332"/>
+    ${grain(20,10,0.25)}
+    <text x="83" y="140" text-anchor="middle" font-size="11" fill="var(--text-muted)">畫面乾淨</text>
+
+    <text x="250" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">ISO 1600</text>
+    <rect x="187" y="45" width="126" height="80" rx="8" fill="#1a2332"/>
+    ${grain(187,45,0.45)}
+    <text x="250" y="140" text-anchor="middle" font-size="11" fill="var(--text-muted)">開始有顆粒感</text>
+
+    <text x="417" y="26" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">ISO 6400+</text>
+    <rect x="354" y="45" width="126" height="80" rx="8" fill="#1a2332"/>
+    ${grain(354,90,0.7)}
+    <text x="417" y="140" text-anchor="middle" font-size="11" fill="var(--text-muted)">明顯雜訊顆粒</text>
+  `;
+  return diagram(svg, "0 0 500 150", "就像把收音機音量轉大：訊號（畫面）跟著雜音（雜訊）一起被放大");
+}
+
+// ⑦ 三分法構圖
+function diagramRuleOfThirds(){
+  const svg = `
+    <rect x="20" y="20" width="460" height="260" fill="var(--surface2)"/>
+    <line x1="173" y1="20" x2="173" y2="280" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <line x1="327" y1="20" x2="327" y2="280" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <line x1="20" y1="107" x2="480" y2="107" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <line x1="20" y1="193" x2="480" y2="193" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <rect x="20" y="193" width="460" height="87" fill="var(--secondary)" opacity="0.15"/>
+    <circle cx="327" cy="107" r="16" fill="var(--accent)"/>
+    <text x="327" y="112" text-anchor="middle" font-size="12" fill="#0F172A" font-weight="700">★</text>
+    <text x="250" y="305" text-anchor="middle" font-size="11" fill="var(--text-muted)">主體放在交叉點，地平線對齊下方格線，比置中更有動態感</text>
+  `;
+  return diagram(svg, "0 0 500 320", "");
+}
+
+// ⑧ 引導線構圖
+function diagramLeadingLines(){
+  const svg = `
+    <rect x="20" y="20" width="460" height="220" fill="var(--surface2)"/>
+    <line x1="20" y1="240" x2="250" y2="70" stroke="var(--secondary)" stroke-width="3"/>
+    <line x1="480" y1="240" x2="250" y2="70" stroke="var(--secondary)" stroke-width="3"/>
+    <line x1="20" y1="200" x2="230" y2="90" stroke="var(--secondary)" stroke-width="2" opacity="0.5"/>
+    <line x1="480" y1="200" x2="270" y2="90" stroke="var(--secondary)" stroke-width="2" opacity="0.5"/>
+    <circle cx="250" cy="70" r="16" fill="var(--accent)"/>
+    <text x="250" y="255" text-anchor="middle" font-size="11" fill="var(--text-muted)">道路、欄杆等線條匯聚到主體，視線自然被引導過去</text>
+  `;
+  return diagram(svg, "0 0 500 265", "");
+}
+
+// ⑨ 光線方向與陰影
+function diagramLightDirection(){
+  const panel = (cx, sunAngle, label, desc)=>{
+    const rad = sunAngle*Math.PI/180;
+    const sunX = cx + 55*Math.cos(rad);
+    const sunY = 70 + 55*Math.sin(rad);
+    const shadowDx = 14*Math.cos(rad+Math.PI);
+    return `
+      <text x="${cx}" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">${label}</text>
+      <circle cx="${sunX.toFixed(1)}" cy="${sunY.toFixed(1)}" r="12" fill="var(--accent)"/>
+      <circle cx="${cx}" cy="95" r="30" fill="var(--surface2)" stroke="var(--secondary)" stroke-width="2"/>
+      <ellipse cx="${(cx+shadowDx*2).toFixed(1)}" cy="128" rx="22" ry="7" fill="#000" opacity="0.45"/>
+      <text x="${cx}" y="152" text-anchor="middle" font-size="10" fill="var(--text-muted)">${desc}</text>
+    `;
+  };
+  const svg = `
+    ${panel(83, -145, '順光', '陰影在正後方，較平面')}
+    ${panel(250, -90, '側光', '陰影在側邊，立體感強')}
+    ${panel(417, -35, '逆光', '光源在後方，需注意測光')}
+  `;
+  return diagram(svg, "0 0 500 165", "太陽符號代表光源方向，橢圓代表投射出的陰影位置");
+}
+
+// ⑩ 色溫 K 值光譜
+function diagramColorTemp(){
+  const marks = [
+    {k:'1900K',x:40,icon:'🕯️',label:'蠟燭'},
+    {k:'3200K',x:150,icon:'💡',label:'鎢絲燈'},
+    {k:'5500K',x:260,icon:'☀️',label:'日光'},
+    {k:'6500K',x:350,icon:'☁️',label:'陰天'},
+    {k:'10000K+',x:450,icon:'🌤️',label:'藍天陰影'},
+  ];
+  const nodes = marks.map(m=>`
+    <text x="${m.x}" y="45" text-anchor="middle" font-size="16">${m.icon}</text>
+    <line x1="${m.x}" y1="60" x2="${m.x}" y2="75" stroke="var(--text-muted)" stroke-width="1.5"/>
+    <text x="${m.x}" y="95" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">${m.k}</text>
+    <text x="${m.x}" y="110" text-anchor="middle" font-size="10" fill="var(--text-muted)">${m.label}</text>
+  `).join('');
+  const svg = `
+    <defs>
+      <linearGradient id="ktemp" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#F97316"/>
+        <stop offset="35%" stop-color="#FDE68A"/>
+        <stop offset="60%" stop-color="#F8FAFC"/>
+        <stop offset="100%" stop-color="#3B82F6"/>
+      </linearGradient>
+    </defs>
+    <rect x="20" y="60" width="460" height="14" rx="7" fill="url(#ktemp)"/>
+    ${nodes}
+  `;
+  return diagram(svg, "0 0 500 120", "色溫越低越偏橘紅（暖），色溫越高越偏藍（冷）");
+}
+
+// ⑪ 焦段視角比較
+function diagramFocalLength(){
+  const cone = (angle, color, label)=>{
+    const half = angle/2*Math.PI/180;
+    const x1 = 60 + 380*Math.cos(-half);
+    const y1 = 150 + 380*Math.sin(-half);
+    const x2 = 60 + 380*Math.cos(half);
+    const y2 = 150 + 380*Math.sin(half);
+    return `<path d="M60 150 L${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)} Z" fill="${color}" opacity="0.25"/>`;
+  };
+  const svg = `
+    ${cone(90,'var(--secondary)','超廣角')}
+    ${cone(45,'var(--primary)','標準')}
+    ${cone(14,'var(--danger)','望遠')}
+    <rect x="35" y="135" width="50" height="30" rx="4" fill="var(--surface2)" stroke="var(--text)" stroke-width="2"/>
+    <circle cx="85" cy="150" r="10" fill="var(--text-muted)"/>
+    <text x="440" y="65" font-size="12" fill="var(--secondary)" font-weight="700">超廣角：視角90°，拍到整個場景</text>
+    <text x="440" y="150" font-size="12" fill="var(--primary)" font-weight="700">標準：視角45°，接近人眼</text>
+    <text x="440" y="235" font-size="12" fill="var(--danger)" font-weight="700">望遠：視角14°，只框住遠方一小塊</text>
+  `;
+  return diagram(svg, "0 0 500 300", "同一個拍攝點，視角越廣看到的範圍越大；視角越窄，畫面被「放大」的感覺越強");
+}
+
+// ⑫ 直方圖判讀
+function diagramHistogram(){
+  const bars=(heights,color)=>heights.map((h,i)=>`<rect x="${i*9+4}" y="${70-h}" width="6" height="${h}" fill="${color}"/>`).join('');
+  const under=[5,8,14,22,34,48,60,66,60,44,30,18,10,6,4,3,2,1,1,1];
+  const good =[3,6,12,22,36,52,64,68,64,52,36,22,12,6,3,2,1,1,1,1];
+  const over =[1,1,1,2,3,6,10,18,30,44,60,66,60,48,34,22,14,8,5,3];
+  const svg = `
+    <text x="83" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="var(--danger)">曝光不足</text>
+    <rect x="20" y="20" width="126" height="70" fill="var(--surface2)"/>
+    <g transform="translate(20,20)">${bars(under,'var(--danger)')}</g>
+    <text x="83" y="105" text-anchor="middle" font-size="10" fill="var(--text-muted)">數據堆在最左（死黑）</text>
+
+    <text x="250" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="var(--success)">曝光正常</text>
+    <rect x="187" y="20" width="126" height="70" fill="var(--surface2)"/>
+    <g transform="translate(187,20)">${bars(good,'var(--success)')}</g>
+    <text x="250" y="105" text-anchor="middle" font-size="10" fill="var(--text-muted)">分布集中在中間，兩端有留白</text>
+
+    <text x="417" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent)">曝光過度</text>
+    <rect x="354" y="20" width="126" height="70" fill="var(--surface2)"/>
+    <g transform="translate(354,20)">${bars(over,'var(--accent)')}</g>
+    <text x="417" y="105" text-anchor="middle" font-size="10" fill="var(--text-muted)">數據堆在最右（死白）</text>
+  `;
+  return diagram(svg, "0 0 500 115", "橫軸是從全黑到全白，縱軸是像素數量：兩端「貼壁」就代表細節已經救不回來了");
+}
+
+function analogyBox(title, text){
+  return `<div class="analogy-box"><div class="analogy-title">💬 ${title}</div><p>${text}</p></div>`;
+}
+
+// 小卡式圖解（用於「每個情境都有一張圖」的九宮格/八宮格）
+function miniDiagram(title, desc, svgInner, viewBox='0 0 220 140'){
+  return `<div class="card">
+    <svg viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin-bottom:10px;border-radius:8px;overflow:hidden;">${svgInner}</svg>
+    <div class="card-title">${title}</div>
+    <div class="card-body">${desc}</div>
+  </div>`;
+}
+
+// ============================================================
+// 九大構圖原則：每一種都各自一張小圖解
+// ============================================================
+const compositionDiagrams = [
+  {t:'三分法', d:'把畫面切成井字形九宮格，主體放在交叉點上，比置中更有動態感', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <line x1="73" y1="0" x2="73" y2="140" stroke="var(--text-muted)" stroke-dasharray="3 3"/>
+    <line x1="147" y1="0" x2="147" y2="140" stroke="var(--text-muted)" stroke-dasharray="3 3"/>
+    <line x1="0" y1="47" x2="220" y2="47" stroke="var(--text-muted)" stroke-dasharray="3 3"/>
+    <line x1="0" y1="93" x2="220" y2="93" stroke="var(--text-muted)" stroke-dasharray="3 3"/>
+    <circle cx="147" cy="47" r="11" fill="var(--accent)"/>`},
+  {t:'引導線', d:'利用道路、欄杆等線條，引導觀者視線走向主體', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <line x1="10" y1="132" x2="110" y2="35" stroke="var(--secondary)" stroke-width="3"/>
+    <line x1="210" y1="132" x2="110" y2="35" stroke="var(--secondary)" stroke-width="3"/>
+    <circle cx="110" cy="35" r="10" fill="var(--accent)"/>`},
+  {t:'對稱與圖案', d:'利用建築、倒影等重複圖案或對稱結構，營造穩定和諧感', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <line x1="110" y1="0" x2="110" y2="140" stroke="var(--text-muted)" stroke-dasharray="2 2"/>
+    <polygon points="110,20 145,85 75,85" fill="var(--primary)"/>
+    <polygon points="110,120 145,55 75,55" fill="var(--primary)" opacity="0.45"/>`},
+  {t:'框架構圖', d:'利用門窗、樹枝等前景元素框住主體，增加畫面層次與焦點', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <circle cx="110" cy="70" r="16" fill="var(--accent)"/>
+    <path d="M0 0 H220 V140 H0 Z M32 22 H188 V118 H32 Z" fill="#000" fill-rule="evenodd" opacity="0.6"/>`},
+  {t:'留白', d:'在主體周圍保留大量空白空間，營造簡潔、呼吸感或孤獨氛圍', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <circle cx="178" cy="102" r="10" fill="var(--accent)"/>`},
+  {t:'前中後景層次', d:'安排前景、中景、背景三個層次，增加畫面的空間深度感', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <path d="M0 140 L55 55 L120 140 Z" fill="var(--primary)" opacity="0.28"/>
+    <path d="M55 140 L130 35 L210 140 Z" fill="var(--primary)" opacity="0.55"/>
+    <path d="M100 140 L150 88 L200 140 Z" fill="var(--primary)" opacity="0.9"/>`},
+  {t:'黃金比例螺旋', d:'沿螺旋線安排主體與視覺元素，讓畫面產生自然流動的視覺動線', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <path d="M18 18 Q18 122 122 122 Q202 122 202 42 Q202 18 168 18 Q148 18 148 44" fill="none" stroke="var(--secondary)" stroke-width="2.5"/>
+    <circle cx="148" cy="44" r="9" fill="var(--accent)"/>`},
+  {t:'對比與焦點', d:'利用色彩、明暗、大小的對比，讓主體從畫面中跳出來', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <circle cx="55" cy="75" r="13" fill="var(--text-muted)" opacity="0.4"/>
+    <circle cx="95" cy="48" r="13" fill="var(--text-muted)" opacity="0.4"/>
+    <circle cx="150" cy="95" r="13" fill="var(--text-muted)" opacity="0.4"/>
+    <circle cx="115" cy="70" r="18" fill="var(--danger)"/>`},
+  {t:'打破規則', d:'熟悉以上原則後，刻意置中或不平衡構圖，可以創造特殊的張力效果', s:`
+    <rect width="220" height="140" fill="var(--surface2)"/>
+    <line x1="73" y1="0" x2="73" y2="140" stroke="var(--text-muted)" stroke-dasharray="3 3" opacity="0.3"/>
+    <line x1="147" y1="0" x2="147" y2="140" stroke="var(--text-muted)" stroke-dasharray="3 3" opacity="0.3"/>
+    <circle cx="110" cy="70" r="15" fill="var(--accent)"/>
+    <line x1="35" y1="30" x2="185" y2="110" stroke="var(--danger)" stroke-width="2"/>
+    <line x1="185" y1="30" x2="35" y2="110" stroke="var(--danger)" stroke-width="2"/>`},
+];
+function renderCompositionGrid(){
+  return `<div class="card-grid">${compositionDiagrams.map(c=>miniDiagram(c.t, c.d, c.s)).join('')}</div>`;
+}
+
+// ============================================================
+// 八種光線情境：每一種都各自一張小圖解
+// ============================================================
+const lightDiagrams = [
+  {t:'順光', d:'光源在拍攝者背後，主體受光均勻、細節清楚，但畫面容易顯得平淡', s:`
+    <rect width="220" height="150" fill="var(--surface2)"/>
+    <rect y="112" width="220" height="38" fill="#0B1220"/>
+    <circle cx="110" cy="18" r="12" fill="var(--accent)"/>
+    <circle cx="110" cy="90" r="22" fill="var(--secondary)"/>
+    <ellipse cx="110" cy="118" rx="10" ry="5" fill="#000" opacity="0.3"/>`},
+  {t:'側光', d:'光源在主體側邊，能凸顯立體感與紋理，人像常用的用光方向', s:`
+    <rect width="220" height="150" fill="var(--surface2)"/>
+    <rect y="112" width="220" height="38" fill="#0B1220"/>
+    <circle cx="35" cy="55" r="12" fill="var(--accent)"/>
+    <circle cx="110" cy="90" r="22" fill="var(--secondary)"/>
+    <ellipse cx="145" cy="118" rx="18" ry="5" fill="#000" opacity="0.45"/>`},
+  {t:'逆光', d:'光源在主體後方，可拍出剪影或夢幻光暈，須注意測光避免主體過暗', s:`
+    <rect width="220" height="150" fill="var(--surface2)"/>
+    <rect y="112" width="220" height="38" fill="#0B1220"/>
+    <circle cx="110" cy="60" r="16" fill="var(--accent)" opacity="0.9"/>
+    <circle cx="110" cy="90" r="22" fill="#0F172A" stroke="var(--accent)" stroke-width="2"/>
+    <ellipse cx="110" cy="128" rx="34" ry="7" fill="#000" opacity="0.55"/>`},
+  {t:'頂光', d:'正午陽光從正上方照射，陰影集中在物體下方，人像易產生黑眼圈陰影', s:`
+    <rect width="220" height="150" fill="var(--surface2)"/>
+    <rect y="112" width="220" height="38" fill="#0B1220"/>
+    <circle cx="110" cy="10" r="12" fill="var(--accent)"/>
+    <circle cx="110" cy="90" r="22" fill="var(--secondary)"/>
+    <ellipse cx="110" cy="115" rx="9" ry="4" fill="#000" opacity="0.6"/>`},
+  {t:'黃金時刻', d:'日出後、日落前約1小時，光線柔和偏暖，風景與人像攝影的最佳時段', s:`
+    <defs><linearGradient id="gh" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7C3AED"/><stop offset="60%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#FDE68A"/></linearGradient></defs>
+    <rect width="220" height="150" fill="url(#gh)"/>
+    <rect y="118" width="220" height="32" fill="#1a1030"/>
+    <circle cx="40" cy="112" r="14" fill="#FDE68A"/>
+    <circle cx="110" cy="95" r="20" fill="#3730A3"/>
+    <ellipse cx="165" cy="123" rx="40" ry="6" fill="#000" opacity="0.4"/>`},
+  {t:'藍調時刻', d:'日落後的短暫時段，天空呈深藍色調，適合搭配城市燈光拍夜景', s:`
+    <defs><linearGradient id="bh" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0F172A"/><stop offset="100%" stop-color="#1E3A8A"/></linearGradient></defs>
+    <rect width="220" height="150" fill="url(#bh)"/>
+    <rect y="118" width="220" height="32" fill="#0B1220"/>
+    <circle cx="45" cy="60" r="3" fill="#FDE68A"/><circle cx="70" cy="80" r="3" fill="#FDE68A"/><circle cx="160" cy="65" r="3" fill="#FDE68A"/>
+    <circle cx="110" cy="95" r="20" fill="#334155"/>
+    <ellipse cx="110" cy="122" rx="14" ry="5" fill="#000" opacity="0.3"/>`},
+  {t:'陰天柔光', d:'雲層如巨大柔光罩，光線均勻柔和，適合人像特寫，膚色更自然', s:`
+    <rect width="220" height="150" fill="var(--surface2)"/>
+    <rect y="118" width="220" height="32" fill="#0B1220"/>
+    <ellipse cx="110" cy="35" rx="80" ry="22" fill="var(--text-muted)" opacity="0.5"/>
+    <ellipse cx="70" cy="30" rx="45" ry="16" fill="var(--text-muted)" opacity="0.4"/>
+    <circle cx="110" cy="95" r="20" fill="var(--secondary)"/>
+    <ellipse cx="110" cy="120" rx="10" ry="4" fill="#000" opacity="0.2"/>`},
+  {t:'人造光', d:'閃光燈或持續燈可彌補自然光不足，並精準控制光線方向與強弱', s:`
+    <rect width="220" height="150" fill="var(--surface2)"/>
+    <rect y="112" width="220" height="38" fill="#0B1220"/>
+    <rect x="25" y="45" width="14" height="26" rx="2" fill="var(--accent)"/>
+    <line x1="39" y1="55" x2="90" y2="70" stroke="var(--accent)" stroke-width="2" opacity="0.7"/>
+    <line x1="39" y1="60" x2="90" y2="80" stroke="var(--accent)" stroke-width="2" opacity="0.5"/>
+    <line x1="39" y1="50" x2="90" y2="62" stroke="var(--accent)" stroke-width="2" opacity="0.5"/>
+    <circle cx="110" cy="90" r="22" fill="var(--secondary)"/>
+    <ellipse cx="130" cy="118" rx="16" ry="5" fill="#000" opacity="0.4"/>`},
+];
+function renderLightGrid(){
+  return `<div class="card-grid">${lightDiagrams.map(c=>miniDiagram(c.t, c.d, c.s, '0 0 220 150')).join('')}</div>`;
+}
+
+// ============================================================
+// 章節資料
+// ============================================================
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'攝影學習地圖', icon:'🗺️', time:'8 分鐘', level:'所有程度', content: renderCh0 },
+  { id:1, title:'曝光三角：光圈快門ISO', subtitle:'攝影最核心的觀念', icon:'🔺', time:'18 分鐘', level:'入門', content: renderCh1 },
+  { id:2, title:'認識你的相機', subtitle:'拍攝模式與基本操作', icon:'📷', time:'15 分鐘', level:'入門', content: renderCh2 },
+  { id:3, title:'光圈與景深控制', subtitle:'決定背景虛化的關鍵', icon:'🎯', time:'15 分鐘', level:'基礎', content: renderCh3 },
+  { id:4, title:'快門速度與動態捕捉', subtitle:'凝結瞬間或拍出光軌', icon:'⏱️', time:'15 分鐘', level:'基礎', content: renderCh4 },
+  { id:5, title:'ISO與雜訊控制', subtitle:'弱光環境的取捨', icon:'✨', time:'12 分鐘', level:'基礎', content: renderCh5 },
+  { id:6, title:'構圖原則與視覺引導', subtitle:'讓照片有主題、有層次', icon:'🖼️', time:'18 分鐘', level:'進階', content: renderCh6 },
+  { id:7, title:'光線的運用', subtitle:'攝影的靈魂', icon:'☀️', time:'15 分鐘', level:'進階', content: renderCh7 },
+  { id:8, title:'白平衡與色彩', subtitle:'還原真實或營造氛圍', icon:'🎨', time:'12 分鐘', level:'進階', content: renderCh8 },
+  { id:9, title:'鏡頭選擇與焦段應用', subtitle:'不同焦段拍出不同故事', icon:'🔭', time:'15 分鐘', level:'進階', content: renderCh9 },
+  { id:10, title:'後製基礎與常見陷阱', subtitle:'新手最容易踩的坑', icon:'⚠️', time:'15 分鐘', level:'專家', content: renderCh10 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('photo_101_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('photo_101_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// CHAPTER 0: 課程總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>攝影入門完全指南<br>從看懂相機到拍出好照片</h1>
+  <p class="desc">曝光三要素 × 構圖公式 × 光線運用 × 後製基礎，帶你從完全不懂相機，到能獨立判斷、拍出一張想要的照片。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 2.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>11 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適合完全新手</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">曝光核心要素</div></div>
+    <div class="stat-card"><div class="stat-num">9</div><div class="stat-label">構圖原則</div></div>
+    <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">光線運用場景</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">📷 相機基礎（第1-2章）</div>
+        <div class="step-desc">曝光三角（光圈/快門/ISO）的核心觀念，以及相機拍攝模式與基本操作，這是所有後續內容的地基。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">🎯 曝光控制（第3-5章）</div>
+        <div class="step-desc">分別深入光圈與景深、快門速度與動態捕捉、ISO與雜訊控制，學會依畫面需求主動選擇參數，而不是只會用自動模式。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">🖼️ 畫面設計（第6章）</div>
+        <div class="step-desc">構圖原則與視覺引導技巧，讓照片有明確主題、層次感與觀看動線。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">☀️🎨 光線與色彩（第7-8章）</div>
+        <div class="step-desc">光線的方向與時段運用、白平衡與色溫概念，這兩項往往是「隨手拍」與「有質感」的分水嶺。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">🔭⚠️ 鏡頭與後製（第9-10章）</div>
+        <div class="step-desc">不同焦段鏡頭的應用場景，以及後製基礎流程與新手最容易踩的六大陷阱。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">如何使用本課程</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>按順序學習：第1章的曝光三角是後面所有章節的基礎觀念。</li>
+        <li><span class="check-icon">✅</span>做完每章測驗：60分以上才算過關，幫助你鞏固知識。</li>
+        <li><span class="check-icon">✅</span>邊學邊實拍：每章結束後，帶著相機實際練習該章的技巧。</li>
+        <li><span class="check-icon">✅</span>善用對照表：第3-5章的參數對照表可以存起來，拍攝時隨時查閱。</li>
+        <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 給已有基礎的學習者</div>
+    <p>如果你已經熟悉曝光三角，可以直接跳到第6章（構圖）或第7章（光線運用），課程支援任意跳章。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習 第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1: 曝光三角
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔺 第一章</div>
+  <h1>曝光三角：光圈、快門、ISO<br>攝影最核心的觀念</h1>
+  <p class="desc">在學任何技巧之前，你必須先搞懂「曝光」是怎麼決定的。這三個參數彼此牽動、互相補償，是後面所有章節的地基。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌱</span>入門</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">核心定義</div>
+  <div class="card">
+    <div class="card-body">
+      <p style="font-size:15px;color:var(--text);margin-bottom:12px;">一張照片的亮暗（曝光）由三個參數共同決定：<strong style="color:var(--secondary)">光圈、快門速度、ISO</strong>。它們就像水龍頭：光圈是水管的粗細，快門速度是開水龍頭的時間，ISO則是把接到的水「放大」的程度。三者任何一個改變，都需要調整另外兩個來維持相同的曝光量。</p>
+    </div>
+  </div>
+  ${diagramExposureTriangle()}
+  ${analogyBox('接水的比喻', '想像你要接一桶水：水管粗細（光圈）、開水龍頭的時間（快門）、事後把水位「加倍計算」的放大鏡（ISO），三個因素中任何一個變小，只要把另外兩個放大，最後接到的水量還是一樣多。')}
+  ${diagramWaterAnalogy()}
+</div>
+
+<div class="section">
+  <div class="section-title">三大要素各自的雙重作用</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🔵</div>
+      <div class="card-title">光圈 Aperture（f值）</div>
+      <div class="card-body">控制進光量，同時也決定景深（背景清晰或模糊）。f值越小，光圈越大，進光越多、景深越淺。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⏱️</div>
+      <div class="card-title">快門速度 Shutter Speed</div>
+      <div class="card-body">控制感光元件曝光的時間長短，同時也決定畫面是否有動態模糊。快門越快，越能凝結瞬間。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">✨</div>
+      <div class="card-title">ISO 感光度</div>
+      <div class="card-body">控制感光元件對光線的敏感度，同時也影響畫面雜訊。ISO越高，弱光下越亮，但雜訊也越明顯。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三者如何互相補償</div>
+  <div class="formula">光圈變小2格（少一半光量）
+→ 快門變慢2格（延長曝光時間補回光量）
+→ 或 ISO提高2倍（提升感光度補回亮度）
+最終畫面亮度維持不變，但景深/動態模糊/雜訊三種「副作用」各不相同</div>
+  <div class="box box-info">
+    <div class="box-title">💡 選擇順序建議</div>
+    <p>新手可以先決定「我最在意哪個效果」：想要人像背景模糊 → 先決定光圈；想要凝結運動瞬間 → 先決定快門；光線充足時 → ISO盡量維持最低（畫質最佳）。</p>
+  </div>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 常見誤區</div>
+  <ul>
+    <li>只會用全自動模式，永遠不知道為什麼有些照片模糊、有些背景沒有虛化</li>
+    <li>誤以為ISO調高「只是」讓照片變亮，忽略雜訊會跟著變多</li>
+    <li>不知道三者是連動的，改了光圈卻沒注意到快門或ISO也需要跟著調整</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">實作檢核流程</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">決定想要的畫面效果</div><div class="step-desc">背景要不要模糊？動作要凝結還是要有動態感？</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">選擇對應的優先參數</div><div class="step-desc">依效果先決定光圈或快門，再用另外兩者補償曝光。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">檢查測光表</div><div class="step-desc">觀察觀景窗或螢幕上的測光指示，確認曝光落在合理範圍。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">拍攝後檢視直方圖</div><div class="step-desc">確認畫面沒有過曝或死黑，必要時微調曝光補償再重拍。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔺 第一章測驗</span><span class="quiz-title">曝光三角觀念檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 決定一張照片曝光的三大參數是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">解析度、對焦點、白平衡</button>
+      <button class="quiz-opt" data-correct="1">光圈、快門速度、ISO</button>
+      <button class="quiz-opt" data-correct="0">焦段、濾鏡、防手震</button>
+      <button class="quiz-opt" data-correct="0">記憶卡速度、電池電量、鏡頭品牌</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. f值越小代表？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">光圈越小、進光越少</button>
+      <button class="quiz-opt" data-correct="1">光圈越大、進光越多，景深越淺</button>
+      <button class="quiz-opt" data-correct="0">快門速度越快</button>
+      <button class="quiz-opt" data-correct="0">ISO自動調到最低</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. ISO調高的主要副作用是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">景深會變淺</button>
+      <button class="quiz-opt" data-correct="1">畫面雜訊會變多</button>
+      <button class="quiz-opt" data-correct="0">快門速度會自動變快</button>
+      <button class="quiz-opt" data-correct="0">完全沒有任何副作用</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：認識你的相機 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2: 認識你的相機
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📷 第二章</div>
+  <h1>認識你的相機<br>拍攝模式與基本操作</h1>
+  <p class="desc">搞懂曝光三角後，這一章帶你認識相機轉盤上那些英文字母代表什麼，以及開機到按下快門前該檢查哪些設定。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌱</span>入門</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">五種常見拍攝模式</div>
+  ${renderTable(
+    ["模式","代號","說明","適合情境"],
+    [
+      ["全自動模式","Auto","相機自動決定所有參數","完全新手、隨手快拍"],
+      ["程式自動模式","P","相機自動配對光圈快門，可調ISO、白平衡等其他設定","比全自動多一點控制權"],
+      ["光圈優先","Av / A","自訂光圈，相機自動配對快門","人像、風景，想控制景深"],
+      ["快門優先","Tv / S","自訂快門，相機自動配對光圈","運動、水流、光軌"],
+      ["手動模式","M","光圈、快門、ISO全部自己設定","完全掌控畫面效果，適合進階練習"],
+    ]
+  )}
+  ${diagramModeDial()}
+  ${analogyBox('開車排檔的比喻', '這五個模式就像開車的排檔：AUTO是全自動駕駛、P是自排代勞大部分事情、Av/Tv是半自排（你決定一個，車子幫你配另一個）、M則是完全手排，油門離合器都自己控制。')}
+</div>
+
+<div class="section">
+  <div class="section-title">對焦模式</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">單次對焦（AF-S）</div>
+      <div class="card-body">半按快門對焦一次後鎖定，適合拍攝靜止的人像、風景、靜物。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏃</div>
+      <div class="card-title">連續對焦（AF-C）</div>
+      <div class="card-body">半按快門後持續追蹤對焦，適合拍攝移動中的主體，例如運動、寵物、小孩。</div>
+    </div>
+  </div>
+</div>
+
+<div class="box box-success">
+  <div class="box-title">✅ 測光模式選擇</div>
+  <p>權衡測光（整張畫面平均）適合大部分日常場景；中央重點測光適合主體位於畫面中央的人像；點測光適合逆光或高反差場景，只針對主體局部測光。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">新手常用設定建議</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>拍攝格式選擇 RAW＋JPEG，RAW保留最大後製彈性</li>
+        <li><span class="check-icon">✅</span>開啟防手震功能（鏡頭或機身），降低手持模糊機率</li>
+        <li><span class="check-icon">✅</span>拍攝重要瞬間時切換連拍模式，提高抓到好瞬間的機率</li>
+        <li><span class="check-icon">✅</span>白平衡先設自動（AWB），熟悉後再依場景手動調整（見第八章）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">開機到拍攝的檢查流程</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">確認電量與記憶卡</div><div class="step-desc">出門前養成習慣，避免拍到一半沒電或沒空間。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">選擇拍攝模式</div><div class="step-desc">依當下想要的效果選P/Av/Tv/M其中一種。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">設定對焦與測光模式</div><div class="step-desc">依主體是否移動、光線是否複雜做調整。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">構圖並半按快門對焦</div><div class="step-desc">確認對焦點落在主體上，再完全按下快門。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📷 第二章測驗</span><span class="quiz-title">相機操作觀念檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 想拍出人像背景模糊效果，最適合使用哪個模式？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">快門優先（Tv/S）</button>
+      <button class="quiz-opt" data-correct="1">光圈優先（Av/A），並選擇較小的f值</button>
+      <button class="quiz-opt" data-correct="0">全自動模式</button>
+      <button class="quiz-opt" data-correct="0">影片模式</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 拍攝移動中的寵物，應該使用哪種對焦模式？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">單次對焦（AF-S）</button>
+      <button class="quiz-opt" data-correct="1">連續對焦（AF-C），持續追蹤主體</button>
+      <button class="quiz-opt" data-correct="0">手動對焦並完全不移動</button>
+      <button class="quiz-opt" data-correct="0">關閉自動對焦功能</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：光圈與景深控制 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3: 光圈與景深控制
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎯 第三章</div>
+  <h1>光圈與景深控制<br>決定背景虛化的關鍵</h1>
+  <p class="desc">光圈不只控制進光量，更是決定「背景模糊程度」的最主要因素。本章教你依拍攝主題選擇合適的光圈值。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌿</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見光圈值與對應景深</div>
+  ${renderTable(
+    ["光圈值 (f)","景深","常見用途"],
+    [
+      ["f/1.4 ～ f/1.8","極淺，背景大幅虛化","人像特寫、弱光拍攝"],
+      ["f/2.8","淺，主體清楚背景柔化","人像、街拍"],
+      ["f/5.6","中等，主體與部分背景清晰","一般人像、產品"],
+      ["f/8 ～ f/11","較深，前後景大致清晰","風景、建築"],
+      ["f/16 ～ f/22","極深，幾乎全景清晰","大景深風景、需注意繞射降低畫質"],
+    ]
+  )}
+  ${diagramAperture()}
+  ${analogyBox('瞳孔的比喻', '光圈就像人的瞳孔：在暗處瞳孔會放大（大光圈）讓更多光線進來，這時候你眼睛的「對焦範圍」其實也會變窄，只有正前方看得最清楚；瞳孔縮小（小光圈）時，視野中前後的東西反而都看得比較清楚。')}
+</div>
+
+<div class="section">
+  <div class="section-title">影響景深的四個因素</div>
+  <div class="formula">景深 = 光圈大小 + 鏡頭焦距 + 拍攝距離 + 感光元件尺寸</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">光圈越大（f值越小）</div>
+      <div class="card-body">景深越淺，背景越模糊</div>
+    </div>
+    <div class="card">
+      <div class="card-title">焦距越長</div>
+      <div class="card-body">景深越淺，望遠鏡頭天生背景虛化感較強</div>
+    </div>
+    <div class="card">
+      <div class="card-title">拍攝距離越近</div>
+      <div class="card-body">景深越淺，微距攝影景深可能只有幾毫米</div>
+    </div>
+  </div>
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 應用場景</div>
+  <p>人像攝影通常使用大光圈（f/1.8-f/2.8）讓背景柔化、主體突出；風景攝影則常用小光圈（f/8-f/11）確保前後景都清晰；團體合照要注意光圈不能太大，否則後排的人可能失焦。</p>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 常見錯誤</div>
+  <ul>
+    <li>拍多人合照用f/1.8這種大光圈，導致後排的人臉模糊</li>
+    <li>誤以為光圈只影響亮度，忽略它同時決定景深</li>
+    <li>光圈開到最小（如f/22）追求「全清晰」，卻沒注意到光學繞射會讓畫質反而下降</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎯 第三章測驗</span><span class="quiz-title">光圈與景深檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 想拍出背景大幅模糊的人像特寫，應該選擇？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">f/16</button>
+      <button class="quiz-opt" data-correct="1">f/1.8這類較小的f值（大光圈）</button>
+      <button class="quiz-opt" data-correct="0">f/22</button>
+      <button class="quiz-opt" data-correct="0">光圈大小與景深無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 拍攝多人合照時，使用過大光圈最可能造成什麼問題？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">照片會過暗</button>
+      <button class="quiz-opt" data-correct="1">後排的人可能會失焦模糊</button>
+      <button class="quiz-opt" data-correct="0">白平衡會跑掉</button>
+      <button class="quiz-opt" data-correct="0">完全不會有任何問題</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：快門速度與動態捕捉 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4: 快門速度與動態捕捉
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⏱️ 第四章</div>
+  <h1>快門速度與動態捕捉<br>凝結瞬間或拍出光軌</h1>
+  <p class="desc">快門速度決定畫面中的「時間感」——是要凝結瞬間的清晰動作，還是要拍出流動的軌跡與絲滑效果。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌿</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見快門速度與對應效果</div>
+  ${renderTable(
+    ["快門速度","效果","常見用途"],
+    [
+      ["1/1000秒以上","完全凝結高速動作","運動賽事、飛鳥、水花瞬間"],
+      ["1/250 ～ 1/500秒","凝結一般動作","人像、寵物、街拍"],
+      ["1/60 ～ 1/125秒","手持安全快門範圍內","一般日常、室內"],
+      ["1/15 ～ 1/30秒","可能出現輕微動態模糊","需搭配防手震或腳架"],
+      ["1秒以上（長曝光）","拍出光軌、絲滑流水、星軌","夜景車軌、瀑布、星空，需使用腳架"],
+    ]
+  )}
+  ${diagramShutterMotion()}
+  ${analogyBox('眨眼睛的比喻', '快門就像眼皮眨眼的速度：眨得又快又乾脆，看到的畫面就是清楚的一瞬間；如果眼皮撐開很久才閉上，這段時間內移動的東西就會在你的印象裡留下一道殘影，這就是動態模糊。')}
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 手持安全快門公式</div>
+  <p>經驗法則：手持拍攝時，快門速度應不慢於「1/焦距」，例如使用50mm鏡頭，快門建議不慢於1/50秒，否則容易因手震而模糊（有防手震功能可放寬此標準）。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">應用場景</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🏃</div>
+      <div class="card-title">運動攝影</div>
+      <div class="card-body">使用高速快門（1/1000秒以上）凝結瞬間動作，避免模糊。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💧</div>
+      <div class="card-title">瀑布絲滑效果</div>
+      <div class="card-body">使用慢速快門（1秒以上）拍出流水的柔滑感，通常需搭配ND減光鏡與腳架。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌀</div>
+      <div class="card-title">追焦技巧（Panning）</div>
+      <div class="card-body">用中等快門速度（約1/30-1/60秒）跟隨移動主體轉動相機，讓主體清晰、背景產生動態線條。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">拍攝夜景光軌的流程</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">架設穩固腳架</div><div class="step-desc">長曝光下任何晃動都會讓畫面模糊。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">切換手動對焦</div><div class="step-desc">夜間自動對焦容易失準，建議手動對焦到清晰的參考點。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">使用快門線或自拍計時</div><div class="step-desc">避免按下快門瞬間造成的震動影響畫質。</div></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">使用小光圈、低ISO</div><div class="step-desc">搭配長曝光時間維持整體曝光平衡，同時維持畫質。</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⏱️ 第四章測驗</span><span class="quiz-title">快門速度檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 想凝結運動員跳躍的瞬間，應該使用？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">1秒以上的長曝光</button>
+      <button class="quiz-opt" data-correct="1">1/1000秒以上的高速快門</button>
+      <button class="quiz-opt" data-correct="0">1/15秒的慢速快門</button>
+      <button class="quiz-opt" data-correct="0">快門速度與凝結動作無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 手持安全快門的經驗法則是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">永遠使用1秒以上快門</button>
+      <button class="quiz-opt" data-correct="1">快門速度不慢於「1/焦距」，例如50mm鏡頭建議不慢於1/50秒</button>
+      <button class="quiz-opt" data-correct="0">快門速度必須固定為1/60秒</button>
+      <button class="quiz-opt" data-correct="0">焦距與安全快門無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：ISO與雜訊控制 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5: ISO與雜訊控制
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">✨ 第五章</div>
+  <h1>ISO與雜訊控制<br>弱光環境的取捨</h1>
+  <p class="desc">ISO是曝光三角中最後一塊拼圖，也是最常被新手誤用的參數。本章教你何時該提高ISO、何時該優先調整光圈或快門。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>12 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌿</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見ISO值與對應情境</div>
+  ${renderTable(
+    ["ISO值","畫質","適合情境"],
+    [
+      ["ISO 100","最佳畫質、幾乎無雜訊","晴天戶外、光線充足"],
+      ["ISO 400","畫質良好","一般室內、陰天"],
+      ["ISO 800 ～ 1600","開始出現輕微雜訊","室內弱光、傍晚"],
+      ["ISO 3200 ～ 6400","雜訊明顯，但可用","夜景、演唱會、弱光紀實"],
+      ["ISO 6400以上","高雜訊，畫質明顯下降","極端弱光，不得已才使用，可搭配後製降噪"],
+    ]
+  )}
+  ${diagramISONoise()}
+  ${analogyBox('收音機音量的比喻', 'ISO就像收音機的音量旋鈕：訊號很弱的時候，把音量轉大聲確實能聽清楚一點，但同時背景的「沙沙」雜音也會被一起放大。ISO越高，畫面越亮，但雜訊顆粒也越明顯，是同一個道理。')}
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 雜訊產生的兩種來源</div>
+  <p>「高ISO雜訊」來自感光度提升時訊號被放大；「長曝光雜訊」則是感光元件長時間工作發熱造成。兩者成因不同，因此夜間長曝光時，即使ISO不高，仍可能出現雜訊。</p>
+</div>
+
+<div class="box box-success">
+  <div class="box-title">✅ 降噪技巧</div>
+  <ul>
+    <li>拍攝RAW格式，後製時有更大的降噪與細節保留空間</li>
+    <li>使用大光圈鏡頭（如f/1.8），弱光下可以不用把ISO調太高</li>
+    <li>善用防手震功能，讓快門可以放慢一點，減少對高ISO的依賴</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">三角互相補償範例</div>
+  <div class="formula">室內弱光場景：
+光圈從 f/2.8 縮小到 f/5.6（減少2格進光量）
+→ 若不想犧牲快門速度（避免模糊）
+→ 就必須把 ISO 從 400 提高到 1600（補回2格光量）</div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">✨ 第五章測驗</span><span class="quiz-title">ISO與雜訊控制檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. ISO提高的主要代價是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">景深會變深</button>
+      <button class="quiz-opt" data-correct="1">畫面雜訊增加，畫質下降</button>
+      <button class="quiz-opt" data-correct="0">快門速度會自動變快</button>
+      <button class="quiz-opt" data-correct="0">白平衡會偏移</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼夜間長曝光即使ISO不高，仍可能出現雜訊？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為長曝光會自動提高ISO</button>
+      <button class="quiz-opt" data-correct="1">長曝光雜訊來自感光元件長時間工作發熱，成因與高ISO雜訊不同</button>
+      <button class="quiz-opt" data-correct="0">因為夜間光圈會自動變小</button>
+      <button class="quiz-opt" data-correct="0">長曝光完全不會產生雜訊</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：構圖原則與視覺引導 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6: 構圖原則與視覺引導
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🖼️ 第六章</div>
+  <h1>構圖原則與視覺引導<br>讓照片有主題、有層次</h1>
+  <p class="desc">曝光正確只是及格線，構圖才是決定照片「有沒有故事感」的關鍵。本章整理9個最實用的構圖原則。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌳</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">9個構圖原則：每一種都畫給你看</div>
+  ${renderCompositionGrid()}
+  ${analogyBox('說故事的比喻', '構圖就像說故事：置中的主體像是「平鋪直敘」，三分法、引導線、框架構圖則像是「先鋪陳、再點出重點」，讓觀者的視線像跟著劇情一樣，自然而然被帶往你想強調的地方。')}
+</div>
+
+<div class="section">
+  <div class="section-title">文字對照表</div>
+  ${renderTable(
+    ["構圖原則","說明"],
+    [
+      ["三分法", "把畫面切成井字形九宮格，將主體放在交叉點上，比置中更有動態感"],
+      ["引導線", "利用道路、河流、欄杆等線條，引導觀者視線走向主體"],
+      ["對稱與圖案", "利用建築、倒影等重複圖案或對稱結構，營造穩定和諧感"],
+      ["框架構圖", "利用門窗、樹枝等前景元素框住主體，增加畫面層次與焦點"],
+      ["留白", "在主體周圍保留大量空白空間，營造簡潔、呼吸感或孤獨氛圍"],
+      ["前中後景層次", "安排前景、中景、背景三個層次，增加畫面的空間深度感"],
+      ["黃金比例螺旋", "沿螺旋線安排主體與視覺元素，讓畫面產生自然流動的視覺動線"],
+      ["對比與焦點", "利用色彩、明暗、大小的對比，讓主體從畫面中跳出來"],
+      ["打破規則", "熟悉以上原則後，刻意置中或不平衡構圖，可以創造特殊的張力效果"],
+    ]
+  )}
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 練習建議</div>
+  <p>不需要一次用上所有構圖法，建議每次外拍選定1-2種原則刻意練習，例如今天只練「三分法+引導線」，養成肌肉記憶後再逐步疊加其他技巧。</p>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 常見錯誤</div>
+  <ul>
+    <li>主體永遠放正中央，畫面缺乏動態與呼吸感</li>
+    <li>背景雜亂，觀者不知道畫面的主題是什麼</li>
+    <li>過度追求構圖規則，反而讓照片失去真實情感與臨場感</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🖼️ 第六章測驗</span><span class="quiz-title">構圖原則檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「三分法」構圖的做法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">把主體永遠放在畫面正中央</button>
+      <button class="quiz-opt" data-correct="1">把畫面切成井字形九宮格，將主體放在交叉點上</button>
+      <button class="quiz-opt" data-correct="0">刻意讓畫面完全對稱</button>
+      <button class="quiz-opt" data-correct="0">只使用黑白色調</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 安排前景、中景、背景三個層次的目的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">讓照片檔案變大</button>
+      <button class="quiz-opt" data-correct="1">增加畫面的空間深度感</button>
+      <button class="quiz-opt" data-correct="0">降低拍攝難度</button>
+      <button class="quiz-opt" data-correct="0">避免使用光圈優先模式</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：光線的運用 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7: 光線的運用
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">☀️ 第七章</div>
+  <h1>光線的運用<br>攝影的靈魂</h1>
+  <p class="desc">攝影（Photography）的字源就是「用光繪畫」。同一個場景，光線的方向與時段不同，畫面情緒與品質會完全不同。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌳</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">8種常見光線情境：每一種都畫給你看</div>
+  ${renderLightGrid()}
+  ${analogyBox('雕塑燈光的比喻', '側光就像博物館幫雕像打的燈——刻意從側邊照射，是為了讓五官與肌肉線條的立體感被看見；順光則像手機自拍的補光燈，均勻但扁平，這就是為什麼專業人像攝影很少用正面順光。')}
+</div>
+
+<div class="section">
+  <div class="section-title">文字對照表</div>
+  ${renderTable(
+    ["光線類型","特性與應用"],
+    [
+      ["順光（光源在拍攝者背後）", "主體受光均勻、細節清楚，但畫面容易顯得平淡缺乏立體感"],
+      ["側光（光源在主體側邊）", "能凸顯主體的立體感與紋理，是人像、靜物常用的用光方向"],
+      ["逆光（光源在主體後方）", "可拍出剪影效果或夢幻光暈，須注意測光避免主體過暗"],
+      ["頂光（正午陽光）", "陰影集中在物體下方，人像容易產生黑眼圈陰影，一般建議避開"],
+      ["黃金時刻（日出後/日落前1小時）", "光線柔和偏暖色調，是風景與人像攝影公認的最佳時段"],
+      ["藍調時刻（日落後短暫時段）", "天空呈現深藍色調，適合搭配城市燈光拍攝夜景"],
+      ["陰天柔光", "雲層如巨大柔光罩，光線均勻柔和，適合人像特寫，膚色更自然"],
+      ["人造光（閃光燈/持續燈）", "可彌補自然光不足，並精準控制光線方向與強弱"],
+    ]
+  )}
+</div>
+
+<div class="box box-success">
+  <div class="box-title">✅ 如何培養找光的直覺</div>
+  <p>養成觀察陰影方向與長短的習慣：陰影越短代表光線越接近頂光（通常畫質較硬），陰影越長且柔和則多半是黃金時刻的斜射光線，是拍人像的絕佳時機。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">☀️ 第七章測驗</span><span class="quiz-title">光線運用檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「黃金時刻」指的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">正中午陽光最強的時段</button>
+      <button class="quiz-opt" data-correct="1">日出後、日落前約1小時，光線柔和偏暖的時段</button>
+      <button class="quiz-opt" data-correct="0">完全沒有太陽的陰天</button>
+      <button class="quiz-opt" data-correct="0">半夜使用閃光燈拍攝的時段</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 頂光（正午陽光）拍人像常見的問題是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">畫面會過度模糊</button>
+      <button class="quiz-opt" data-correct="1">陰影集中在物體下方，人像容易產生黑眼圈陰影</button>
+      <button class="quiz-opt" data-correct="0">白平衡會嚴重偏色</button>
+      <button class="quiz-opt" data-correct="0">完全無法對焦</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：白平衡與色彩 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8: 白平衡與色彩
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎨 第八章</div>
+  <h1>白平衡與色彩<br>還原真實或營造氛圍</h1>
+  <p class="desc">同一個場景，白平衡設定不同，照片可能偏黃、偏藍或色彩自然。本章教你理解色溫概念，並依情境正確設定白平衡。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>12 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌳</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見白平衡設定</div>
+  ${renderTable(
+    ["白平衡模式","適用情境"],
+    [
+      ["自動（AWB）", "大多數情境下相機自動判斷，適合新手日常使用"],
+      ["日光模式", "晴天戶外，色彩還原較自然"],
+      ["陰天模式", "陰天環境會偏藍，此模式會加一點暖色補償"],
+      ["鎢絲燈模式", "室內傳統燈泡照明容易偏橘黃，此模式會加藍色調校正"],
+      ["螢光燈模式", "室內日光燈容易偏綠，此模式會做對應校正"],
+      ["自訂白平衡（灰卡）", "拍攝一張灰卡或白紙作為基準，適合混合光源或色彩要求嚴謹的場合"],
+    ]
+  )}
+</div>
+
+<div class="section">
+  <div class="section-title">色溫（K值）概念</div>
+  ${renderTable(
+    ["光源","色溫（約）","色調"],
+    [
+      ["蠟燭光", "1900K", "非常溫暖的橘紅色"],
+      ["鎢絲燈泡", "3200K", "偏黃橘色"],
+      ["日出/日落（黃金時刻）", "3000-4000K", "溫暖的金黃色"],
+      ["正午日光", "5500K", "中性自然色"],
+      ["陰天", "6500K以上", "偏藍冷色調"],
+      ["晴朗藍天陰影處", "10000K以上", "明顯偏藍"],
+    ]
+  )}
+  ${diagramColorTemp()}
+  ${analogyBox('鐵塊燒紅的比喻', '色溫K值原本是形容「把一塊鐵加熱到發光」的溫度：溫度較低時鐵塊發出橘紅光（低色溫、暖色調），溫度更高時會發出藍白光（高色溫、冷色調）。這也是為什麼燭光是暖橘色、正午晴空卻偏藍的原因。')}
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 混合光源的挑戰</div>
+  <p>當畫面同時存在多種光源（例如室內鎢絲燈＋窗外日光），單一白平衡設定無法同時校正所有光源，此時建議以主體所在的光源為準，或拍攝RAW後製時再分區調整。</p>
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 刻意「不還原真實」也是一種創作</div>
+  <p>白平衡不一定要追求「準確」，刻意保留黃金時刻的暖色調、或刻意調冷讓畫面顯得清冷孤寂，都是常見的風格化手法，重點是符合你想傳達的情緒。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎨 第八章測驗</span><span class="quiz-title">白平衡與色彩檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 色溫數值越低，代表色調越？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">越偏藍冷色調</button>
+      <button class="quiz-opt" data-correct="1">越偏橘紅暖色調</button>
+      <button class="quiz-opt" data-correct="0">與色調無關</button>
+      <button class="quiz-opt" data-correct="0">越接近黑白</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 遇到混合光源（室內燈＋窗外日光）時的建議做法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">完全不需要考慮白平衡</button>
+      <button class="quiz-opt" data-correct="1">以主體所在光源為準，或拍RAW後製時分區調整</button>
+      <button class="quiz-opt" data-correct="0">一定要關閉所有室內燈光</button>
+      <button class="quiz-opt" data-correct="0">改用最高ISO即可解決</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：鏡頭選擇與焦段應用 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9: 鏡頭選擇與焦段應用
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔭 第九章</div>
+  <h1>鏡頭選擇與焦段應用<br>不同焦段拍出不同故事</h1>
+  <p class="desc">鏡頭焦段決定了視角範圍與畫面透視感，選對焦段往往比選對相機機身更影響最終畫面效果。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🌳</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見焦段與應用場景</div>
+  ${renderTable(
+    ["焦段範圍","視角特性","常見用途"],
+    [
+      ["14-24mm（超廣角）", "視角極廣，透視誇張", "建築、室內空間、星空"],
+      ["24-35mm（廣角）", "視角較廣，畫面涵蓋範圍大", "風景、旅遊、環境人像"],
+      ["35-70mm（標準）", "接近人眼視角，透視自然", "人文街拍、日常紀錄"],
+      ["70-135mm（中望遠）", "適合壓縮背景、拍攝半身人像", "人像攝影首選焦段"],
+      ["135-200mm（望遠）", "可拍攝較遠主體，背景壓縮感強", "人像、舞台、部分運動場景"],
+      ["200mm以上（超望遠）", "可拍攝很遠的主體", "野生動物、賽事、月亮"],
+      ["微距鏡頭", "可極近距離對焦，放大細節", "花卉、昆蟲、產品細節"],
+    ]
+  )}
+  ${diagramFocalLength()}
+  ${analogyBox('望遠鏡的比喻', '焦段就像調整你看世界的「視野窗口」：超廣角像把眼睛貼近廣角魚眼，一眼看盡整個房間；望遠鏡頭則像拿著望遠鏡，只看見遠方一小塊，但那一小塊被放得又大又近。')}
+</div>
+
+<div class="section">
+  <div class="section-title">定焦 vs 變焦</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">定焦鏡頭</div>
+      <div class="card-body">通常光圈更大、畫質更銳利、體積較輕，但需要靠移動雙腳來構圖，缺乏彈性。</div>
+    </div>
+    <div class="card">
+      <div class="card-title">變焦鏡頭</div>
+      <div class="card-body">單一鏡頭涵蓋多種焦段，構圖彈性大、適合旅遊或不方便換鏡頭的場合，但光圈通常較小、體積較重。</div>
+    </div>
+  </div>
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 最大光圈值的意義</div>
+  <p>鏡頭標示的「f/1.8」或「f/2.8-4」代表該鏡頭能開到的最大光圈範圍，數字越小代表進光能力越強、弱光表現越好、也越能拍出淺景深效果，通常也代表價格較高。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔭 第九章測驗</span><span class="quiz-title">鏡頭與焦段應用檢核</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 想拍攝半身人像並讓背景有壓縮虛化感，最適合的焦段是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">14-24mm超廣角</button>
+      <button class="quiz-opt" data-correct="1">70-135mm中望遠</button>
+      <button class="quiz-opt" data-correct="0">微距鏡頭</button>
+      <button class="quiz-opt" data-correct="0">焦段與人像拍攝無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 定焦鏡頭相較於變焦鏡頭的主要優勢通常是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">涵蓋的焦段範圍更廣</button>
+      <button class="quiz-opt" data-correct="1">光圈通常更大、畫質更銳利、體積較輕</button>
+      <button class="quiz-opt" data-correct="0">完全不需要移動雙腳構圖</button>
+      <button class="quiz-opt" data-correct="0">價格一定比較便宜</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：後製基礎與常見陷阱 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10: 後製基礎與常見陷阱
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚠️ 第十章</div>
+  <h1>後製基礎與常見陷阱<br>新手最容易踩的坑</h1>
+  <p class="desc">拍攝技巧再好，若忽略後製流程與一些基本習慣，仍可能讓好素材無法變成好照片。本章整理六大常見陷阱與對策。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>專家</div>
+  </div>
+</div>
+
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 只拍JPEG，不拍RAW</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">JPEG是相機處理過並壓縮的檔案，後製時可調整的空間有限；RAW保留感光元件的原始資料，能大幅調整曝光、白平衡而不明顯損失畫質。建議重要拍攝一律開啟RAW格式。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 不會判讀直方圖</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">直方圖顯示畫面亮暗分布，若數據都堆積在最左（死黑）或最右（死白），代表細節已經流失、後製也救不回來。拍攝時應養成隨手檢查直方圖的習慣。</p>
+    ${diagramHistogram()}
+    ${analogyBox('體重計的比喻', '直方圖就像一張「亮度體重分布表」：健康的分布應該像鐘型曲線，落在中間偏兩側都有一些；如果全部的人都擠在最輕或最重的那一格（貼在最左或最右邊），就代表資料被「截斷」了，細節救不回來。')}
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 後製調整順序錯亂</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">建議的基本後製順序：先校正曝光與白平衡，再調整對比與色彩，接著裁切構圖，最後才進行銳化與降噪。順序錯誤容易導致後面的調整效果跑掉，需要重做。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 過度後製失去真實感</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">飽和度、銳化度調過頭，容易讓照片顯得不自然、失真。建議調整後將畫面縮小預覽（模擬手機瀏覽的觀看情境），確認整體觀感是否舒服，而不是只看局部細節放大圖。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑤ 忽略備份習慣</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">記憶卡損毀、硬碟故障是攝影師的噩夢。建議採用至少兩份備份（例如電腦＋外接硬碟或雲端），重要拍攝結束後盡快完成備份，再考慮清空記憶卡。</p>
+  </div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑥ 忽略版權與肖像權</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body">
+    <p style="font-size:13px;color:var(--text-muted);">拍攝並分享含有他人臉部特徵的照片時，應留意肖像權相關規範，商業用途更須取得當事人書面同意；使用背景音樂、字型等素材也需確認授權範圍。</p>
+  </div>
+</div>
+
+<div class="section" style="margin-top:32px;">
+  <div class="section-title">風險與對策總表</div>
+  ${renderTable(
+    ["風險","對策"],
+    [
+      ["只拍JPEG導致後製空間有限", "重要拍攝一律開啟RAW格式"],
+      ["曝光細節流失無法救回", "拍攝時隨手檢查直方圖，避免死黑或死白"],
+      ["後製調整順序錯亂需要重做", "依曝光→對比色彩→裁切→銳化降噪的順序調整"],
+      ["過度後製顯得不自然", "縮小預覽整體畫面，避免只看局部放大圖判斷"],
+      ["記憶卡/硬碟損毀遺失素材", "至少兩份備份，拍攝後盡快完成"],
+      ["肖像權/版權爭議", "留意拍攝與分享對象的授權範圍，商業用途取得書面同意"],
+    ]
+  )}
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⚠️ 第十章測驗</span><span class="quiz-title">後製與風險管理總複習</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. RAW格式相較於JPEG的主要優勢是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">檔案體積比較小</button>
+      <button class="quiz-opt" data-correct="1">保留原始感光資料，後製可調整空間大幅提升</button>
+      <button class="quiz-opt" data-correct="0">可以直接上傳社群不需處理</button>
+      <button class="quiz-opt" data-correct="0">拍攝速度會變快</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 建議的後製基本調整順序是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">先銳化，再裁切，最後才調曝光</button>
+      <button class="quiz-opt" data-correct="1">先校正曝光與白平衡，再調對比色彩，接著裁切，最後銳化降噪</button>
+      <button class="quiz-opt" data-correct="0">順序完全不重要</button>
+      <button class="quiz-opt" data-correct="0">只需要調整飽和度即可</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 檢查照片是否過度後製，比較好的方法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">把局部細節放到最大檢查</button>
+      <button class="quiz-opt" data-correct="1">縮小預覽整體畫面，模擬實際觀看情境</button>
+      <button class="quiz-opt" data-correct="0">只看直方圖不看畫面</button>
+      <button class="quiz-opt" data-correct="0">完全不需要檢查</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>
