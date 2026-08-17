@@ -3,37 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>內容資源中心｜投資理財 × 行銷企劃 × 影音創作 × GAS 教學</title>
-    <meta name="description" content="內容資源中心總覽：投資理財入門與課程地圖、行銷企劃書指南、短影音策略與剪輯 SOP、問卷調查課程、Google Apps Script（GAS）開發教學，一站找到所有學習資源。">
+    <title>內容資源中心｜投資理財 × 行銷企劃 × 影音創作 × 攝影 × GAS 教學</title>
+    <meta name="description" content="內容資源中心總覽：投資理財入門與課程地圖、行銷企劃書指南、短影音策略與剪輯 SOP、攝影入門指南、問卷調查課程、Google Apps Script（GAS）開發教學，一站找到所有學習資源。">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="內容資源中心｜投資理財 × 行銷企劃 × 影音創作 × GAS 教學">
-    <meta property="og:description" content="投資理財、行銷企劃、短影音創作、問卷調查、Google Apps Script 教學等課程總覽，依分類快速找到你需要的內容。">
+    <meta property="og:title" content="內容資源中心｜投資理財 × 行銷企劃 × 影音創作 × 攝影 × GAS 教學">
+    <meta property="og:description" content="投資理財、行銷企劃、短影音創作、攝影入門、問卷調查、Google Apps Script 教學等課程總覽，依分類快速找到你需要的內容。">
 
-    <!-- Structured Data: ItemList -->
-    <script type="application/ld+json">
+    <!-- Structured Data: ItemList (由下方 courses 陣列同步產生，若手動改動陣列記得同步更新此區塊) -->
+    <script type="application/ld+json" id="ldjson">
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
       "name": "內容資源中心課程列表",
-      "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Google Apps Script 開發教學", "url": "gas_line_systems.html"},
-        {"@type": "ListItem", "position": 2, "name": "投資小白入門課程", "url": "invest-starter.html"},
-        {"@type": "ListItem", "position": 3, "name": "投資初級課程", "url": "invest-begin.html"},
-        {"@type": "ListItem", "position": 4, "name": "投資中級課程", "url": "invest-inter.html"},
-        {"@type": "ListItem", "position": 5, "name": "投資高級課程", "url": "invest-adv.html"},
-        {"@type": "ListItem", "position": 6, "name": "投資專業級課程", "url": "invest-pro.html"},
-        {"@type": "ListItem", "position": 7, "name": "投資課程地圖", "url": "invest_course_map.html"},
-        {"@type": "ListItem", "position": 8, "name": "個人理財補充篇", "url": "personal-finance.html"},
-        {"@type": "ListItem", "position": 9, "name": "價格行為學指南", "url": "price-action.html"},
-        {"@type": "ListItem", "position": 10, "name": "技術分析型態學完全指南", "url": "chart-patterns.html"},
-        {"@type": "ListItem", "position": 11, "name": "行銷企劃書指南", "url": "marketing-plan-guide.html"},
-        {"@type": "ListItem", "position": 12, "name": "短影音策略", "url": "shorts_strategy.html"},
-        {"@type": "ListItem", "position": 13, "name": "問卷調查課程", "url": "survey_course.html"},
-        {"@type": "ListItem", "position": 14, "name": "影片剪輯 SOP", "url": "video-editing-sop.html"},
-        {"@type": "ListItem", "position": 15, "name": "短影音鉤子設計課程", "url": "video-hook-design-course.html"}
-      ]
+      "itemListElement": []
     }
     </script>
 
@@ -249,7 +233,7 @@
 <body>
     <header>
         <h1>內容資源中心</h1>
-        <p>投資理財、行銷企劃、短影音創作、問卷調查與 Google Apps Script（GAS）開發教學，依分類或關鍵字快速找到你需要的內容。</p>
+        <p>投資理財、行銷企劃、短影音創作、攝影、問卷調查與 Google Apps Script（GAS）開發教學，依分類或關鍵字快速找到你需要的內容。</p>
     </header>
 
     <div class="search-wrap">
@@ -257,137 +241,10 @@
         <input type="text" id="searchInput" placeholder="搜尋課程名稱或關鍵字..." aria-label="搜尋課程">
     </div>
 
-    <nav class="filters" id="filters" aria-label="課程分類篩選">
-        <button class="filter-btn active" data-filter="all">全部 <span class="count" data-count-for="all"></span></button>
-        <button class="filter-btn" data-filter="invest">投資理財 <span class="count" data-count-for="invest"></span></button>
-        <button class="filter-btn" data-filter="marketing">行銷內容 <span class="count" data-count-for="marketing"></span></button>
-        <button class="filter-btn" data-filter="video">影音創作 <span class="count" data-count-for="video"></span></button>
-        <button class="filter-btn" data-filter="survey">問卷調查 <span class="count" data-count-for="survey"></span></button>
-        <button class="filter-btn" data-filter="tech">技術工具 <span class="count" data-count-for="tech"></span></button>
-    </nav>
+    <nav class="filters" id="filters" aria-label="課程分類篩選"></nav>
 
     <main>
-        <div class="container" id="cardContainer">
-            <!-- Google Apps Script -->
-            <a href="gas_line_systems.html" class="card" data-category="tech">
-                <span class="tag">技術工具</span>
-                <h2>Google Apps Script 開發教學</h2>
-                <p class="desc">GAS（Google Apps Script）自動化與系統整合教學。</p>
-                <span class="filename">gas_line_systems.html</span>
-            </a>
-
-            <!-- Invest Starter -->
-            <a href="invest-starter.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>投資小白入門課程</h2>
-                <p class="desc">專為零基礎新手設計的基礎理財觀念與建立。</p>
-                <span class="filename">invest-starter.html</span>
-            </a>
-
-            <!-- Invest Begin -->
-            <a href="invest-begin.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>投資新手入門</h2>
-                <p class="desc">從零開始認識投資的基本觀念與準備事項。</p>
-                <span class="filename">invest-begin.html</span>
-            </a>
-
-            <!-- Invest Inter -->
-            <a href="invest-inter.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>投資中級課程</h2>
-                <p class="desc">進階投資策略、工具應用與市場分析技巧。</p>
-                <span class="filename">invest-inter.html</span>
-            </a>
-
-            <!-- Invest Adv -->
-            <a href="invest-adv.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>投資高級課程</h2>
-                <p class="desc">高階財務管理、資產配置規劃與深度市場研究。</p>
-                <span class="filename">invest-adv.html</span>
-            </a>
-
-            <!-- Invest Pro -->
-            <a href="invest-pro.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>投資專業級課程</h2>
-                <p class="desc">專業級操盤手實戰解析、進階風險控管與總經分析。</p>
-                <span class="filename">invest-pro.html</span>
-            </a>
-
-            <!-- Invest Course Map -->
-            <a href="invest_course_map.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>投資課程地圖</h2>
-                <p class="desc">投資課程整體架構與學習路徑地圖。</p>
-                <span class="filename">invest_course_map.html</span>
-            </a>
-
-            <!-- Personal Finance Supplement -->
-            <a href="personal-finance.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>個人理財補充篇</h2>
-                <p class="desc">補充個人理財觀念與實務應用，強化基礎財務規劃能力。</p>
-                <span class="filename">personal-finance.html</span>
-            </a>
-
-            <!-- Price Action Guide -->
-            <a href="price-action.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>價格行為學指南</h2>
-                <p class="desc">透過價格走勢本身判讀市場心理與趨勢的分析方法。</p>
-                <span class="filename">price-action.html</span>
-            </a>
-
-            <!-- Chart Patterns -->
-            <a href="chart-patterns.html" class="card" data-category="invest">
-                <span class="tag">投資理財</span>
-                <h2>技術分析型態學完全指南</h2>
-                <p class="desc">系統化整理各類技術分析圖形型態與應用時機。</p>
-                <span class="filename">chart-patterns.html</span>
-            </a>
-
-            <!-- Marketing Plan Guide -->
-            <a href="marketing-plan-guide.html" class="card" data-category="marketing">
-                <span class="tag">行銷內容</span>
-                <h2>行銷企劃書指南</h2>
-                <p class="desc">如何撰寫一份完整且具說服力的行銷企劃書。</p>
-                <span class="filename">marketing-plan-guide.html</span>
-            </a>
-
-            <!-- Shorts Strategy -->
-            <a href="shorts_strategy.html" class="card" data-category="video">
-                <span class="tag">影音創作</span>
-                <h2>短影音策略</h2>
-                <p class="desc">短影音內容規劃與經營策略。</p>
-                <span class="filename">shorts_strategy.html</span>
-            </a>
-
-            <!-- Survey Course -->
-            <a href="survey_course.html" class="card" data-category="survey">
-                <span class="tag">問卷調查</span>
-                <h2>問卷調查課程</h2>
-                <p class="desc">問卷設計與調查方法教學。</p>
-                <span class="filename">survey_course.html</span>
-            </a>
-
-            <!-- Video Editing SOP -->
-            <a href="video-editing-sop.html" class="card" data-category="video">
-                <span class="tag">影音創作</span>
-                <h2>影片剪輯 SOP</h2>
-                <p class="desc">標準化影片剪輯流程與作業規範。</p>
-                <span class="filename">video-editing-sop.html</span>
-            </a>
-
-            <!-- Video Hook Design Course -->
-            <a href="video-hook-design-course.html" class="card" data-category="video">
-                <span class="tag">影音創作</span>
-                <h2>短影音鉤子設計課程</h2>
-                <p class="desc">如何設計吸引觀眾停留的開頭鉤子。</p>
-                <span class="filename">video-hook-design-course.html</span>
-            </a>
-        </div>
+        <div class="container" id="cardContainer"></div>
     </main>
 
     <section class="cta">
@@ -397,13 +254,192 @@
     </section>
 
     <script>
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const cards = document.querySelectorAll('.card');
+        /* ============================================================
+           課程資料陣列
+           之後要新增課程，只要在這裡新增一筆物件即可，
+           分類篩選按鈕、卡片、搜尋、結構化資料(JSON-LD)都會自動產生。
+
+           category: 分類代碼（用來篩選，同代碼會歸在同一個 tab）
+           categoryLabel: 分類顯示文字（tag 上顯示的文字 + filter 按鈕文字）
+           title: 課程標題
+           desc: 課程簡介
+           url: 連結的檔名
+           ============================================================ */
+        const courses = [
+            {
+                category: 'tech',
+                categoryLabel: '技術工具',
+                title: 'Google Apps Script 開發教學',
+                desc: 'GAS（Google Apps Script）自動化與系統整合教學。',
+                url: 'gas_line_systems.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '投資小白入門課程',
+                desc: '專為零基礎新手設計的基礎理財觀念與建立。',
+                url: 'invest-starter.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '投資新手入門',
+                desc: '從零開始認識投資的基本觀念與準備事項。',
+                url: 'invest-begin.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '投資中級課程',
+                desc: '進階投資策略、工具應用與市場分析技巧。',
+                url: 'invest-inter.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '投資高級課程',
+                desc: '高階財務管理、資產配置規劃與深度市場研究。',
+                url: 'invest-adv.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '投資專業級課程',
+                desc: '專業級操盤手實戰解析、進階風險控管與總經分析。',
+                url: 'invest-pro.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '投資課程地圖',
+                desc: '投資課程整體架構與學習路徑地圖。',
+                url: 'invest_course_map.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '個人理財補充篇',
+                desc: '補充個人理財觀念與實務應用，強化基礎財務規劃能力。',
+                url: 'personal-finance.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '價格行為學指南',
+                desc: '透過價格走勢本身判讀市場心理與趨勢的分析方法。',
+                url: 'price-action.html'
+            },
+            {
+                category: 'invest',
+                categoryLabel: '投資理財',
+                title: '技術分析型態學完全指南',
+                desc: '系統化整理各類技術分析圖形型態與應用時機。',
+                url: 'chart-patterns.html'
+            },
+            {
+                category: 'marketing',
+                categoryLabel: '行銷內容',
+                title: '行銷企劃書指南',
+                desc: '如何撰寫一份完整且具說服力的行銷企劃書。',
+                url: 'marketing-plan-guide.html'
+            },
+            {
+                category: 'video',
+                categoryLabel: '影音創作',
+                title: '短影音策略',
+                desc: '短影音內容規劃與經營策略。',
+                url: 'shorts_strategy.html'
+            },
+            {
+                category: 'survey',
+                categoryLabel: '問卷調查',
+                title: '問卷調查課程',
+                desc: '問卷設計與調查方法教學。',
+                url: 'survey_course.html'
+            },
+            {
+                category: 'video',
+                categoryLabel: '影音創作',
+                title: '影片剪輯 SOP',
+                desc: '標準化影片剪輯流程與作業規範。',
+                url: 'video-editing-sop.html'
+            },
+            {
+                category: 'video',
+                categoryLabel: '影音創作',
+                title: '短影音鉤子設計課程',
+                desc: '如何設計吸引觀眾停留的開頭鉤子。',
+                url: 'video-hook-design-course.html'
+            },
+            {
+                category: 'photography',
+                categoryLabel: '攝影',
+                title: '攝影入門完全指南',
+                desc: '從看懂相機到拍出好照片，攝影新手必讀的入門完全指南。',
+                url: 'photography-begin.html'
+            }
+        ];
+
+        // 分類顯示順序（新分類會自動排在最後）
+        const categoryOrder = ['invest', 'marketing', 'video', 'photography', 'survey', 'tech'];
+
+        const filtersNav = document.getElementById('filters');
         const container = document.getElementById('cardContainer');
         const searchInput = document.getElementById('searchInput');
 
-        // 計算每個分類的數量並顯示在按鈕上
+        // ---- 產生 JSON-LD 結構化資料 ----
+        function buildJsonLd() {
+            const ld = {
+                "@context": "https://schema.org",
+                "@type": "ItemList",
+                "name": "內容資源中心課程列表",
+                "itemListElement": courses.map((c, i) => ({
+                    "@type": "ListItem",
+                    "position": i + 1,
+                    "name": c.title,
+                    "url": c.url
+                }))
+            };
+            document.getElementById('ldjson').textContent = JSON.stringify(ld, null, 2);
+        }
+
+        // ---- 產生分類篩選按鈕 ----
+        function buildFilters() {
+            const categories = [...new Set(courses.map(c => c.category))];
+            categories.sort((a, b) => {
+                const ia = categoryOrder.indexOf(a);
+                const ib = categoryOrder.indexOf(b);
+                if (ia === -1 && ib === -1) return 0;
+                if (ia === -1) return 1;
+                if (ib === -1) return -1;
+                return ia - ib;
+            });
+
+            const labelMap = {};
+            courses.forEach(c => { labelMap[c.category] = c.categoryLabel; });
+
+            let html = `<button class="filter-btn active" data-filter="all">全部 <span class="count" data-count-for="all"></span></button>`;
+            categories.forEach(cat => {
+                html += `<button class="filter-btn" data-filter="${cat}">${labelMap[cat]} <span class="count" data-count-for="${cat}"></span></button>`;
+            });
+            filtersNav.innerHTML = html;
+        }
+
+        // ---- 產生課程卡片 ----
+        function buildCards() {
+            container.innerHTML = courses.map(c => `
+                <a href="${c.url}" class="card" data-category="${c.category}">
+                    <span class="tag">${c.categoryLabel}</span>
+                    <h2>${c.title}</h2>
+                    <p class="desc">${c.desc}</p>
+                    <span class="filename">${c.url}</span>
+                </a>
+            `).join('');
+        }
+
+        // ---- 更新每個分類的數量 ----
         function updateCounts() {
+            const cards = document.querySelectorAll('.card');
             const counts = { all: cards.length };
             cards.forEach(card => {
                 const cat = card.dataset.category;
@@ -414,7 +450,6 @@
                 el.textContent = counts[key] ? `(${counts[key]})` : '(0)';
             });
         }
-        updateCounts();
 
         function getActiveFilter() {
             const activeBtn = document.querySelector('.filter-btn.active');
@@ -424,6 +459,7 @@
         function applyFilters() {
             const filter = getActiveFilter();
             const keyword = searchInput.value.trim().toLowerCase();
+            const cards = document.querySelectorAll('.card');
             let visibleCount = 0;
 
             cards.forEach(card => {
@@ -450,27 +486,25 @@
             }
         }
 
-        // 分類按鈕點擊：更新 active 狀態 + 更新網址 query string
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        function bindFilterButtons() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
 
-                const filter = btn.dataset.filter;
-                const url = new URL(window.location);
-                if (filter === 'all') {
-                    url.searchParams.delete('category');
-                } else {
-                    url.searchParams.set('category', filter);
-                }
-                history.pushState({}, '', url);
+                    const filter = btn.dataset.filter;
+                    const url = new URL(window.location);
+                    if (filter === 'all') {
+                        url.searchParams.delete('category');
+                    } else {
+                        url.searchParams.set('category', filter);
+                    }
+                    history.pushState({}, '', url);
 
-                applyFilters();
+                    applyFilters();
+                });
             });
-        });
-
-        // 搜尋框輸入即時篩選
-        searchInput.addEventListener('input', applyFilters);
+        }
 
         // 頁面載入時，依網址上的 category 參數還原篩選狀態
         function restoreFromURL() {
@@ -479,15 +513,22 @@
             if (category) {
                 const targetBtn = document.querySelector(`.filter-btn[data-filter="${category}"]`);
                 if (targetBtn) {
-                    filterButtons.forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     targetBtn.classList.add('active');
                 }
             }
             applyFilters();
         }
+
+        // ---- 初始化 ----
+        buildJsonLd();
+        buildFilters();
+        buildCards();
+        updateCounts();
+        bindFilterButtons();
+        searchInput.addEventListener('input', applyFilters);
         restoreFromURL();
 
-        // 支援瀏覽器上一頁/下一頁
         window.addEventListener('popstate', restoreFromURL);
     </script>
 </body>
