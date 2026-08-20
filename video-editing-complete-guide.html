@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影片剪輯完全指南｜從前期規劃到上片檢查</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:920px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:660px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+
+.timeline-demo{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:16px;margin:16px 0;overflow-x:auto;}
+.timeline-svg{display:block;min-width:600px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🎬 影片剪輯完全指南</div>
+    <div class="sidebar-title">影片剪輯完全指南<br>從前期規劃到上片檢查</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'剪輯是決策的總和，不是特效展示', icon:'🗺️', content: renderCh0 },
+  { id:1, title:'前期規劃', subtitle:'目的受眾、腳本分鏡、素材整理', icon:'📋', content: renderCh1 },
+  { id:2, title:'文字與字卡設計', subtitle:'用詞、字體、時機與停留秒數公式', icon:'📝', content: renderCh2 },
+  { id:3, title:'聲音與音樂設計', subtitle:'人聲、配樂、音效、收音品質', icon:'🔊', content: renderCh3 },
+  { id:4, title:'字幕製作規範', subtitle:'字數、位置、對比、同步時機', icon:'💬', content: renderCh4 },
+  { id:5, title:'顏色與調色', subtitle:'色調一致性、CI規範、重點色控制', icon:'🎨', content: renderCh5 },
+  { id:6, title:'節奏掌控與剪輯點', subtitle:'開場鉤子、資訊密度、音樂節拍', icon:'⏱️', content: renderCh6 },
+  { id:7, title:'敘事表達與結構', subtitle:'起承轉合、單一核心訊息、結尾設計', icon:'🗣️', content: renderCh7 },
+  { id:8, title:'轉場銜接與構圖穩定度', subtitle:'跳接、鏡頭邏輯、畫面裁切', icon:'🎬', content: renderCh8 },
+  { id:9, title:'平台適配與版本管理', subtitle:'直橫式、無聲觀看、多版本規劃', icon:'📱', content: renderCh9 },
+  { id:10, title:'實戰數值速查與總複習', subtitle:'公式彙整、上片前檢查清單', icon:'📋', content: renderCh10 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('video_editing_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('video_editing_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+
+// ============================================================
+// 0: 課程總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>影片剪輯完全指南<br>從前期規劃到上片檢查</h1>
+  <p class="desc">剪輯不是「把素材接起來」，而是一連串針對文字、聲音、字幕、顏色、節奏、敘事的決策總和。這套課程把剪輯拆解成六大核心面向，加上前期規劃、轉場構圖、平台適配等實務細節，並提供具體的秒數公式，讓你不再只靠「感覺」剪片。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 2.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>11 個章節</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">六大核心面向</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">📝</div><div class="stat-label">文字</div></div>
+    <div class="stat-card"><div class="stat-num">🔊</div><div class="stat-label">聲音</div></div>
+    <div class="stat-card"><div class="stat-num">💬</div><div class="stat-label">字幕</div></div>
+    <div class="stat-card"><div class="stat-num">🎨</div><div class="stat-label">顏色</div></div>
+    <div class="stat-card"><div class="stat-num">⏱️</div><div class="stat-label">節奏</div></div>
+    <div class="stat-card"><div class="stat-num">🗣️</div><div class="stat-label">表達</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">內容地圖</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">📋 前期規劃（第1章）</div><div class="step-desc">剪輯前的準備工作，決定了後面所有決策的方向。</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">📝🔊💬🎨 六大核心面向（第2-5章）</div><div class="step-desc">文字、聲音、字幕、顏色的具體規範與實用公式。</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">⏱️🗣️ 節奏與敘事（第6-7章）</div><div class="step-desc">如何掌控觀眾的注意力曲線，並把訊息說清楚。</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">🎬📱 技術與平台（第8-9章）</div><div class="step-desc">轉場構圖的技術細節，以及不同平台的適配策略。</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">📋 總複習（第10章）</div><div class="step-desc">把所有數值公式與檢查清單整合成一份速查表。</div></div></div>
+  </div>
+</div>
+
+<div class="box box-info">
+  <div class="box-title">💡 貫穿全課程的原則</div>
+  <p>每一個剪輯決策——這段字卡要停留幾秒、這裡要不要加轉場、這句話要不要用字幕強調——背後都應該有一個明確的理由：「這樣做，是為了讓觀眾更容易理解、更不容易流失、更符合這支影片的目的」。剪輯技巧是工具，不是目的本身。</p>
+</div>
+`;
+}
+
+// ============================================================
+// 1: 前期規劃
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📋 第一章</div>
+  <h1>前期規劃<br>目的受眾、腳本分鏡、素材整理</h1>
+  <p class="desc">剪輯階段常見的「迷失方向」，多半源自前期規劃不足。這一章談的是動剪輯軟體之前，你該先想清楚的事。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">先回答三個問題</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🎯</div><div class="card-title">這支影片給誰看？</div><div class="card-body">受眾決定了用詞難度、節奏快慢、平台選擇，甚至決定了「有沒有必要用字幕」（例如給長輩看的教學影片，字體要更大、語速要更慢）。</div></div>
+    <div class="card"><div class="card-icon">🏆</div><div class="card-title">要達成什麼效果？</div><div class="card-body">教學型影片重視「講清楚」，宣傳型影片重視「引發行動」，娛樂型影片重視「留住注意力」，三種目的所需要的剪輯策略完全不同。</div></div>
+    <div class="card"><div class="card-icon">📐</div><div class="card-title">會出現在哪個平台？</div><div class="card-body">會影響時長、畫面比例（直式／橫式）、字幕必要性（第九章詳述），這些應該在拍攝前就先確定，而非剪輯時才發現規格不合。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">腳本與分鏡的價值</div>
+  <div class="box box-info">
+    <div class="box-title">💡 為什麼即使是短影音也建議先有大致架構</div>
+    <p>腳本不需要逐字寫死，但至少要有清楚的「段落順序」與「每個段落想傳達的一句話重點」。有了這個骨架，剪輯時遇到「這段素材要不要留」的猶豫，可以直接回頭問：「這段有沒有對應到腳本裡的哪個重點？」沒有的話，通常就是可以刪除的候選畫面，這能大幅減少剪輯過程中迷失方向、反覆猶豫的時間。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">素材整理與備用鏡頭（B-roll）</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>拍攝時預留比預期更多的B-roll（輔助畫面），剪輯時常需要用來銜接主要鏡頭之間的跳躍感。</li>
+    <li><span class="check-icon">✅</span>同一個場景盡量拍攝不同角度、不同景別（特寫/中景/遠景），增加剪輯時的靈活度。</li>
+    <li><span class="check-icon">✅</span>素材匯入後立即依段落、場景分類命名歸檔，避免剪輯過程中在大量檔案中反覆搜尋，浪費時間。</li>
+    <li><span class="check-icon">✅</span>重要的訪談或口白，建議當場確認收音品質是否可用，避免事後才發現需要補錄（第三章詳述）。</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📋 第一章測驗</span><span class="quiz-title">前期規劃檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 剪輯時對某段素材「留或不留」猶豫不決，最實用的判斷方式是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">完全憑當下的感覺決定，不需要任何依據</button>
+      <button class="quiz-opt" data-correct="1">回頭對照腳本架構，確認這段是否對應到某個明確的重點</button>
+      <button class="quiz-opt" data-correct="0">畫面越好看就一定要留下</button>
+      <button class="quiz-opt" data-correct="0">與前期規劃完全無關的隨機決定</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼拍攝時建議多留B-roll備用鏡頭？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">B-roll完全沒有實際用途，只是浪費儲存空間</button>
+      <button class="quiz-opt" data-correct="1">剪輯時常需要B-roll來銜接主要鏡頭之間的跳躍感，增加剪輯靈活度</button>
+      <button class="quiz-opt" data-correct="0">B-roll只適用於電影拍攝，不適用於短影音</button>
+      <button class="quiz-opt" data-correct="0">與後製剪輯完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：文字與字卡設計 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 2: 文字與字卡設計
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第二章</div>
+  <h1>文字與字卡設計<br>用詞、字體、時機與停留秒數公式</h1>
+  <p class="desc">字卡是影片中最直接的訊息載體，這一章教你如何設計字卡內容，以及最實用的「停留秒數公式」。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">字卡內容設計原則</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>用詞精簡有力，一眼看懂重點，避免長句與複雜句構。</li>
+    <li><span class="check-icon">✅</span>字體選擇要符合影片調性：專業內容適合較穩重的無襯線字體，活潑內容可以搭配較有個性的字體，但整支影片字體種類不宜過多（建議1-2種為主）。</li>
+    <li><span class="check-icon">✅</span>文字出現時機要對應畫面與語意，不要搶在畫面或旁白之前，也不要嚴重延遲。</li>
+    <li><span class="check-icon">✅</span>重點字詞可用顏色或動畫強調，但每句話都強調等於沒有強調，建議整支影片挑選最重要的2-3個關鍵詞使用強調效果即可。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">字卡停留秒數公式</div>
+  <div class="formula">文字停留秒數 = (字數 ÷ 4) + 1秒緩衝</div>
+  <div class="box box-info">
+    <div class="box-title">💡 公式邏輯</div>
+    <p>一般人默讀速度約每秒4-5字，用字數除以4（取較保守的閱讀速度），再加1秒作為視覺辨識與反應的緩衝時間，能得出一個大致合理的停留秒數。</p>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>字卡類型</th><th>字數參考</th><th>建議停留秒數</th></tr></thead>
+    <tbody>
+      <tr><td>一般短句字卡</td><td>5-8字</td><td>約2-3秒</td></tr>
+      <tr><td>問題型字卡（如「你也有這個困擾嗎？」）</td><td>約10-14字</td><td>約6秒（太短看不完，太長會拖）</td></tr>
+      <tr><td>重點強調文字</td><td>2-4字關鍵詞</td><td>1.5-2秒，搭配動畫進出更自然</td></tr>
+      <tr><td>長句或需要閱讀的資訊</td><td>15字以上</td><td>4-6秒</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-success">
+    <div class="box-title">✅ 實際案例演算</div>
+    <p>「你家長輩上下車還在用人力搬嗎？」共14字：14 ÷ 4 = 3.5，加上1秒緩衝 = <b>約4.5秒</b>。這個數字可以作為初始設定，實際上片前仍建議請他人試看，確認是否來得及讀完、或反而覺得停留過久。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 第二章測驗</span><span class="quiz-title">文字與字卡設計檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 依公式計算，一句10字的字卡建議停留幾秒？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">1秒</button>
+      <button class="quiz-opt" data-correct="1">約3.5秒（10÷4=2.5，加1秒緩衝）</button>
+      <button class="quiz-opt" data-correct="0">10秒</button>
+      <button class="quiz-opt" data-correct="0">與字數完全無關，固定為5秒</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼「每句話都用顏色強調」反而是無效的做法？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為顏色強調完全沒有任何作用</button>
+      <button class="quiz-opt" data-correct="1">當所有文字都被強調，強調本身就失去對比與凸顯效果，等於沒有重點</button>
+      <button class="quiz-opt" data-correct="0">因為顏色強調只能用一次，不能重複使用</button>
+      <button class="quiz-opt" data-correct="0">與觀眾的注意力完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：聲音與音樂設計 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 3: 聲音與音樂設計
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔊 第三章</div>
+  <h1>聲音與音樂設計<br>人聲、配樂、音效、收音品質</h1>
+  <p class="desc">聲音常被視為「畫面的配角」，但研究與實務經驗都顯示，聲音品質對觀眾的觀看體驗與信任感影響極大，甚至常常比畫面品質更關鍵。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">人聲清晰是第一優先</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見錯誤：背景音樂蓋過旁白</div>
+    <p>背景音樂音量絕對不能蓋過人聲旁白，這是最基本、卻也最常被忽略的規則。實務上可以在人聲出現的段落，適度調降背景音樂音量（稱為「閃避」Ducking），等人聲結束後再讓音樂音量回升，維持整體的動態層次感。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">配樂風格與情緒對應</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>影片情緒</th><th>配樂風格參考</th></tr></thead>
+    <tbody>
+      <tr><td>溫馨、感人</td><td>鋼琴、弦樂為主，節奏舒緩</td></tr>
+      <tr><td>激勵、振奮</td><td>鼓點明顯、節奏漸強、旋律向上發展</td></tr>
+      <tr><td>輕快、活潑</td><td>節奏明快、音色明亮（如烏克麗麗、輕快打擊樂）</td></tr>
+      <tr><td>專業、穩重</td><td>簡約的合成器或極簡配樂，避免過度戲劇化</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">音效的輔助角色</div>
+  <div class="card">
+    <div class="card-body">音效（Sound Effect）適合用來輔助轉場（如「咻」的滑入音效）或強調重點（如數字跳動時的「叮」聲），但音效同樣需要節制使用。過多音效容易讓影片顯得雜亂、廉價，建議只在真正需要引導觀眾注意力的關鍵時刻使用。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">收音品質不佳的補救方式</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">後製降噪</div><div class="step-desc">多數剪輯軟體都有基本降噪功能，能處理環境雜音、風聲等背景噪音，但過度降噪可能讓人聲變得不自然，需適度拿捏。</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">補錄旁白</div><div class="step-desc">若現場收音問題嚴重（如破音、雜訊過大），考慮在安靜環境下依原本口白內容補錄，再對應畫面時間軸重新配置。</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">預防勝於治療</div><div class="step-desc">拍攝現場盡量使用外接麥克風而非僅依賴機身內建麥克風，並事先確認環境噪音來源（風扇、交通、空調），能大幅降低後製補救的工作量。</div></div></div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔊 第三章測驗</span><span class="quiz-title">聲音與音樂設計檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「閃避（Ducking）」技巧指的是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">完全移除背景音樂，只保留人聲</button>
+      <button class="quiz-opt" data-correct="1">在人聲出現時適度調降背景音樂音量，人聲結束後再讓音樂音量回升</button>
+      <button class="quiz-opt" data-correct="0">把所有音效音量調到最大</button>
+      <button class="quiz-opt" data-correct="0">與音量調整完全無關的剪輯技巧</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 現場收音品質不佳時，較合理的補救順序是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">直接放棄這段素材，不做任何處理</button>
+      <button class="quiz-opt" data-correct="1">先嘗試後製降噪，若問題嚴重則考慮在安靜環境補錄旁白</button>
+      <button class="quiz-opt" data-correct="0">把背景音樂音量調到最大蓋過雜訊</button>
+      <button class="quiz-opt" data-correct="0">與收音品質完全無關，畫面才是唯一重點</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：字幕製作規範 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 4: 字幕製作規範
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">💬 第四章</div>
+  <h1>字幕製作規範<br>字數、位置、對比、同步時機</h1>
+  <p class="desc">字幕與字卡不同：字卡是設計過的重點文字，字幕則是對應口白內容的逐句呈現，兩者的設計邏輯與規範也不完全相同。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">字幕字數與停留時間</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>項目</th><th>建議規範</th></tr></thead>
+    <tbody>
+      <tr><td>單行字數</td><td>建議不超過15-20字，超過應考慮分成兩行或拆成兩句字幕</td></tr>
+      <tr><td>停留時間</td><td>一行字幕（15-20字）建議停留2-3秒</td></tr>
+      <tr><td>過快的風險</td><td>低於1.5秒，觀眾來不及讀完就消失</td></tr>
+      <tr><td>過慢的風險</td><td>超過4秒，容易讓觀眾分心重讀，拖慢整體節奏感</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">字幕位置與可讀性</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>字幕位置應固定（通常在畫面下方），避免忽上忽下造成視覺干擾，讓觀眾養成固定視線落點的習慣。</li>
+    <li><span class="check-icon">✅</span>文字顏色與底色（畫面背景）的對比要足夠，常見做法是白字加上半透明黑色底色，確保在各種畫面背景下都清楚可讀。</li>
+    <li><span class="check-icon">✅</span>字幕出現時間應與語速同步，語速快的段落字幕切換也要跟上，避免字幕與口白明顯脫節。</li>
+    <li><span class="check-icon">✅</span>避免字幕被畫面中的其他文字元素（如字卡、Logo）重疊遮擋，上片前應完整檢視每個畫面的文字堆疊狀況。</li>
+  </ul>
+</div>
+
+<div class="box box-warning">
+  <div class="box-title">⚠️ 字幕在無聲觀看情境下的重要性</div>
+  <p>許多社群平台用戶習慣在無聲狀態下滑動瀏覽影片（詳見第九章），這代表字幕往往是這些觀眾唯一能接收到的語言訊息來源。若字幕品質不佳（跑掉、對不上、來不及讀完），對這群觀眾而言等同於「完全看不懂這支影片在說什麼」，字幕品質的重要性因此大幅提高，不只是輔助功能而已。</p>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">💬 第四章測驗</span><span class="quiz-title">字幕製作規範檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 一行字幕（約15-20字）建議的停留時間是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">低於1秒即可，越快越好</button>
+      <button class="quiz-opt" data-correct="1">約2-3秒</button>
+      <button class="quiz-opt" data-correct="0">固定10秒，不論字數多寡</button>
+      <button class="quiz-opt" data-correct="0">與字數完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼字幕品質對「無聲觀看」的觀眾特別重要？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為無聲觀看的觀眾完全不會看字幕</button>
+      <button class="quiz-opt" data-correct="1">字幕往往是這群觀眾唯一能接收到的語言訊息來源，字幕品質不佳等同於完全看不懂內容</button>
+      <button class="quiz-opt" data-correct="0">與觀看情境完全無關</button>
+      <button class="quiz-opt" data-correct="0">因為無聲觀看只發生在特定國家</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：顏色與調色 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 5: 顏色與調色
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎨 第五章</div>
+  <h1>顏色與調色<br>色調一致性、CI規範、重點色控制</h1>
+  <p class="desc">顏色在影片中的角色，與平面設計的邏輯一脈相承（可搭配「顏色心理學與商業模式指南」深入了解）。這一章聚焦在影片剪輯情境下的具體應用規範。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">整支影片的色調一致性</div>
+  <div class="box box-info">
+    <div class="box-title">💡 為什麼需要調色（Color Grading）</div>
+    <p>不同拍攝時段、不同鏡頭、不同裝置拍出的素材，即使是同一場景，色溫與色彩表現也可能有落差。調色的目的是讓整支影片的色調風格統一，避免觀眾在鏡頭切換之間感受到不自然的色彩跳動，同時也能透過整體色調（如偏暖、偏冷、高對比、低對比）強化影片想傳達的情緒氛圍。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">品牌影片的CI規範</div>
+  <div class="card">
+    <div class="card-body">若是品牌形象影片或廣告，色彩必須符合企業識別（CI）規範中定義的標準色，包含品牌主色、輔助色的具體色碼，以及在動態影像中的使用比例限制。這部分建議直接對照品牌的視覺識別規範文件（若品牌有建立CIS系統），確保影片素材與其他品牌物料（如DM、網站、包裝）的色彩調性一致。</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">文字與字幕顏色的凸顯原則</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見錯誤：文字顏色被畫面顏色吃掉</div>
+    <p>白色文字疊在明亮天空背景上、深色文字疊在暗色場景上，都會導致可讀性大幅下降。除了第四章提到的半透明底色做法，也可以依畫面主色調動態調整文字顏色（如亮色場景用深色文字、暗色場景用亮色文字），但這會增加後製工作量，實務上更常見的做法仍是固定使用高對比的文字加底色組合，簡化製作流程並確保穩定的可讀性。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">重點色的節制使用</div>
+  <div class="box box-success">
+    <div class="box-title">✅ 建議：重點色不超過2-3種</div>
+    <p>整支影片除了基礎的黑白灰與品牌主色，用來強調重點的「特殊色」（如紅色警示、黃色強調）建議控制在2-3種以內。色彩過於雜亂會分散觀眾注意力，也會讓影片顯得缺乏設計感與專業度，這與第五章顏色心理學指南中「品牌色彩系統」的節制原則是一致的邏輯。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎨 第五章測驗</span><span class="quiz-title">顏色與調色檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「調色（Color Grading）」在影片剪輯中的主要目的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">讓每個鏡頭的顏色盡量呈現隨機差異</button>
+      <button class="quiz-opt" data-correct="1">讓整支影片的色調風格統一，避免鏡頭切換時色彩跳動不自然，並強化情緒氛圍</button>
+      <button class="quiz-opt" data-correct="0">只適用於黑白影片，彩色影片不需要調色</button>
+      <button class="quiz-opt" data-correct="0">與影片情緒表達完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於影片中重點色的使用，建議原則是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">重點色使用越多種越好，能讓畫面更豐富</button>
+      <button class="quiz-opt" data-correct="1">建議控制在2-3種以內，避免色彩雜亂分散觀眾注意力</button>
+      <button class="quiz-opt" data-correct="0">重點色與品牌CI規範完全無關</button>
+      <button class="quiz-opt" data-correct="0">每一句字幕都應該使用不同的重點色</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：節奏掌控與剪輯點 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 6: 節奏掌控與剪輯點
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⏱️ 第六章</div>
+  <h1>節奏掌控與剪輯點<br>開場鉤子、資訊密度、音樂節拍</h1>
+  <p class="desc">節奏是剪輯中最難量化、卻最直接影響觀眾是否會滑走的因素。這一章提供具體的秒數參考，幫助你建立節奏感的基本框架。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">開場鉤子的黃金時間</div>
+  <div class="timeline-demo">
+    <svg class="timeline-svg" viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="30" width="90" height="40" fill="#EF4444" opacity="0.3"/><text x="20" y="55" fill="#fca5a5" font-size="12">0-3秒：視覺/文字鉤子</text>
+      <rect x="100" y="30" width="140" height="40" fill="#F59E0B" opacity="0.3"/><text x="110" y="55" fill="#fcd34d" font-size="12">3-8秒：說明影片主題</text>
+      <rect x="240" y="30" width="350" height="40" fill="#10B981" opacity="0.2"/><text x="250" y="55" fill="#6ee7b7" font-size="12">8秒之後：進入主要內容</text>
+    </svg>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>時間段</th><th>任務</th></tr></thead>
+    <tbody>
+      <tr><td>前3秒</td><td>必須出現吸引人的畫面或文字（問題、衝突、懸念、視覺衝擊），這是觀眾決定「要不要繼續看」的關鍵窗口</td></tr>
+      <tr><td>前5-8秒</td><td>讓觀眾清楚知道「這支影片在講什麼」，避免觀眾因為不確定內容方向而提前離開</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-title">短影音的「每2-3秒視覺變化」原則</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 短影音特有的高頻率變化需求</div>
+    <p>短影音平台的用戶滑動速度極快，建議每2-3秒就要有一次明顯的視覺變化（換鏡頭、加入新字卡、加入音效轉場），維持畫面的新鮮感，避免觀眾在單一畫面停留過久而失去耐心滑走。這個頻率遠高於傳統長影片的剪輯節奏，是短影音特有的製作邏輯。</p>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🚨 常見錯誤：開頭放太久的品牌介紹</div>
+    <p>開頭不要放Logo或品牌介紹超過1秒，應該先讓內容本身抓住觀眾注意力，品牌識別可以留到片尾或以較不搶戲的方式呈現在畫面角落，而非一開場就用大篇幅的品牌動畫消耗掉最寶貴的前3秒黃金時間。</p>
+  </div>
+</section>
+
+<div class="section">
+  <div class="section-title">資訊密度的節奏調整</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🐢</div><div class="card-title">資訊量大的段落：放慢</div><div class="card-body">需要觀眾理解、記憶的關鍵資訊（如數據、步驟說明），應放慢節奏，給予足夠的字卡停留時間（回顧第二章公式），避免資訊來不及吸收就切換畫面。</div></div>
+    <div class="card"><div class="card-icon">🐇</div><div class="card-title">情緒/動作段落：加快</div><div class="card-body">單純傳達氛圍、情緒轉換或動作過程的畫面，可以用較快的剪輯節奏（短鏡頭快速切換）維持能量感與張力，不需要每個畫面都停留太久。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">音樂節拍與剪輯點</div>
+  <div class="box box-info">
+    <div class="box-title">💡 為什麼要對齊音樂節拍</div>
+    <p>剪輯點盡量配合音樂節拍或語句的自然停頓進行切換，畫面的節奏會與聽覺節奏產生共振，觀感明顯更加流暢。淡入淡出（fade in/out）轉場建議控制在0.5-1秒，太快顯得突兀，太慢則會拖沓，削弱整體節奏感。冗長、重複的畫面應該果斷刪除，這是維持觀眾留存率最直接有效的做法之一。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⏱️ 第六章測驗</span><span class="quiz-title">節奏掌控檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 短影音建議每隔多久就要有一次明顯的視覺變化？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">每10-15秒一次即可，不需要太頻繁</button>
+      <button class="quiz-opt" data-correct="1">每2-3秒就要有一次視覺變化，維持畫面新鮮感避免觀眾滑走</button>
+      <button class="quiz-opt" data-correct="0">整支影片只需要一次視覺變化</button>
+      <button class="quiz-opt" data-correct="0">與觀眾留存率完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼開頭不建議放超過1秒的Logo或品牌介紹？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為品牌識別完全不重要，可以完全省略</button>
+      <button class="quiz-opt" data-correct="1">應該優先讓內容本身抓住觀眾注意力，避免消耗掉最寶貴的前3秒黃金時間</button>
+      <button class="quiz-opt" data-correct="0">因為法規禁止在開頭放置品牌識別</button>
+      <button class="quiz-opt" data-correct="0">與觀眾流失率完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：敘事表達與結構 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 7: 敘事表達與結構
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗣️ 第七章</div>
+  <h1>敘事表達與結構<br>起承轉合、單一核心訊息、結尾設計</h1>
+  <p class="desc">再好的節奏與畫面，如果敘事邏輯混亂、訊息模糊，觀眾看完仍然不知道影片想說什麼。這一章聚焦在「說清楚」這件事。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">起承轉合的完整性</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">起：建立情境或問題</div><div class="step-desc">開場鉤子（第六章）通常就是「起」的具體實現，快速建立觀眾關心這個主題的理由。</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">承：展開說明或鋪陳</div><div class="step-desc">提供解決方案、產品介紹、故事發展等主要內容，這是影片的核心份量所在。</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">轉：轉折、對比或驚喜</div><div class="step-desc">加入反差、意外發現或情緒轉折，避免整支影片平鋪直敘、缺乏張力起伏。</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">合：總結與收尾</div><div class="step-desc">呼應開場的問題或情境，並帶出明確的結尾訊息（下一章詳述CTA設計）。</div></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">訊息傳達單一化</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見錯誤：一支影片塞太多重點</div>
+    <p>「一支影片一個核心重點」是最容易被忽略、卻影響最大的原則。當影片試圖同時傳達「產品功能很多」「價格很優惠」「服務很貼心」「品牌歷史悠久」等多個訊息，觀眾反而什麼都記不住。建議每支影片明確設定「希望觀眾看完後記住的一句話」，其餘所有內容都應該服務於這句話，而非平均分散焦點。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">結尾設計：三種常見收尾方式</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">📢</div><div class="card-title">呼籲行動（CTA）</div><div class="card-body">明確告訴觀眾下一步該做什麼，如「加LINE諮詢」「立即預約」「點擊連結了解更多」，適合宣傳、導購型影片。</div></div>
+    <div class="card"><div class="card-icon">📝</div><div class="card-title">總結重點</div><div class="card-body">重述影片核心訊息，幫助觀眾鞏固記憶，適合教學、知識型影片。</div></div>
+    <div class="card"><div class="card-icon">💗</div><div class="card-title">感性收尾</div><div class="card-body">用情感共鳴作結，留下情緒餘韻，適合品牌形象、故事型影片。</div></div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 提醒</div>
+    <p>不論採用哪種收尾方式，「結尾要明確」都是共同原則，避免影片戛然而止或拖泥帶水，讓觀眾在結束的當下感到困惑「所以呢？」。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">換位思考：避免自說自話</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>用詞是否是觀眾熟悉的語言，而非內部行話或過度專業的術語？</li>
+    <li><span class="check-icon">✅</span>資訊量是否符合觀眾在這個平台、這個情境下願意消化的程度？</li>
+    <li><span class="check-icon">✅</span>是否從「觀眾能得到什麼好處」的角度敘事，而非單純陳述「我們做了什麼」？</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🗣️ 第七章測驗</span><span class="quiz-title">敘事表達檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「一支影片一個核心重點」原則的主要目的是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">讓影片內容盡量豐富，涵蓋越多訊息越好</button>
+      <button class="quiz-opt" data-correct="1">避免觀眾因為訊息過多而分散焦點，最終什麼都記不住</button>
+      <button class="quiz-opt" data-correct="0">與觀眾的記憶效果完全無關</button>
+      <button class="quiz-opt" data-correct="0">只適用於教學型影片，不適用於宣傳影片</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 「起承轉合」中的「轉」，主要作用是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">重複前面已經說過的內容</button>
+      <button class="quiz-opt" data-correct="1">加入反差、意外發現或情緒轉折，避免整支影片平鋪直敘缺乏張力</button>
+      <button class="quiz-opt" data-correct="0">與影片的張力起伏完全無關</button>
+      <button class="quiz-opt" data-correct="0">只能用在影片的最後一秒</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：轉場銜接與構圖穩定度 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 8: 轉場銜接與構圖穩定度
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎬 第八章</div>
+  <h1>轉場銜接與構圖穩定度<br>跳接、鏡頭邏輯、畫面裁切</h1>
+  <p class="desc">這一章談的是比較技術面的細節：畫面與畫面之間怎麼接才自然、構圖上有哪些常見的錯誤需要避免。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">轉場與銜接</div>
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">🔀</div><div class="card-title">避免違和的跳接（Jump Cut）</div><div class="card-body">同一個鏡頭角度、同一個主體只做微小變化的直接剪接，容易產生「畫面突然跳動」的違和感。可透過切換鏡頭角度、加入B-roll畫面、或刻意運用跳接作為風格手法（如短影音常見的口播跳接）來化解。</div></div>
+    <div class="card"><div class="card-icon">✨</div><div class="card-title">轉場特效的節制使用</div><div class="card-body">轉場特效（如翻頁、旋轉、粒子效果）適度使用能增加趣味，但過多花俏轉場反而顯得業餘、分散觀眾對內容本身的注意力。多數專業影片其實大量使用簡單的「切」（straight cut）或基本的淡入淡出，而非依賴華麗特效。</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">鏡頭與鏡頭之間的邏輯連貫</div>
+  <div class="box box-info">
+    <div class="box-title">💡 動作與視線的匹配</div>
+    <p>剪接時應留意前後鏡頭的「動作連續性」（如人物伸手拿東西，下一顆鏡頭應該從動作的合理接續點開始）與「視線方向」（如人物看向畫面右側，下一顆鏡頭呈現的內容或反應，方向應該對得上），這些細節雖然觀眾不一定能明確指出問題所在，但邏輯不連貫時會產生一種難以言喻的「怪怪的」感受，累積起來會降低整體專業度與可信度。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">構圖與畫面穩定度</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>確保畫面中的主體完整呈現，避免重要資訊（如人臉、關鍵物件、字幕）被畫面邊緣裁切。</li>
+    <li><span class="check-icon">✅</span>手震、抖動嚴重的鏡頭，應優先考慮用後製穩定功能修正；若修正後仍明顯不自然，建議直接捨棄該鏡頭，而非勉強使用影響整體觀感。</li>
+    <li><span class="check-icon">✅</span>構圖比例（橫式16:9、直式9:16、方形1:1）需要在拍攝前依平台需求確定，避免後製時被迫裁切導致重要畫面內容遺失或構圖失衡。</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎬 第八章測驗</span><span class="quiz-title">轉場與構圖檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 關於轉場特效的使用，較合理的原則是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">轉場特效越多越花俏，影片就會顯得越專業</button>
+      <button class="quiz-opt" data-correct="1">過多花俏轉場反而顯得業餘，多數專業影片仍以簡單的「切」或基本淡入淡出為主</button>
+      <button class="quiz-opt" data-correct="0">每個鏡頭之間都必須使用不同的轉場特效</button>
+      <button class="quiz-opt" data-correct="0">與影片專業度完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼鏡頭之間的「動作連續性」與「視線方向」需要特別留意？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為觀眾一定會明確指出邏輯不連貫的問題</button>
+      <button class="quiz-opt" data-correct="1">即使觀眾說不出具體問題，邏輯不連貫也會產生「怪怪的」違和感，累積起來降低整體專業度與可信度</button>
+      <button class="quiz-opt" data-correct="0">與觀眾的觀看體驗完全無關</button>
+      <button class="quiz-opt" data-correct="0">只有電影拍攝需要考慮這個問題</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：平台適配與版本管理 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 9: 平台適配與版本管理
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📱 第九章</div>
+  <h1>平台適配與版本管理<br>直橫式、無聲觀看、多版本規劃</h1>
+  <p class="desc">同一支影片內容，在不同平台可能需要完全不同的規格與呈現方式。這一章討論如何有效率地管理多平台、多版本的需求。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">依平台特性抓長度與規格</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>平台類型</th><th>常見長度參考</th><th>常見畫面比例</th></tr></thead>
+    <tbody>
+      <tr><td>短影音（如限時動態、短影音專區）</td><td>15-60秒</td><td>直式 9:16</td></tr>
+      <tr><td>一般社群貼文影片</td><td>1-3分鐘</td><td>方形1:1或直式4:5</td></tr>
+      <tr><td>長影音平台</td><td>視內容而定，數分鐘到數十分鐘不等</td><td>橫式16:9</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 規格是會變動的參考值</div>
+    <p>各平台的介面設計、演算法偏好會隨時間調整，上述長度與比例僅為近期常見的參考範圍，實際製作前建議查詢平台當下的最新規格建議，並留意平台是否針對特定長度或格式提供額外的流量扶植。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">「無聲也能看懂」的設計思維</div>
+  <div class="box box-info">
+    <div class="box-title">💡 為什麼要為無聲觀看設計</div>
+    <p>大量用戶在滑手機瀏覽社群內容時習慣不開啟聲音（可能因為身處公共場合、或單純瀏覽習慣），這代表若影片的核心訊息完全依賴旁白口述、卻沒有對應的字幕或字卡呈現，這群觀眾將完全無法理解內容，等同於流失了一大部分潛在觀眾。因此第四章強調的字幕品質，以及第二章的字卡設計，在這個情境下不只是「輔助」，而是決定影片能否被理解的關�键因素。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">版本管理：一支內容，多種輸出</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">確定核心版本</div><div class="step-desc">先完成內容最完整、規格最主要的核心版本（通常是投放預算最多或最重要的平台版本）。</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">依平台調整長度</div><div class="step-desc">依不同管道需求，剪出15秒精華版、30秒濃縮版、完整版等不同長度，並非單純截斷，而是重新設計最適合該長度的敘事節奏與重點取捨。</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">調整畫面比例與字幕位置</div><div class="step-desc">橫式轉直式（或反向）時，需要重新構圖確保主體不被裁切，字幕與字卡位置也需要對應新的畫面比例重新配置，而非直接暴力拉伸畫面。</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">統一命名與歸檔</div><div class="step-desc">依平台、長度、版本建立清楚的檔案命名規則（如「品牌名_主題_平台_秒數_版本號」），避免後續上傳或修改時搞混版本。</div></div></div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📱 第九章測驗</span><span class="quiz-title">平台適配與版本管理檢測</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 為什麼「無聲也能看懂」的設計對社群平台影片特別重要？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為所有社群平台都強制禁止播放聲音</button>
+      <button class="quiz-opt" data-correct="1">大量用戶習慣在無聲狀態下滑動瀏覽，若核心訊息完全依賴旁白，這群觀眾將完全無法理解內容</button>
+      <button class="quiz-opt" data-correct="0">與字幕、字卡設計完全無關</button>
+      <button class="quiz-opt" data-correct="0">只影響長影音平台，與短影音無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 將橫式影片轉為直式版本時，較合理的做法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">直接暴力拉伸畫面比例，不需要其他調整</button>
+      <button class="quiz-opt" data-correct="1">重新構圖確保主體不被裁切，並重新配置字幕與字卡位置以對應新的畫面比例</button>
+      <button class="quiz-opt" data-correct="0">直式版本完全不需要考慮構圖問題</button>
+      <button class="quiz-opt" data-correct="0">只需要縮小整體畫面，其餘留白即可</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：實戰數值速查與總複習 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// 10: 實戰數值速查與總複習
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📋 第十章</div>
+  <h1>實戰數值速查與總複習<br>公式彙整、上片前檢查清單</h1>
+  <p class="desc">最後一章把整套課程的所有秒數公式與規範整合成一份速查表，並附上完整的上片前檢查清單。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">全課程數值速查表</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>項目</th><th>建議數值</th></tr></thead>
+    <tbody>
+      <tr><td>一般字卡停留秒數</td><td>(字數÷4)+1秒緩衝</td></tr>
+      <tr><td>問題型字卡</td><td>約6秒</td></tr>
+      <tr><td>重點強調文字</td><td>1.5-2秒</td></tr>
+      <tr><td>字幕單行字數</td><td>不超過15-20字</td></tr>
+      <tr><td>字幕停留時間</td><td>2-3秒（低於1.5秒太快，超過4秒太慢）</td></tr>
+      <tr><td>靜態畫面/單一資訊鏡頭</td><td>3-5秒</td></tr>
+      <tr><td>動作/情緒轉換畫面</td><td>1-2秒</td></tr>
+      <tr><td>淡入淡出轉場</td><td>0.5-1秒</td></tr>
+      <tr><td>開場鉤子</td><td>前3秒吸引注意，前5-8秒說明主題</td></tr>
+      <tr><td>短影音視覺變化頻率</td><td>每2-3秒一次</td></tr>
+      <tr><td>開頭品牌Logo時間</td><td>不超過1秒</td></tr>
+      <tr><td>重點色使用種類</td><td>不超過2-3種</td></tr>
+      <tr><td>短影音長度</td><td>15-60秒</td></tr>
+      <tr><td>社群貼文影片長度</td><td>1-3分鐘</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">上片前最後檢查清單</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>有無錯字、字幕跑掉、音畫不同步的問題？</li>
+    <li><span class="check-icon">✅</span>有無版權問題（音樂、素材授權是否合法取得）？</li>
+    <li><span class="check-icon">✅</span>匯出格式、解析度是否符合目標平台要求？</li>
+    <li><span class="check-icon">✅</span>整體節奏是否流暢，有無冗長畫面尚未刪除？</li>
+    <li><span class="check-icon">✅</span>開場3秒是否有足夠的吸引力？</li>
+    <li><span class="check-icon">✅</span>結尾是否有明確的收尾方式（CTA、總結或感性收尾）？</li>
+    <li><span class="check-icon">✅</span>是否找他人試看，確認邏輯與節奏是否順暢，而非只憑自己反覆觀看的主觀判斷？</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">全內容總複習</div>
+  <div class="quiz-card" style="margin-top:0;">
+    <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">影片剪輯完全指南總複習</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 依公式「(字數÷4)+1秒緩衝」，一句18字的字卡建議停留幾秒？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">2秒</button>
+        <button class="quiz-opt" data-correct="1">約5.5秒（18÷4=4.5，加1秒緩衝）</button>
+        <button class="quiz-opt" data-correct="0">18秒</button>
+        <button class="quiz-opt" data-correct="0">與字數完全無關</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 「一支影片一個核心重點」原則的目的是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">讓內容盡量豐富多元</button>
+        <button class="quiz-opt" data-correct="1">避免觀眾因訊息過多而分散焦點，確保看完後至少記住一句話</button>
+        <button class="quiz-opt" data-correct="0">與觀眾記憶效果完全無關</button>
+        <button class="quiz-opt" data-correct="0">只適用於超過10分鐘的長影片</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q3. 為什麼短影音建議每2-3秒就要有一次視覺變化？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">單純為了增加剪輯的工作量</button>
+        <button class="quiz-opt" data-correct="1">短影音用戶滑動速度快，需要持續維持畫面新鮮感，避免觀眾提前滑走</button>
+        <button class="quiz-opt" data-correct="0">與觀眾留存率完全無關</button>
+        <button class="quiz-opt" data-correct="0">只適用於超過5分鐘的長影片</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q4. 字幕與字幕位置忽上忽下、來不及讀完，最可能造成什麼影響？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">完全不會影響觀看體驗</button>
+        <button class="quiz-opt" data-correct="1">造成視覺干擾與理解困難，尤其對無聲觀看的觀眾而言等同於看不懂內容</button>
+        <button class="quiz-opt" data-correct="0">只會影響有聲音播放的觀眾，與無聲觀看無關</button>
+        <button class="quiz-opt" data-correct="0">與觀眾的觀看體驗完全無關</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ 說明：本課程內容整合自使用者提供的剪輯注意事項文件，並加入額外的解說、案例與教學設計（如秒數公式推導、圖解時間軸、章節測驗）。文中的秒數、長度等數值為業界常見的實務參考範圍，實際最適數值會因內容類型、目標受眾、平台演算法變化而有所不同，建議搭配實際數據回饋（如平台後台的觀看留存率）持續調整優化，而非機械套用固定公式。
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>
