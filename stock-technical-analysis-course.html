@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>股票技術分析入門課程｜看懂K線、均線與量價關係</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 12px 12px;margin-bottom:16px;}
+.chart-wrap svg{width:100%;height:auto;display:block;overflow:visible;}
+.chart-caption{font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px;padding:0 8px;}
+.chart-legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:10px;font-size:12px;color:var(--text-muted);}
+.legend-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle;}
+.chart-grid-2{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:700px){.chart-grid-2{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">📊 技術分析入門課</div>
+    <div class="sidebar-title">股票技術分析入門課程<br>看懂K線、均線與量價關係</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'學習地圖與使用說明', icon:'🗺️', time:'5 分鐘', level:'入門', content: renderCh0 },
+  { id:1, title:'K線基礎', subtitle:'紅K、綠K、影線代表什麼', icon:'🕯️', time:'15 分鐘', level:'基礎', content: renderCh1 },
+  { id:2, title:'均線系統(MA)', subtitle:'MA5/10/20/30與多空排列', icon:'📈', time:'18 分鐘', level:'基礎', content: renderCh2 },
+  { id:3, title:'量價關係', subtitle:'成交量如何驗證價格走勢', icon:'📊', time:'18 分鐘', level:'基礎', content: renderCh3 },
+  { id:4, title:'趨勢與型態判讀', subtitle:'支撐、壓力、突破與拉回', icon:'🧭', time:'20 分鐘', level:'進階', content: renderCh4 },
+  { id:5, title:'常見技術指標', subtitle:'KD、MACD、RSI快速入門', icon:'🧮', time:'20 分鐘', level:'進階', content: renderCh5 },
+  { id:6, title:'實戰讀圖演練', subtitle:'用一張真實K線圖走一次分析流程', icon:'🔍', time:'18 分鐘', level:'進階', content: renderCh6 },
+  { id:7, title:'常見誤區與心理陷阱', subtitle:'技術分析不是萬能，別掉進這些坑', icon:'🧠', time:'18 分鐘', level:'進階', content: renderCh7 },
+  { id:8, title:'風險管理與紀律', subtitle:'停損停利、部位控制的基本原則', icon:'🛡️', time:'15 分鐘', level:'進階', content: renderCh8 },
+  { id:9, title:'打造你的看盤檢查清單', subtitle:'總複習：把知識變成行動', icon:'📝', time:'15 分鐘', level:'總複習', content: renderCh9 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('ta101_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('ta101_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// CHAPTER 0: 課程總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>股票技術分析入門課程<br>看懂K線、均線與量價關係</h1>
+  <p class="desc">這是一套從零開始學看盤的入門課程。我們會用K線圖上真正會出現的元素——蠟燭圖、均線、成交量——一步步拆解,教你怎麼「讀圖」而不是「看熱鬧」。課程最後會用一張真實走勢圖帶你完整演練一次分析流程。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 2.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>10 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適合完全沒有看盤經驗的新手</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">核心圖表元素</div></div>
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">常見技術指標</div></div>
+    <div class="stat-card"><div class="stat-num">6+</div><div class="stat-label">常見誤區與心理陷阱</div></div>
+    <div class="stat-card"><div class="stat-num">9</div><div class="stat-label">章節測驗</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">🕯️ 圖表基礎（第1-3章）</div>
+        <div class="step-desc">從K線的紅綠意義開始,認識均線系統(MA)如何反映趨勢,再學會用成交量驗證價格走勢的真假。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">🧭 判讀與工具（第4-5章）</div>
+        <div class="step-desc">學習支撐壓力、突破拉回等趨勢判讀邏輯,並認識KD、MACD、RSI等常見技術指標的基本用法。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">🔍 實戰演練（第6章）</div>
+        <div class="step-desc">用一張真實的K線圖,從頭到尾走一次完整的技術分析流程,把前面學的知識點串起來。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">🧠 心理與風險（第7-8章）</div>
+        <div class="step-desc">認識技術分析常見的誤區與心理偏誤,並學習停損停利、部位控制等風險管理原則。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">📝 總複習與行動（第9章）</div>
+        <div class="step-desc">整合所學,打造屬於自己的看盤檢查清單,把知識轉換成具體、可執行的下一步。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">如何使用本課程</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>按順序學習：第1-3章的圖表基礎,是後面判讀與指標運用的根基。</li>
+        <li><span class="check-icon">✅</span>做完每章測驗：60分以上才算過關,幫助你鞏固知識。</li>
+        <li><span class="check-icon">✅</span>邊學邊對照：可以搭配自己常看的K線圖,一邊學一邊實際找出對應的元素。</li>
+        <li><span class="check-icon">✅</span>不要急著下單：技術分析是輔助工具,不是保證獲利的水晶球。</li>
+        <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節,可隨時繼續。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 開始前的提醒</div>
+    <p>本課程僅提供一般性的技術分析知識教育,不構成對任何個股或商品的投資建議,也不保證任何報酬。技術分析有其局限性,實際操作前請自行判斷並審慎評估風險,必要時可諮詢合格的理財顧問。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1: K線基礎
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🕯️ 第一章</div>
+  <h1>K線基礎<br>紅K、綠K、影線代表什麼</h1>
+  <p class="desc">K線(蠟燭圖)是技術分析最基本的語言。這一章帶你搞懂一根K棒裡藏了哪些資訊,以及台股與美股顏色代表意義的差異。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">一根K棒包含四個價格</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🔓</div>
+      <div class="card-title">開盤價</div>
+      <div class="card-body">當根時間週期(例如當日)一開始成交的價格。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔒</div>
+      <div class="card-title">收盤價</div>
+      <div class="card-body">當根時間週期結束時最後成交的價格,對趨勢判斷最重要。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⬆️</div>
+      <div class="card-title">最高價</div>
+      <div class="card-body">當根時間週期內成交過的最高價格。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⬇️</div>
+      <div class="card-title">最低價</div>
+      <div class="card-body">當根時間週期內成交過的最低價格。</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 一句話理解</div>
+    <p>K棒的「實體」是開盤價與收盤價之間的區間,「上下影線」則是最高價、最低價與實體之間的延伸,代表當時價格曾經衝到哪裡、又被打回來。</p>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">圖解：一根K棒的結構</div>
+  <div class="chart-grid-2">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg">
+  <line x1="110" y1="25" x2="110" y2="185" stroke="#EF4444" stroke-width="2"/>
+  <rect x="94" y="60" width="32" height="90" fill="#EF4444"/>
+  <line x1="110" y1="25" x2="170" y2="25" stroke="#64748B" stroke-width="1"/>
+  <line x1="126" y1="60" x2="170" y2="60" stroke="#64748B" stroke-width="1"/>
+  <line x1="126" y1="150" x2="170" y2="150" stroke="#64748B" stroke-width="1"/>
+  <line x1="110" y1="185" x2="170" y2="185" stroke="#64748B" stroke-width="1"/>
+  <rect x="173" y="20" width="46" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="176" y="31" font-size="12" fill="#F1F5F9">最高價</text>
+  <rect x="173" y="55" width="118" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="176" y="66" font-size="12" fill="#F1F5F9">收盤價（實體上緣）</text>
+  <rect x="173" y="145" width="118" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="176" y="156" font-size="12" fill="#F1F5F9">開盤價（實體下緣）</text>
+  <rect x="173" y="180" width="46" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="176" y="191" font-size="12" fill="#F1F5F9">最低價</text>
+  <line x1="110" y1="42" x2="60" y2="42" stroke="#64748B" stroke-width="1"/>
+  <rect x="18" y="35" width="42" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="55" y="46" font-size="12" fill="#94A3B8" text-anchor="end">上影線</text>
+  <line x1="110" y1="167" x2="60" y2="167" stroke="#64748B" stroke-width="1"/>
+  <rect x="18" y="160" width="42" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="55" y="171" font-size="12" fill="#94A3B8" text-anchor="end">下影線</text>
+  <text x="170" y="215" font-size="13" fill="#EF4444" text-anchor="middle" font-weight="700">紅K：收盤價 &gt; 開盤價（上漲）</text>
+</svg>
+      <div class="chart-caption">紅K範例：實體與上下影線的對應位置</div>
+    </div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg">
+  <line x1="110" y1="25" x2="110" y2="185" stroke="#10B981" stroke-width="2"/>
+  <rect x="94" y="60" width="32" height="90" fill="#10B981"/>
+  <line x1="110" y1="25" x2="170" y2="25" stroke="#64748B" stroke-width="1"/>
+  <line x1="126" y1="60" x2="170" y2="60" stroke="#64748B" stroke-width="1"/>
+  <line x1="126" y1="150" x2="170" y2="150" stroke="#64748B" stroke-width="1"/>
+  <line x1="110" y1="185" x2="170" y2="185" stroke="#64748B" stroke-width="1"/>
+  <rect x="173" y="20" width="46" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="176" y="31" font-size="12" fill="#F1F5F9">最高價</text>
+  <rect x="173" y="55" width="118" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="176" y="66" font-size="12" fill="#F1F5F9">開盤價（實體上緣）</text>
+  <rect x="173" y="145" width="118" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="176" y="156" font-size="12" fill="#F1F5F9">收盤價（實體下緣）</text>
+  <rect x="173" y="180" width="46" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="176" y="191" font-size="12" fill="#F1F5F9">最低價</text>
+  <line x1="110" y1="42" x2="60" y2="42" stroke="#64748B" stroke-width="1"/>
+  <rect x="18" y="35" width="42" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="55" y="46" font-size="12" fill="#94A3B8" text-anchor="end">上影線</text>
+  <line x1="110" y1="167" x2="60" y2="167" stroke="#64748B" stroke-width="1"/>
+  <rect x="18" y="160" width="42" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="55" y="171" font-size="12" fill="#94A3B8" text-anchor="end">下影線</text>
+  <text x="170" y="215" font-size="13" fill="#10B981" text-anchor="middle" font-weight="700">綠K：收盤價 &lt; 開盤價（下跌）</text>
+</svg>
+      <div class="chart-caption">綠K範例：開盤在上、收盤在下</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-title">紅K、綠K：注意台股與美股顏色相反</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>市場</th><th>上漲(收盤>開盤)</th><th>下跌(收盤<開盤)</th></tr></thead>
+    <tbody>
+      <tr><td>台股慣例</td><td>🔴 紅色</td><td>🟢 綠色</td></tr>
+      <tr><td>美股/多數國際軟體慣例</td><td>🟢 綠色</td><td>🔴 紅色</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見誤解</div>
+    <p>看盤軟體的顏色設定是可以調整的,不是全世界統一標準。換一個軟體或換一個市場前,務必先確認紅綠色代表的方向,否則很容易看反。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">影線的意義:上下影線代表什麼心理拉鋸</div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 長上影線</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>最高價遠高於收盤價,代表盤中一度衝高,但賣壓把價格打回來。常被解讀為上檔賣壓沉重或獲利了結。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 長下影線</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>最低價遠低於收盤價,代表盤中一度重挫,但買盤把價格拉回來。常被解讀為下檔有支撐、買方進場承接。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 無上下影線(光頭光腳)</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>開盤即為最低(或最高),收盤即為最高(或最低),代表當根走勢方向性非常強、幾乎沒有反向拉扯。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 實體很小、上下影線都長(十字線)</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>開盤與收盤價非常接近,代表多空拉鋸激烈、雙方勢均力敵,常出現在趨勢轉折前後,需搭配後續走勢確認。</p></div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第一章隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 在台股慣例中,紅K代表什麼意思?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">收盤價高於開盤價(上漲)</button>
+      <button class="quiz-opt" data-correct="0">收盤價低於開盤價(下跌)</button>
+      <button class="quiz-opt" data-correct="0">成交量比昨天高</button>
+      <button class="quiz-opt" data-correct="0">股價創下新高</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 一根K棒出現很長的下影線,最常被解讀為什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">上檔賣壓沉重</button>
+      <button class="quiz-opt" data-correct="1">盤中一度重挫後被買盤拉回,下檔可能有支撐</button>
+      <button class="quiz-opt" data-correct="0">代表成交量一定很大</button>
+      <button class="quiz-opt" data-correct="0">股價一定會連續上漲</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：均線系統(MA) →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2: 均線系統(MA)
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📈 第二章</div>
+  <h1>均線系統(MA)<br>MA5/10/20/30與多空排列</h1>
+  <p class="desc">均線是把過去N天的收盤價平均起來畫成一條線,用來過濾雜訊、看出趨勢方向。這一章帶你認識常見均線週期,以及「多頭排列」與「空頭排列」的判斷方法。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見均線週期與代表意義</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>均線</th><th>俗稱</th><th>代表意義</th></tr></thead>
+    <tbody>
+      <tr><td>MA5</td><td>週線(5個交易日)</td><td>反應最快,短線操作參考,價格跌破常代表短線動能轉弱</td></tr>
+      <tr><td>MA10</td><td>雙週線</td><td>短中期趨勢的緩衝線</td></tr>
+      <tr><td>MA20</td><td>月線</td><td>常被視為中期趨勢的分水嶺,守不守得住月線是重要觀察點</td></tr>
+      <tr><td>MA30/60</td><td>季線</td><td>中長期趨勢線,判斷多空長線氛圍的重要依據</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="formula">均線計算方式：MA(N) = 最近N天收盤價總和 ÷ N</div>
+</div>
+
+<div class="section">
+  <div class="section-title">多頭排列 vs 空頭排列</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🟢</div>
+      <div class="card-title">多頭排列</div>
+      <div class="card-body">由上而下排序為 MA5 > MA10 > MA20 > MA30,且股價站在所有均線之上。代表短中長期買盤力道都強於賣壓,趨勢偏多。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔴</div>
+      <div class="card-title">空頭排列</div>
+      <div class="card-body">由上而下排序為 MA30 > MA20 > MA10 > MA5,且股價落在所有均線之下。代表短中長期賣壓都強於買盤,趨勢偏空。</div>
+    </div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見誤解</div>
+    <p>「均線方向向下」不等於「已經是空頭排列」。均線方向只代表該均線本身的斜率,真正的多空排列要看多條均線「上下順序」是否符合標準排列,兩者要分開判斷,不要混為一談。</p>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">圖解：均線扇形排列</div>
+  <div class="chart-grid-2">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg">
+  <polyline points="20,170 100,165 180,150 260,130 300,120" fill="none" stroke="#A78BFA" stroke-width="2.5"/>
+  <polyline points="20,150 100,135 180,110 260,85 300,70" fill="none" stroke="#22D3EE" stroke-width="2.5"/>
+  <polyline points="20,130 100,105 180,75 260,50 300,35" fill="none" stroke="#F97316" stroke-width="2.5"/>
+  <polyline points="20,110 100,75 180,45 260,25 300,15" fill="none" stroke="#FBBF24" stroke-width="2.5"/>
+  <circle cx="300" cy="120" r="3" fill="#A78BFA"/>
+  <circle cx="300" cy="70" r="3" fill="#22D3EE"/>
+  <circle cx="300" cy="35" r="3" fill="#F97316"/>
+  <circle cx="300" cy="15" r="3" fill="#FBBF24"/>
+  <rect x="306" y="113" width="40" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="308" y="124" font-size="12" fill="#A78BFA">MA30</text>
+  <rect x="306" y="63" width="40" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="308" y="74" font-size="12" fill="#22D3EE">MA20</text>
+  <rect x="306" y="28" width="40" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="308" y="39" font-size="12" fill="#F97316">MA10</text>
+  <rect x="306" y="8" width="34" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="308" y="19" font-size="12" fill="#FBBF24">MA5</text>
+  <rect x="16" y="200" width="176" height="18" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="20" y="213" font-size="13" fill="#EF4444" font-weight="700">多頭排列：股價站上所有均線</text>
+</svg>
+      <div class="chart-caption">四條均線由上而下依序為MA5>MA10>MA20>MA30,呈現多頭發散</div>
+    </div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg">
+  <polyline points="20,60 100,65 180,80 260,100 300,110" fill="none" stroke="#A78BFA" stroke-width="2.5"/>
+  <polyline points="20,80 100,95 180,120 260,150 300,165" fill="none" stroke="#22D3EE" stroke-width="2.5"/>
+  <polyline points="20,100 100,125 180,155 260,185 300,195" fill="none" stroke="#F97316" stroke-width="2.5"/>
+  <polyline points="20,120 100,150 180,180 260,205 300,215" fill="none" stroke="#FBBF24" stroke-width="2.5"/>
+  <circle cx="300" cy="110" r="3" fill="#A78BFA"/>
+  <circle cx="300" cy="165" r="3" fill="#22D3EE"/>
+  <circle cx="300" cy="195" r="3" fill="#F97316"/>
+  <circle cx="300" cy="215" r="3" fill="#FBBF24"/>
+  <rect x="306" y="103" width="40" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="308" y="114" font-size="12" fill="#A78BFA">MA30</text>
+  <rect x="306" y="158" width="40" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="308" y="169" font-size="12" fill="#22D3EE">MA20</text>
+  <rect x="306" y="188" width="40" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="308" y="199" font-size="12" fill="#F97316">MA10</text>
+  <rect x="306" y="208" width="34" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="308" y="219" font-size="12" fill="#FBBF24">MA5</text>
+  <rect x="16" y="14" width="190" height="18" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="20" y="27" font-size="13" fill="#10B981" font-weight="700">空頭排列：股價落在所有均線之下</text>
+</svg>
+      <div class="chart-caption">四條均線由上而下依序為MA30>MA20>MA10>MA5,呈現空頭發散</div>
+    </div>
+  </div>
+  <div class="chart-legend">
+    <span><span class="legend-dot" style="background:#FBBF24"></span>MA5</span>
+    <span><span class="legend-dot" style="background:#F97316"></span>MA10</span>
+    <span><span class="legend-dot" style="background:#22D3EE"></span>MA20</span>
+    <span><span class="legend-dot" style="background:#A78BFA"></span>MA30</span>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-title">均線的兩個常見訊號</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">黃金交叉</div>
+        <div class="step-desc">短期均線由下往上穿越長期均線(例如MA5向上穿越MA20),常被視為偏多訊號。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">死亡交叉</div>
+        <div class="step-desc">短期均線由上往下跌破長期均線,常被視為偏空訊號。</div>
+      </div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 使用提醒</div>
+    <p>黃金交叉、死亡交叉屬於「落後指標」,是價格已經走了一段之後均線才反應出來,不代表最佳買賣點,通常需要搭配量能與其他條件一起判斷,才不會追高殺低。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第二章隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 標準的多頭排列,均線由上而下應該怎麼排?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">MA5 > MA10 > MA20 > MA30</button>
+      <button class="quiz-opt" data-correct="0">MA30 > MA20 > MA10 > MA5</button>
+      <button class="quiz-opt" data-correct="0">所有均線必須完全重疊在同一點</button>
+      <button class="quiz-opt" data-correct="0">均線排列跟多空趨勢無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 短期均線由下往上穿越長期均線,這個訊號叫做什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">死亡交叉</button>
+      <button class="quiz-opt" data-correct="1">黃金交叉</button>
+      <button class="quiz-opt" data-correct="0">量價背離</button>
+      <button class="quiz-opt" data-correct="0">跳空缺口</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：量價關係 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3: 量價關係
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📊 第三章</div>
+  <h1>量價關係<br>成交量如何驗證價格走勢</h1>
+  <p class="desc">「價是果、量是因」,成交量常被視為判斷走勢真假的重要依據。這一章帶你認識常見的量價搭配組合,以及爆量、量縮各自代表什麼意義。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">四種常見量價組合</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>組合</th><th>意義</th></tr></thead>
+    <tbody>
+      <tr><td>量增價漲(量價齊揚)</td><td>買盤積極追價,趨勢向上的力道較有支撐,健康的上漲通常伴隨量能放大</td></tr>
+      <tr><td>量增價跌</td><td>賣壓湧現,可能是主力出貨或恐慌性賣壓,需留意</td></tr>
+      <tr><td>量縮價漲</td><td>雖然上漲但參與者不多,動能可能不足,需觀察是否只是缺乏賣壓的假性上漲</td></tr>
+      <tr><td>量縮價跌</td><td>下跌但賣壓也不重,常見於整理階段,也可能代表賣方已無力進一步殺低</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">圖解：量價關係四象限</div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 350 340" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <rect x="0" y="0" width="160" height="150" rx="12" fill="rgba(239,68,68,0.10)" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="80" y="26" font-size="14" font-weight="700" fill="#EF4444" text-anchor="middle">量增價漲</text>
+    <rect x="18" y="96" width="16" height="12" fill="#EF4444" opacity="0.75" rx="2"/>
+    <rect x="40" y="86" width="16" height="22" fill="#EF4444" opacity="0.75" rx="2"/>
+    <rect x="62" y="76" width="16" height="32" fill="#EF4444" opacity="0.75" rx="2"/>
+    <rect x="84" y="64" width="16" height="44" fill="#EF4444" opacity="0.75" rx="2"/>
+    
+    <text x="126" y="80" font-size="28" fill="#EF4444" text-anchor="middle">&#9650;</text>
+    <rect x="30" y="128" width="100" height="16" fill="#1E293B" opacity="0.85" rx="4"/>
+    <text x="80" y="140" font-size="11" fill="#94A3B8" text-anchor="middle">買盤積極</text>
+  </g><g>
+    <rect x="190" y="0" width="160" height="150" rx="12" fill="rgba(16,185,129,0.10)" stroke="#10B981" stroke-width="1.5"/>
+    <text x="270" y="26" font-size="14" font-weight="700" fill="#10B981" text-anchor="middle">量增價跌</text>
+    <rect x="208" y="96" width="16" height="12" fill="#10B981" opacity="0.75" rx="2"/>
+    <rect x="230" y="86" width="16" height="22" fill="#10B981" opacity="0.75" rx="2"/>
+    <rect x="252" y="76" width="16" height="32" fill="#10B981" opacity="0.75" rx="2"/>
+    <rect x="274" y="64" width="16" height="44" fill="#10B981" opacity="0.75" rx="2"/>
+    
+    <text x="316" y="80" font-size="28" fill="#10B981" text-anchor="middle">&#9660;</text>
+    <rect x="220" y="128" width="100" height="16" fill="#1E293B" opacity="0.85" rx="4"/>
+    <text x="270" y="140" font-size="11" fill="#94A3B8" text-anchor="middle">賣壓湧現</text>
+  </g><g>
+    <rect x="0" y="170" width="160" height="150" rx="12" fill="rgba(248,113,113,0.10)" stroke="#F87171" stroke-width="1.5"/>
+    <text x="80" y="196" font-size="14" font-weight="700" fill="#F87171" text-anchor="middle">量縮價漲</text>
+    <rect x="18" y="234" width="16" height="44" fill="#F87171" opacity="0.75" rx="2"/>
+    <rect x="40" y="246" width="16" height="32" fill="#F87171" opacity="0.75" rx="2"/>
+    <rect x="62" y="256" width="16" height="22" fill="#F87171" opacity="0.75" rx="2"/>
+    <rect x="84" y="266" width="16" height="12" fill="#F87171" opacity="0.75" rx="2"/>
+    
+    <text x="126" y="250" font-size="28" fill="#F87171" text-anchor="middle">&#9650;</text>
+    <rect x="30" y="298" width="100" height="16" fill="#1E293B" opacity="0.85" rx="4"/>
+    <text x="80" y="310" font-size="11" fill="#94A3B8" text-anchor="middle">動能不足</text>
+  </g><g>
+    <rect x="190" y="170" width="160" height="150" rx="12" fill="rgba(52,211,153,0.10)" stroke="#34D399" stroke-width="1.5"/>
+    <text x="270" y="196" font-size="14" font-weight="700" fill="#34D399" text-anchor="middle">量縮價跌</text>
+    <rect x="208" y="234" width="16" height="44" fill="#34D399" opacity="0.75" rx="2"/>
+    <rect x="230" y="246" width="16" height="32" fill="#34D399" opacity="0.75" rx="2"/>
+    <rect x="252" y="256" width="16" height="22" fill="#34D399" opacity="0.75" rx="2"/>
+    <rect x="274" y="266" width="16" height="12" fill="#34D399" opacity="0.75" rx="2"/>
+    
+    <text x="316" y="250" font-size="28" fill="#34D399" text-anchor="middle">&#9660;</text>
+    <rect x="220" y="298" width="100" height="16" fill="#1E293B" opacity="0.85" rx="4"/>
+    <text x="270" y="310" font-size="11" fill="#94A3B8" text-anchor="middle">賣壓趨緩</text>
+  </g>
+</svg>
+    <div class="chart-caption">▲/▼代表價格方向,長條由左到右代表成交量的變化趨勢</div>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-title">爆量與均量:VOL5、VOL10怎麼看</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">💥</div>
+      <div class="card-title">爆量</div>
+      <div class="card-body">當日成交量明顯高於近期均量(例如VOL5、VOL10),常出現在趨勢轉折點、重大消息公布,或主力進出貨的時間點,是值得特別留意的訊號。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📉</div>
+      <div class="card-title">量縮</div>
+      <div class="card-body">當日量遠低於VOL5、VOL10,代表市場參與意願下降,常見於股價創高或創低後的整理階段,可能是換手沉澱,也可能是動能真的減弱。</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 使用提醒</div>
+    <p>單看一天的量沒有太大意義,要跟自己近5日、近10日的均量做比較,才能判斷「這算不算異常」。同樣是100張成交量,對冷門股可能是爆量,對熱門股卻可能只是日常水準。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">量價背離:一個需要提高警覺的訊號</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 什麼是量價背離</div>
+    <p>股價創新高,但成交量卻沒有跟著創新高,甚至持續萎縮,代表推升股價的買盤力道正在減弱,是趨勢可能反轉的警訊之一。反之,股價創新低但量能未同步放大,也可能代表賣壓接近尾聲。</p>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🚨 常見誤解</div>
+    <p>量價背離只是「提高警覺」的訊號,不代表股價一定馬上反轉。它更適合當作搭配其他條件的輔助判斷,而不是單獨拿來當作買賣點的唯一依據。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第三章隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「量增價漲」通常代表什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">買盤積極追價,上漲力道較有支撐</button>
+      <button class="quiz-opt" data-correct="0">代表股價一定會馬上下跌</button>
+      <button class="quiz-opt" data-correct="0">跟趨勢完全無關</button>
+      <button class="quiz-opt" data-correct="0">代表公司即將下市</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 判斷今天的量是否「異常」,最合理的做法是?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只看絕對成交張數,不用比較</button>
+      <button class="quiz-opt" data-correct="1">跟近5日、近10日均量做比較</button>
+      <button class="quiz-opt" data-correct="0">跟其他公司的成交量比較</button>
+      <button class="quiz-opt" data-correct="0">量能大小跟趨勢判斷無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：趨勢與型態判讀 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4: 趨勢與型態判讀
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧭 第四章</div>
+  <h1>趨勢與型態判讀<br>支撐、壓力、突破與拉回</h1>
+  <p class="desc">這一章帶你認識技術分析最核心的概念:支撐與壓力,以及股價「突破」或「拉回」該怎麼解讀,建立看圖判斷趨勢的基本邏輯。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">支撐與壓力是什麼</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🧱</div>
+      <div class="card-title">支撐</div>
+      <div class="card-body">股價下跌到某個價位附近,買盤明顯增加、跌勢受阻甚至反彈的區域。常來自過去的低點、均線,或大量成交發生過的價位。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚧</div>
+      <div class="card-title">壓力</div>
+      <div class="card-body">股價上漲到某個價位附近,賣壓明顯增加、漲勢受阻甚至拉回的區域。常來自過去的高點、均線,或套牢籌碼集中的價位。</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 一句話理解</div>
+    <p>支撐與壓力不是一條精準的線,而是一個「區間」。同一個價位跌破後可能反過來變成壓力,突破後也可能反過來變成支撐,這叫做「支撐壓力轉換」。</p>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">圖解：支撐、壓力與突破</div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 380 280" xmlns="http://www.w3.org/2000/svg">
+  <!-- resistance zone -->
+  <rect x="10" y="55" width="360" height="18" fill="#EF4444" opacity="0.12"/>
+  <line x1="10" y1="55" x2="370" y2="55" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="10" y1="73" x2="370" y2="73" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- support zone -->
+  <rect x="10" y="168" width="360" height="18" fill="#10B981" opacity="0.12"/>
+  <line x1="10" y1="168" x2="370" y2="168" stroke="#10B981" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="10" y1="186" x2="370" y2="186" stroke="#10B981" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- price path -->
+  <polyline points="20,177 60,132 100,92 122,64 132,54 142,86 170,177 200,150 230,100 260,68 285,48 320,34 360,20"
+    fill="none" stroke="#F1F5F9" stroke-width="2.5"/>
+
+  <!-- false breakout marker -->
+  <circle cx="132" cy="54" r="4" fill="#F59E0B"/>
+  <line x1="132" y1="54" x2="132" y2="25" stroke="#F59E0B" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="132" y="18" font-size="12" fill="#F59E0B" text-anchor="middle" font-weight="700">假突破</text>
+
+  <!-- real breakout marker -->
+  <circle cx="285" cy="48" r="4" fill="#10B981"/>
+  <line x1="285" y1="48" x2="285" y2="215" stroke="#10B981" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="285" y="230" font-size="12" fill="#10B981" text-anchor="middle" font-weight="700">有效突破</text>
+
+  <!-- retest marker -->
+  <circle cx="170" cy="177" r="4" fill="#22D3EE"/>
+
+  <!-- zone labels -->
+  <text x="16" y="48" font-size="12" fill="#EF4444" font-weight="700">壓力區</text>
+  <text x="16" y="205" font-size="12" fill="#10B981" font-weight="700">支撐區</text>
+
+  <text x="60" y="245" font-size="11" fill="#94A3B8">支撐反彈</text>
+  <line x1="60" y1="232" x2="60" y2="140" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="170" y="255" font-size="11" fill="#94A3B8" text-anchor="middle">拉回測試支撐</text>
+</svg>
+    <div class="chart-caption">價格觸及壓力區後先出現假突破拉回,拉回測試支撐後才真正有效突破</div>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-title">突破與拉回怎麼判斷</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">有效突破</div>
+        <div class="step-desc">股價站上壓力區,且伴隨量能放大、收盤價確實站穩在壓力之上(而非僅盤中觸及),較能視為有效突破。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">假突破</div>
+        <div class="step-desc">股價一度衝過壓力區,但量能沒有跟上、很快又跌回壓力之下,常見的騙線之一,需要留意上影線與量能的搭配。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">拉回不破前波高低點</div>
+        <div class="step-desc">上升趨勢中的正常拉回,只要不跌破前一個波段低點或重要均線,趨勢通常視為維持完好。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">跌破前波低點</div>
+        <div class="step-desc">若拉回時跌破前一個波段低點,通常代表原本的上升趨勢結構已經被破壞,需要重新評估趨勢方向。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">趨勢線與型態的基本邏輯</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>結構</th><th>特徵</th></tr></thead>
+    <tbody>
+      <tr><td>上升趨勢</td><td>波段高點、低點依序墊高(高點更高、低點也更高)</td></tr>
+      <tr><td>下降趨勢</td><td>波段高點、低點依序降低(高點更低、低點也更低)</td></tr>
+      <tr><td>盤整/箱型</td><td>股價在一定區間內來回震盪,高低點沒有明顯墊高或降低</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見誤解</div>
+    <p>「一根長紅K突破」不代表趨勢已經反轉,任何單一訊號都建議搭配均線方向、量能變化一起確認,避免看到一根K棒就急著追進追出。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第四章隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 什麼是「支撐壓力轉換」?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">同一個價位跌破後可能變成壓力,突破後可能變成支撐</button>
+      <button class="quiz-opt" data-correct="0">支撐和壓力永遠固定不會改變</button>
+      <button class="quiz-opt" data-correct="0">跟成交量完全無關的現象</button>
+      <button class="quiz-opt" data-correct="0">只會發生在下降趨勢中</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 判斷一次突破是否「有效」,可以搭配觀察什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只看盤中最高價是否觸及壓力</button>
+      <button class="quiz-opt" data-correct="1">收盤價是否站穩壓力之上,並搭配量能是否放大</button>
+      <button class="quiz-opt" data-correct="0">當天K棒的顏色</button>
+      <button class="quiz-opt" data-correct="0">跟支撐壓力完全無關的其他個股走勢</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：常見技術指標 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5: 常見技術指標
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧮 第五章</div>
+  <h1>常見技術指標<br>KD、MACD、RSI快速入門</h1>
+  <p class="desc">除了K線、均線、成交量,許多看盤軟體還會顯示一系列技術指標。這一章用最白話的方式,帶你認識三個最常見的指標在說什麼。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三個最常見的技術指標</div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① KD指標(隨機指標)</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>用來衡量目前收盤價,在近期最高最低價區間中的相對位置,數值介於0-100。K值、D值出現黃金交叉/死亡交叉常被視為短線買賣訊號,數值來到80以上視為「超買」,20以下視為「超賣」。KD反應速度快,但也容易在盤整時發出過多雜訊訊號。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② MACD(指數平滑異同移動平均線)</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>由兩條不同天期的指數移動平均線相減而成,搭配柱狀圖(OSC)呈現多空力道的變化。DIF線與MACD訊號線的交叉常被用來判斷中期趨勢轉折,柱狀圖由負轉正或由正轉負,代表多空力道正在切換。MACD反應速度較慢,但訊號相對穩定,適合中期趨勢判斷。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ RSI(相對強弱指標)</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>衡量一段期間內上漲力道與下跌力道的相對比例,數值介於0-100。一般以70以上視為「超買」,30以下視為「超賣」,可用來輔助判斷股價是否短線漲跌過度。但在強勢多頭或空頭趨勢中,RSI可能長時間停留在超買或超賣區,不代表會立刻反轉。</p></div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">圖解：三個指標長什麼樣子</div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="36.0" x2="350" y2="36.0" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="10" y1="84.0" x2="350" y2="84.0" stroke="#10B981" stroke-width="1" stroke-dasharray="4,3"/>
+  <polyline points="20,76.0 40,64.0 60,48.0 80,34.4 100,37.6 120,52.0 140,68.0 160,80.0 180,72.0 200,56.0 220,40.0 240,29.6 260,44.0 280,60.0 300,74.4 320,84.0" fill="none" stroke="#FBBF24" stroke-width="2"/>
+  <polyline points="20,72.0 40,66.4 60,53.6 80,40.8 100,36.0 120,45.6 140,60.0 160,74.4 180,77.6 200,64.0 220,45.6 240,34.4 260,37.6 280,52.0 300,66.4 320,79.2" fill="none" stroke="#22D3EE" stroke-width="2"/>
+  <rect x="298" y="27.0" width="52" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="346" y="38.0" font-size="10.5" fill="#EF4444" text-anchor="end">80 超買</text>
+  <rect x="298" y="75.0" width="52" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="346" y="86.0" font-size="10.5" fill="#10B981" text-anchor="end">20 超賣</text>
+  <rect x="10" y="4" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="16" font-size="12" fill="#F1F5F9" font-weight="700">KD指標</text>
+  <text x="70" y="16" font-size="11" fill="#FBBF24">K值</text>
+  <text x="100" y="16" font-size="11" fill="#22D3EE">D值</text>
+</svg>
+    <div class="chart-caption">K值(黃)與D值(藍)在80/20之間來回擺盪,交叉是短線訊號</div>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="60.0" x2="350" y2="60.0" stroke="#64748B" stroke-width="1"/>
+  <rect x="15" y="60.0" width="10" height="11.2" fill="#10B981" opacity="0.6"/><rect x="35" y="60.0" width="10" height="19.6" fill="#10B981" opacity="0.6"/><rect x="55" y="60.0" width="10" height="7.0" fill="#10B981" opacity="0.6"/><rect x="75" y="51.6" width="10" height="8.4" fill="#EF4444" opacity="0.6"/><rect x="95" y="40.4" width="10" height="19.6" fill="#EF4444" opacity="0.6"/><rect x="115" y="34.8" width="10" height="25.2" fill="#EF4444" opacity="0.6"/><rect x="135" y="46.0" width="10" height="14.0" fill="#EF4444" opacity="0.6"/><rect x="155" y="60.0" width="10" height="2.8" fill="#10B981" opacity="0.6"/><rect x="175" y="60.0" width="10" height="14.0" fill="#10B981" opacity="0.6"/><rect x="195" y="60.0" width="10" height="22.4" fill="#10B981" opacity="0.6"/><rect x="215" y="60.0" width="10" height="12.6" fill="#10B981" opacity="0.6"/><rect x="235" y="54.4" width="10" height="5.6" fill="#EF4444" opacity="0.6"/><rect x="255" y="39.0" width="10" height="21.0" fill="#EF4444" opacity="0.6"/><rect x="275" y="32.0" width="10" height="28.0" fill="#EF4444" opacity="0.6"/><rect x="295" y="43.2" width="10" height="16.8" fill="#EF4444" opacity="0.6"/><rect x="315" y="57.2" width="10" height="2.8" fill="#EF4444" opacity="0.6"/>
+  <polyline points="20,68.4 40,74.0 60,64.2 80,50.2 100,39.0 120,33.4 140,43.2 160,60.0 180,71.2 200,78.2 220,68.4 240,51.6 260,37.6 280,30.6 300,41.8 320,55.8" fill="none" stroke="#FBBF24" stroke-width="2"/>
+  <polyline points="20,62.8 40,68.4 60,68.4 80,61.4 100,50.2 120,39.0 140,36.2 160,46.0 180,61.4 200,71.2 220,75.4 240,65.6 260,54.4 280,41.8 300,34.8 320,44.6" fill="none" stroke="#22D3EE" stroke-width="2"/>
+  <rect x="10" y="4" width="160" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="16" font-size="12" fill="#F1F5F9" font-weight="700">MACD</text>
+  <text x="70" y="16" font-size="11" fill="#FBBF24">DIF</text>
+  <text x="100" y="16" font-size="11" fill="#22D3EE">訊號線</text>
+  <rect x="316" y="51.0" width="34" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="346" y="62.0" font-size="10.5" fill="#94A3B8" text-anchor="end">0軸</text>
+</svg>
+    <div class="chart-caption">柱狀圖由負轉正、DIF與訊號線交叉,反映中期多空力道切換</div>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="44.0" x2="350" y2="44.0" stroke="#EF4444" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="10" y1="76.0" x2="350" y2="76.0" stroke="#10B981" stroke-width="1" stroke-dasharray="4,3"/>
+  <polyline points="20,68.0 40,56.0 60,45.6 80,37.6 100,42.4 120,53.6 140,64.0 160,72.0 180,66.4 200,52.0 220,40.8 240,36.0 260,43.2 280,56.0 300,69.6 320,77.6" fill="none" stroke="#A78BFA" stroke-width="2.2"/>
+  <rect x="298" y="35.0" width="52" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="346" y="46.0" font-size="10.5" fill="#EF4444" text-anchor="end">70 超買</text>
+  <rect x="298" y="67.0" width="52" height="14" fill="#1E293B" opacity="0.9" rx="3"/>
+  <text x="346" y="78.0" font-size="10.5" fill="#10B981" text-anchor="end">30 超賣</text>
+  <rect x="10" y="4" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="16" font-size="12" fill="#F1F5F9" font-weight="700">RSI</text>
+</svg>
+    <div class="chart-caption">RSI在70/30之間擺盪,用來輔助判斷是否漲跌過度</div>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-title">指標之間怎麼互相搭配</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>情境</th><th>可以怎麼搭配判斷</th></tr></thead>
+    <tbody>
+      <tr><td>短線進出</td><td>可觀察KD是否出現黃金/死亡交叉,搭配當日量能確認</td></tr>
+      <tr><td>中期趨勢確認</td><td>可觀察MACD柱狀圖翻正/翻負,搭配均線排列是否同步轉變</td></tr>
+      <tr><td>判斷是否漲跌過頭</td><td>可用RSI是否進入超買/超賣區,搭配K線是否出現長上下影線</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 使用提醒</div>
+    <p>技術指標本質上都是從價格與成交量「計算」出來的衍生數字,不會比原始的K線與量價關係包含更多資訊。它們的價值在於幫你用不同角度、更量化的方式確認同一件事,而不是取代對K線與量價的基本判讀。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第五章隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. KD指標的數值通常介於哪個範圍?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">0到100</button>
+      <button class="quiz-opt" data-correct="0">-1到1</button>
+      <button class="quiz-opt" data-correct="0">沒有固定範圍</button>
+      <button class="quiz-opt" data-correct="0">只會是正整數且沒有上限</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於技術指標,下列敘述何者正確?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">技術指標包含比K線和成交量更多的獨立資訊</button>
+      <button class="quiz-opt" data-correct="1">技術指標是從價格與成交量計算出來的衍生數字,用來輔助確認判斷</button>
+      <button class="quiz-opt" data-correct="0">RSI進入超買區就代表股價一定會馬上下跌</button>
+      <button class="quiz-opt" data-correct="0">只要用了技術指標就不需要再看K線圖</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：實戰讀圖演練 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6: 實戰讀圖演練
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔍 第六章</div>
+  <h1>實戰讀圖演練<br>用一張真實K線圖走一次分析流程</h1>
+  <p class="desc">學了這麼多知識點,這一章帶你用一套固定的檢查順序,把K線、均線、量能一次串起來,實際「讀」一張圖。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>25 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">讀圖的固定五步驟</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">先看大方向:均線排列</div>
+        <div class="step-desc">MA5/10/20/30目前是多頭排列、空頭排列,還是糾結在一起?股價目前站在均線之上還是之下?</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">找出近期高低點,標出支撐壓力</div>
+        <div class="step-desc">最近的波段高點、低點在哪裡?目前股價距離支撐或壓力還有多遠?</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">檢查成交量是否配合</div>
+        <div class="step-desc">近期的上漲或下跌,是量增還是量縮?最近一次爆量發生在什麼位置?</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">觀察最近幾根K棒的型態</div>
+        <div class="step-desc">最近是否出現長上下影線、十字線,或是明顯的連續紅K/綠K?</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">綜合判斷,而非單一訊號下結論</div>
+        <div class="step-desc">把以上四點合在一起看,是否互相印證?如果訊號互相矛盾,代表趨勢還不明朗,應更謹慎。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">案例一:典型「噴出後拉回」走勢</div>
+  <div class="card">
+    <div class="card-body">
+      以一張常見的月線圖為例:股價從低檔緩漲開始,期間出現兩次帶量急漲並創下波段新高,均線一度呈現由下往上的多頭排列。創高後股價從高點拉回,跌破短期均線(MA5、MA10),同時成交量明顯萎縮,遠低於近5日、近10日均量。<br><br>
+      套用五步驟:①均線排列從多頭轉為糾結,短均走弱 ②近期高點成為觀察壓力,前一波拉回低點成為觀察支撐 ③量能明顯萎縮,顯示追價意願下降 ④近期K棒實體縮小、上下影線增加,顯示多空拉鋸 ⑤綜合來看,這是典型「主升段後獲利了結的拉回整理」,後續能否止穩,關鍵在能否守住月線(MA20)或季線(MA30)附近的支撐。
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 398 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="378" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,197.0 32,196.4 44,195.2 56,194.4 68,193.4 80,191.5 92,189.6 104,187.9 116,186.2 128,184.5 140,181.5 152,176.9 164,170.4 176,161.1 188,150.3 200,141.9 212,135.1 224,129.6 236,126.9 248,123.2 260,114.8 272,104.6 284,91.5 296,76.0 308,64.6 320,58.7 332,56.6 344,61.0 356,69.5 368,78.8" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="192.1" x2="20" y2="210.0" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="197.0" width="8" height="6.9" fill="#EF4444"/><line x1="32" y1="192.4" x2="32" y2="200.1" stroke="#EF4444" stroke-width="1.3"/><rect x="28" y="195.8" width="8" height="1.5" fill="#EF4444"/><line x1="44" y1="188.5" x2="44" y2="201.0" stroke="#EF4444" stroke-width="1.3"/><rect x="40" y="192.9" width="8" height="2.9" fill="#EF4444"/><line x1="56" y1="190.2" x2="56" y2="197.5" stroke="#EF4444" stroke-width="1.3"/><rect x="52" y="191.9" width="8" height="1.5" fill="#EF4444"/><line x1="68" y1="187.7" x2="68" y2="196.5" stroke="#EF4444" stroke-width="1.3"/><rect x="64" y="189.4" width="8" height="2.5" fill="#EF4444"/><line x1="80" y1="185.0" x2="80" y2="193.3" stroke="#EF4444" stroke-width="1.3"/><rect x="76" y="187.5" width="8" height="1.9" fill="#EF4444"/><line x1="92" y1="181.5" x2="92" y2="193.4" stroke="#EF4444" stroke-width="1.3"/><rect x="88" y="186.6" width="8" height="1.5" fill="#EF4444"/><line x1="104" y1="180.4" x2="104" y2="193.1" stroke="#EF4444" stroke-width="1.3"/><rect x="100" y="184.2" width="8" height="2.4" fill="#EF4444"/><line x1="116" y1="180.3" x2="116" y2="188.1" stroke="#EF4444" stroke-width="1.3"/><rect x="112" y="183.3" width="8" height="1.5" fill="#EF4444"/><line x1="128" y1="176.6" x2="128" y2="188.4" stroke="#EF4444" stroke-width="1.3"/><rect x="124" y="181.2" width="8" height="2.2" fill="#EF4444"/><line x1="140" y1="168.5" x2="140" y2="182.9" stroke="#EF4444" stroke-width="1.3"/><rect x="136" y="172.4" width="8" height="8.8" fill="#EF4444"/><line x1="152" y1="160.4" x2="152" y2="177.6" stroke="#EF4444" stroke-width="1.3"/><rect x="148" y="163.4" width="8" height="9.0" fill="#EF4444"/><line x1="164" y1="146.0" x2="164" y2="168.3" stroke="#EF4444" stroke-width="1.3"/><rect x="160" y="151.7" width="8" height="11.7" fill="#EF4444"/><line x1="176" y1="131.5" x2="176" y2="158.5" stroke="#EF4444" stroke-width="1.3"/><rect x="172" y="136.7" width="8" height="15.0" fill="#EF4444"/><line x1="188" y1="124.7" x2="188" y2="142.5" stroke="#EF4444" stroke-width="1.3"/><rect x="184" y="127.4" width="8" height="9.2" fill="#EF4444"/><line x1="200" y1="122.9" x2="200" y2="133.4" stroke="#10B981" stroke-width="1.3"/><rect x="196" y="127.4" width="8" height="3.0" fill="#10B981"/><line x1="212" y1="124.8" x2="212" y2="133.9" stroke="#EF4444" stroke-width="1.3"/><rect x="208" y="129.1" width="8" height="1.5" fill="#EF4444"/><line x1="224" y1="118.0" x2="224" y2="134.1" stroke="#EF4444" stroke-width="1.3"/><rect x="220" y="124.2" width="8" height="4.9" fill="#EF4444"/><line x1="236" y1="117.9" x2="236" y2="125.7" stroke="#EF4444" stroke-width="1.3"/><rect x="232" y="123.3" width="8" height="1.5" fill="#EF4444"/><line x1="248" y1="106.0" x2="248" y2="127.2" stroke="#EF4444" stroke-width="1.3"/><rect x="244" y="109.0" width="8" height="14.4" fill="#EF4444"/><line x1="260" y1="81.9" x2="260" y2="111.2" stroke="#EF4444" stroke-width="1.3"/><rect x="256" y="88.6" width="8" height="20.3" fill="#EF4444"/><line x1="272" y1="75.9" x2="272" y2="90.7" stroke="#EF4444" stroke-width="1.3"/><rect x="268" y="77.9" width="8" height="10.8" fill="#EF4444"/><line x1="284" y1="55.1" x2="284" y2="79.6" stroke="#EF4444" stroke-width="1.3"/><rect x="280" y="58.8" width="8" height="19.1" fill="#EF4444"/><line x1="296" y1="40.0" x2="296" y2="64.4" stroke="#EF4444" stroke-width="1.3"/><rect x="292" y="45.5" width="8" height="13.3" fill="#EF4444"/><line x1="308" y1="43.3" x2="308" y2="54.5" stroke="#10B981" stroke-width="1.3"/><rect x="304" y="45.5" width="8" height="6.9" fill="#10B981"/><line x1="320" y1="48.3" x2="320" y2="61.7" stroke="#10B981" stroke-width="1.3"/><rect x="316" y="52.4" width="8" height="6.6" fill="#10B981"/><line x1="332" y1="57.4" x2="332" y2="71.0" stroke="#10B981" stroke-width="1.3"/><rect x="328" y="59.0" width="8" height="8.4" fill="#10B981"/><line x1="344" y1="62.4" x2="344" y2="86.9" stroke="#10B981" stroke-width="1.3"/><rect x="340" y="67.4" width="8" height="13.3" fill="#10B981"/><line x1="356" y1="75.2" x2="356" y2="89.8" stroke="#10B981" stroke-width="1.3"/><rect x="352" y="80.8" width="8" height="7.2" fill="#10B981"/><line x1="368" y1="83.5" x2="368" y2="102.9" stroke="#10B981" stroke-width="1.3"/><rect x="364" y="88.0" width="8" height="11.1" fill="#10B981"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  <line x1="10" y1="245" x2="378" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="378" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="296.8" width="8" height="23.2" fill="#EF4444" opacity="0.8"/><rect x="28" y="291.7" width="8" height="28.3" fill="#EF4444" opacity="0.8"/><rect x="40" y="292.7" width="8" height="27.3" fill="#EF4444" opacity="0.8"/><rect x="52" y="292.0" width="8" height="28.0" fill="#EF4444" opacity="0.8"/><rect x="64" y="300.8" width="8" height="19.2" fill="#EF4444" opacity="0.8"/><rect x="76" y="298.8" width="8" height="21.2" fill="#EF4444" opacity="0.8"/><rect x="88" y="299.6" width="8" height="20.4" fill="#EF4444" opacity="0.8"/><rect x="100" y="291.7" width="8" height="28.3" fill="#EF4444" opacity="0.8"/><rect x="112" y="290.6" width="8" height="29.4" fill="#EF4444" opacity="0.8"/><rect x="124" y="302.7" width="8" height="17.3" fill="#EF4444" opacity="0.8"/><rect x="136" y="302.4" width="8" height="17.6" fill="#EF4444" opacity="0.8"/><rect x="148" y="301.5" width="8" height="18.5" fill="#EF4444" opacity="0.8"/><rect x="160" y="263.1" width="8" height="56.9" fill="#EF4444" opacity="0.8"/><rect x="172" y="258.4" width="8" height="61.6" fill="#EF4444" opacity="0.8"/><rect x="184" y="296.2" width="8" height="23.8" fill="#EF4444" opacity="0.8"/><rect x="196" y="301.1" width="8" height="18.9" fill="#10B981" opacity="0.8"/><rect x="208" y="304.9" width="8" height="15.1" fill="#EF4444" opacity="0.8"/><rect x="220" y="298.7" width="8" height="21.3" fill="#EF4444" opacity="0.8"/><rect x="232" y="299.5" width="8" height="20.5" fill="#EF4444" opacity="0.8"/><rect x="244" y="296.5" width="8" height="23.5" fill="#EF4444" opacity="0.8"/><rect x="256" y="290.7" width="8" height="29.3" fill="#EF4444" opacity="0.8"/><rect x="268" y="248.5" width="8" height="71.5" fill="#EF4444" opacity="0.8"/><rect x="280" y="250.5" width="8" height="69.5" fill="#EF4444" opacity="0.8"/><rect x="292" y="295.7" width="8" height="24.3" fill="#EF4444" opacity="0.8"/><rect x="304" y="302.2" width="8" height="17.8" fill="#10B981" opacity="0.8"/><rect x="316" y="308.2" width="8" height="11.8" fill="#10B981" opacity="0.8"/><rect x="328" y="300.0" width="8" height="20.0" fill="#10B981" opacity="0.8"/><rect x="340" y="301.1" width="8" height="18.9" fill="#10B981" opacity="0.8"/><rect x="352" y="300.2" width="8" height="19.8" fill="#10B981" opacity="0.8"/><rect x="364" y="301.0" width="8" height="19.0" fill="#10B981" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <circle cx="296" cy="40.0" r="3.5" fill="#F1F5F9"/><line x1="296" y1="40.0" x2="296" y2="24.0" stroke="#F1F5F9" stroke-width="1"/><rect x="266.0" y="10.0" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="296" y="22.0" font-size="11" fill="#F1F5F9" text-anchor="middle" font-weight="700">波段高點</text><rect x="120.0" y="213.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="164.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">第一次帶量急漲</text>
+  <line x1="164" y1="227.0" x2="164" y2="263.1" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="240.0" y="213.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="284.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">第二次帶量急漲</text>
+  <line x1="284" y1="227.0" x2="284" y2="250.5" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="294.0" y="326.0" width="100" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="344.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">拉回量能明顯萎縮</text>
+  <line x1="344" y1="324.0" x2="344" y2="301.1" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+    <div class="chart-caption">示意圖:兩次帶量急漲推升至波段高點,拉回階段成交量明顯萎縮(合成教學用圖,非真實個股數據)</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">案例二:「底部反轉」走勢</div>
+  <div class="card">
+    <div class="card-body">
+      股價經過一段持續下跌後進入低檔盤整,某天出現一根帶量長紅棒,成交量明顯放大遠超近期均量,股價站上短期均線。經過幾天整理後再度出現帶量上攻,確認低檔買盤持續進駐。<br><br>
+      套用五步驟:①均線從空頭排列逐漸轉為糾結、翻揚 ②前波低點成為觀察支撐,近期高點成為觀察壓力 ③低檔出現兩次明顯放大的成交量,顯示買盤轉強 ④長紅K棒實體變大、下影線變短,顯示賣壓減輕 ⑤綜合來看,這是典型「量先價行」的底部反轉訊號,但仍須留意後續能否延續量增價漲,才能確認趨勢真正翻轉,而非曇花一現的反彈。
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 374 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="354" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,109.3 32,114.7 44,120.0 56,125.0 68,129.3 80,139.1 92,149.1 104,158.9 116,168.8 128,178.7 140,187.2 152,193.5 164,197.6 176,200.6 188,201.4 200,199.4 212,195.5 224,190.6 236,181.8 248,171.2 260,159.6 272,147.3 284,135.0 296,123.2 308,111.1 320,99.7 332,86.9 344,73.0" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="106.6" x2="20" y2="122.5" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="109.3" width="8" height="8.4" fill="#EF4444"/><line x1="32" y1="102.1" x2="32" y2="124.5" stroke="#10B981" stroke-width="1.3"/><rect x="28" y="109.3" width="8" height="10.9" fill="#10B981"/><line x1="44" y1="117.7" x2="44" y2="139.0" stroke="#10B981" stroke-width="1.3"/><rect x="40" y="120.2" width="8" height="10.4" fill="#10B981"/><line x1="56" y1="122.7" x2="56" y2="144.0" stroke="#10B981" stroke-width="1.3"/><rect x="52" y="130.6" width="8" height="9.1" fill="#10B981"/><line x1="68" y1="135.0" x2="68" y2="148.5" stroke="#10B981" stroke-width="1.3"/><rect x="64" y="139.7" width="8" height="6.9" fill="#10B981"/><line x1="80" y1="141.2" x2="80" y2="160.7" stroke="#10B981" stroke-width="1.3"/><rect x="76" y="146.6" width="8" height="11.8" fill="#10B981"/><line x1="92" y1="154.4" x2="92" y2="176.8" stroke="#10B981" stroke-width="1.3"/><rect x="88" y="158.4" width="8" height="11.9" fill="#10B981"/><line x1="104" y1="165.3" x2="104" y2="188.1" stroke="#10B981" stroke-width="1.3"/><rect x="100" y="170.3" width="8" height="9.4" fill="#10B981"/><line x1="116" y1="176.7" x2="116" y2="194.1" stroke="#10B981" stroke-width="1.3"/><rect x="112" y="179.7" width="8" height="9.3" fill="#10B981"/><line x1="128" y1="187.1" x2="128" y2="201.1" stroke="#10B981" stroke-width="1.3"/><rect x="124" y="189.0" width="8" height="7.1" fill="#10B981"/><line x1="140" y1="188.5" x2="140" y2="206.5" stroke="#10B981" stroke-width="1.3"/><rect x="136" y="196.1" width="8" height="5.0" fill="#10B981"/><line x1="152" y1="197.8" x2="152" y2="208.5" stroke="#10B981" stroke-width="1.3"/><rect x="148" y="201.1" width="8" height="1.5" fill="#10B981"/><line x1="164" y1="193.0" x2="164" y2="205.0" stroke="#EF4444" stroke-width="1.3"/><rect x="160" y="199.9" width="8" height="1.9" fill="#EF4444"/><line x1="176" y1="196.8" x2="176" y2="210.0" stroke="#10B981" stroke-width="1.3"/><rect x="172" y="199.9" width="8" height="4.2" fill="#10B981"/><line x1="188" y1="191.6" x2="188" y2="209.6" stroke="#EF4444" stroke-width="1.3"/><rect x="184" y="199.9" width="8" height="4.3" fill="#EF4444"/><line x1="200" y1="183.4" x2="200" y2="205.8" stroke="#EF4444" stroke-width="1.3"/><rect x="196" y="191.2" width="8" height="8.7" fill="#EF4444"/><line x1="212" y1="175.6" x2="212" y2="194.1" stroke="#EF4444" stroke-width="1.3"/><rect x="208" y="182.4" width="8" height="8.7" fill="#EF4444"/><line x1="224" y1="168.5" x2="224" y2="185.3" stroke="#EF4444" stroke-width="1.3"/><rect x="220" y="175.3" width="8" height="7.1" fill="#EF4444"/><line x1="236" y1="154.5" x2="236" y2="179.4" stroke="#EF4444" stroke-width="1.3"/><rect x="232" y="160.1" width="8" height="15.2" fill="#EF4444"/><line x1="248" y1="140.5" x2="248" y2="168.1" stroke="#EF4444" stroke-width="1.3"/><rect x="244" y="147.1" width="8" height="13.0" fill="#EF4444"/><line x1="260" y1="130.5" x2="260" y2="151.2" stroke="#EF4444" stroke-width="1.3"/><rect x="256" y="133.0" width="8" height="14.2" fill="#EF4444"/><line x1="272" y1="116.1" x2="272" y2="138.7" stroke="#EF4444" stroke-width="1.3"/><rect x="268" y="121.0" width="8" height="12.0" fill="#EF4444"/><line x1="284" y1="106.7" x2="284" y2="124.8" stroke="#EF4444" stroke-width="1.3"/><rect x="280" y="114.0" width="8" height="7.0" fill="#EF4444"/><line x1="296" y1="98.0" x2="296" y2="116.4" stroke="#EF4444" stroke-width="1.3"/><rect x="292" y="101.0" width="8" height="12.9" fill="#EF4444"/><line x1="308" y1="78.8" x2="308" y2="103.2" stroke="#EF4444" stroke-width="1.3"/><rect x="304" y="86.7" width="8" height="14.3" fill="#EF4444"/><line x1="320" y1="67.9" x2="320" y2="93.9" stroke="#EF4444" stroke-width="1.3"/><rect x="316" y="75.6" width="8" height="11.1" fill="#EF4444"/><line x1="332" y1="53.0" x2="332" y2="82.5" stroke="#EF4444" stroke-width="1.3"/><rect x="328" y="57.4" width="8" height="18.2" fill="#EF4444"/><line x1="344" y1="40.0" x2="344" y2="61.6" stroke="#EF4444" stroke-width="1.3"/><rect x="340" y="44.2" width="8" height="13.3" fill="#EF4444"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  <line x1="10" y1="245" x2="354" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="354" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="294.7" width="8" height="25.3" fill="#EF4444" opacity="0.8"/><rect x="28" y="294.9" width="8" height="25.1" fill="#10B981" opacity="0.8"/><rect x="40" y="291.5" width="8" height="28.5" fill="#10B981" opacity="0.8"/><rect x="52" y="290.6" width="8" height="29.4" fill="#10B981" opacity="0.8"/><rect x="64" y="298.9" width="8" height="21.1" fill="#10B981" opacity="0.8"/><rect x="76" y="290.2" width="8" height="29.8" fill="#10B981" opacity="0.8"/><rect x="88" y="290.6" width="8" height="29.4" fill="#10B981" opacity="0.8"/><rect x="100" y="296.1" width="8" height="23.9" fill="#10B981" opacity="0.8"/><rect x="112" y="291.8" width="8" height="28.2" fill="#10B981" opacity="0.8"/><rect x="124" y="297.6" width="8" height="22.4" fill="#10B981" opacity="0.8"/><rect x="136" y="299.4" width="8" height="20.6" fill="#10B981" opacity="0.8"/><rect x="148" y="301.3" width="8" height="18.7" fill="#10B981" opacity="0.8"/><rect x="160" y="291.9" width="8" height="28.1" fill="#EF4444" opacity="0.8"/><rect x="172" y="268.2" width="8" height="51.8" fill="#10B981" opacity="0.8"/><rect x="184" y="269.9" width="8" height="50.1" fill="#EF4444" opacity="0.8"/><rect x="196" y="256.2" width="8" height="63.8" fill="#EF4444" opacity="0.8"/><rect x="208" y="293.4" width="8" height="26.6" fill="#EF4444" opacity="0.8"/><rect x="220" y="297.8" width="8" height="22.2" fill="#EF4444" opacity="0.8"/><rect x="232" y="292.4" width="8" height="27.6" fill="#EF4444" opacity="0.8"/><rect x="244" y="304.2" width="8" height="15.8" fill="#EF4444" opacity="0.8"/><rect x="256" y="301.1" width="8" height="18.9" fill="#EF4444" opacity="0.8"/><rect x="268" y="300.7" width="8" height="19.3" fill="#EF4444" opacity="0.8"/><rect x="280" y="272.5" width="8" height="47.5" fill="#EF4444" opacity="0.8"/><rect x="292" y="276.2" width="8" height="43.8" fill="#EF4444" opacity="0.8"/><rect x="304" y="304.0" width="8" height="16.0" fill="#EF4444" opacity="0.8"/><rect x="316" y="299.9" width="8" height="20.1" fill="#EF4444" opacity="0.8"/><rect x="328" y="291.5" width="8" height="28.5" fill="#EF4444" opacity="0.8"/><rect x="340" y="290.2" width="8" height="29.8" fill="#EF4444" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <circle cx="176" cy="210.0" r="3.5" fill="#F1F5F9"/><line x1="176" y1="210.0" x2="176" y2="225.0" stroke="#F1F5F9" stroke-width="1"/><rect x="146.0" y="225.0" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="176" y="237.0" font-size="11" fill="#F1F5F9" text-anchor="middle" font-weight="700">波段低點</text><rect x="144.0" y="213.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="188.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">低檔爆量長紅</text>
+  <line x1="188" y1="227.0" x2="188" y2="269.9" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="240.0" y="326.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="284.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">再次帶量確認</text>
+  <line x1="284" y1="324.0" x2="284" y2="272.5" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+    <div class="chart-caption">示意圖:低檔出現兩次帶量長紅棒,確認買盤持續進駐(合成教學用圖,非真實個股數據)</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">案例三:「假跌破後快速收復」走勢</div>
+  <div class="card">
+    <div class="card-body">
+      股價原本區間整理,某天以一根黑K跌破先前的支撐區,但當天成交量並沒有明顯放大,顯示賣壓其實並不沉重。接下來幾天股價迅速回到支撐區之上,並在收復關鍵均線時出現放量長紅,確認這只是一次假跌破。<br><br>
+      套用五步驟:①均線在整個過程中維持糾結、未轉為明確空頭排列 ②原本的支撐區雖然一度被跌破,但很快被收復,顯示該價位仍具意義 ③跌破當天量能不大,收復當天卻明顯放量,量能訊號互相矛盾但收復訊號更值得重視 ④跌破的K棒下影線不長、實體不大,顯示賣壓有限 ⑤綜合判斷:單一根跌破K棒不代表趨勢轉空,需搭配量能一起確認,避免看到跌破就急著殺低。
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 374 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="354" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,194.3 32,188.3 44,182.3 56,176.1 68,170.6 80,158.7 92,147.1 104,135.5 116,125.7 128,116.5 140,110.3 152,106.4 164,107.7 176,112.2 188,120.7 200,126.3 212,128.3 224,125.6 236,119.7 248,111.1 260,105.9 272,103.6 284,101.5 296,97.9 308,92.0 320,83.3 332,73.1 344,62.9" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="186.8" x2="20" y2="210.0" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="194.3" width="8" height="8.6" fill="#EF4444"/><line x1="32" y1="180.0" x2="32" y2="201.6" stroke="#EF4444" stroke-width="1.3"/><rect x="28" y="182.3" width="8" height="12.0" fill="#EF4444"/><line x1="44" y1="167.4" x2="44" y2="184.1" stroke="#EF4444" stroke-width="1.3"/><rect x="40" y="170.2" width="8" height="12.0" fill="#EF4444"/><line x1="56" y1="155.2" x2="56" y2="176.5" stroke="#EF4444" stroke-width="1.3"/><rect x="52" y="157.4" width="8" height="12.8" fill="#EF4444"/><line x1="68" y1="140.6" x2="68" y2="159.8" stroke="#EF4444" stroke-width="1.3"/><rect x="64" y="148.6" width="8" height="8.8" fill="#EF4444"/><line x1="80" y1="129.6" x2="80" y2="156.8" stroke="#EF4444" stroke-width="1.3"/><rect x="76" y="135.1" width="8" height="13.5" fill="#EF4444"/><line x1="92" y1="116.9" x2="92" y2="138.0" stroke="#EF4444" stroke-width="1.3"/><rect x="88" y="124.3" width="8" height="10.8" fill="#EF4444"/><line x1="104" y1="103.9" x2="104" y2="126.9" stroke="#EF4444" stroke-width="1.3"/><rect x="100" y="112.3" width="8" height="12.0" fill="#EF4444"/><line x1="116" y1="103.2" x2="116" y2="120.1" stroke="#EF4444" stroke-width="1.3"/><rect x="112" y="108.4" width="8" height="3.9" fill="#EF4444"/><line x1="128" y1="97.9" x2="128" y2="114.3" stroke="#EF4444" stroke-width="1.3"/><rect x="124" y="102.3" width="8" height="6.0" fill="#EF4444"/><line x1="140" y1="98.0" x2="140" y2="106.0" stroke="#10B981" stroke-width="1.3"/><rect x="136" y="102.3" width="8" height="1.9" fill="#10B981"/><line x1="152" y1="100.7" x2="152" y2="109.9" stroke="#10B981" stroke-width="1.3"/><rect x="148" y="104.2" width="8" height="1.5" fill="#10B981"/><line x1="164" y1="99.1" x2="164" y2="125.9" stroke="#10B981" stroke-width="1.3"/><rect x="160" y="105.0" width="8" height="13.5" fill="#10B981"/><line x1="176" y1="110.1" x2="176" y2="133.9" stroke="#10B981" stroke-width="1.3"/><rect x="172" y="118.5" width="8" height="12.6" fill="#10B981"/><line x1="188" y1="125.9" x2="188" y2="151.7" stroke="#10B981" stroke-width="1.3"/><rect x="184" y="131.1" width="8" height="13.7" fill="#10B981"/><line x1="200" y1="125.1" x2="200" y2="148.6" stroke="#EF4444" stroke-width="1.3"/><rect x="196" y="132.0" width="8" height="12.8" fill="#EF4444"/><line x1="212" y1="107.3" x2="212" y2="136.8" stroke="#EF4444" stroke-width="1.3"/><rect x="208" y="115.1" width="8" height="16.9" fill="#EF4444"/><line x1="224" y1="97.3" x2="224" y2="119.6" stroke="#EF4444" stroke-width="1.3"/><rect x="220" y="104.8" width="8" height="10.4" fill="#EF4444"/><line x1="236" y1="95.3" x2="236" y2="106.8" stroke="#EF4444" stroke-width="1.3"/><rect x="232" y="101.6" width="8" height="3.1" fill="#EF4444"/><line x1="248" y1="96.1" x2="248" y2="106.4" stroke="#10B981" stroke-width="1.3"/><rect x="244" y="101.6" width="8" height="1.5" fill="#10B981"/><line x1="260" y1="99.7" x2="260" y2="111.4" stroke="#10B981" stroke-width="1.3"/><rect x="256" y="102.0" width="8" height="4.0" fill="#10B981"/><line x1="272" y1="99.1" x2="272" y2="112.1" stroke="#EF4444" stroke-width="1.3"/><rect x="268" y="103.4" width="8" height="2.7" fill="#EF4444"/><line x1="284" y1="86.8" x2="284" y2="108.8" stroke="#EF4444" stroke-width="1.3"/><rect x="280" y="94.4" width="8" height="9.0" fill="#EF4444"/><line x1="296" y1="79.0" x2="296" y2="97.3" stroke="#EF4444" stroke-width="1.3"/><rect x="292" y="83.8" width="8" height="10.6" fill="#EF4444"/><line x1="308" y1="66.0" x2="308" y2="89.7" stroke="#EF4444" stroke-width="1.3"/><rect x="304" y="72.4" width="8" height="11.4" fill="#EF4444"/><line x1="320" y1="58.9" x2="320" y2="76.1" stroke="#EF4444" stroke-width="1.3"/><rect x="316" y="62.5" width="8" height="9.9" fill="#EF4444"/><line x1="332" y1="46.7" x2="332" y2="70.4" stroke="#EF4444" stroke-width="1.3"/><rect x="328" y="52.4" width="8" height="10.0" fill="#EF4444"/><line x1="344" y1="40.0" x2="344" y2="54.8" stroke="#EF4444" stroke-width="1.3"/><rect x="340" y="43.2" width="8" height="9.2" fill="#EF4444"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  <line x1="10" y1="245" x2="354" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="354" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="293.4" width="8" height="26.6" fill="#EF4444" opacity="0.8"/><rect x="28" y="303.7" width="8" height="16.3" fill="#EF4444" opacity="0.8"/><rect x="40" y="296.6" width="8" height="23.4" fill="#EF4444" opacity="0.8"/><rect x="52" y="299.7" width="8" height="20.3" fill="#EF4444" opacity="0.8"/><rect x="64" y="298.1" width="8" height="21.9" fill="#EF4444" opacity="0.8"/><rect x="76" y="294.7" width="8" height="25.3" fill="#EF4444" opacity="0.8"/><rect x="88" y="293.0" width="8" height="27.0" fill="#EF4444" opacity="0.8"/><rect x="100" y="304.9" width="8" height="15.1" fill="#EF4444" opacity="0.8"/><rect x="112" y="291.7" width="8" height="28.3" fill="#EF4444" opacity="0.8"/><rect x="124" y="295.2" width="8" height="24.8" fill="#EF4444" opacity="0.8"/><rect x="136" y="273.1" width="8" height="46.9" fill="#10B981" opacity="0.8"/><rect x="148" y="261.9" width="8" height="58.1" fill="#10B981" opacity="0.8"/><rect x="160" y="292.9" width="8" height="27.1" fill="#10B981" opacity="0.8"/><rect x="172" y="299.4" width="8" height="20.6" fill="#10B981" opacity="0.8"/><rect x="184" y="291.8" width="8" height="28.2" fill="#10B981" opacity="0.8"/><rect x="196" y="302.6" width="8" height="17.4" fill="#EF4444" opacity="0.8"/><rect x="208" y="270.2" width="8" height="49.8" fill="#EF4444" opacity="0.8"/><rect x="220" y="274.2" width="8" height="45.8" fill="#EF4444" opacity="0.8"/><rect x="232" y="263.3" width="8" height="56.7" fill="#EF4444" opacity="0.8"/><rect x="244" y="300.4" width="8" height="19.6" fill="#10B981" opacity="0.8"/><rect x="256" y="301.3" width="8" height="18.7" fill="#10B981" opacity="0.8"/><rect x="268" y="290.0" width="8" height="30.0" fill="#EF4444" opacity="0.8"/><rect x="280" y="298.8" width="8" height="21.2" fill="#EF4444" opacity="0.8"/><rect x="292" y="298.0" width="8" height="22.0" fill="#EF4444" opacity="0.8"/><rect x="304" y="294.5" width="8" height="25.5" fill="#EF4444" opacity="0.8"/><rect x="316" y="302.3" width="8" height="17.7" fill="#EF4444" opacity="0.8"/><rect x="328" y="292.9" width="8" height="27.1" fill="#EF4444" opacity="0.8"/><rect x="340" y="294.7" width="8" height="25.3" fill="#EF4444" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <circle cx="140" cy="106.0" r="3.5" fill="#F59E0B"/><line x1="140" y1="106.0" x2="140" y2="122.0" stroke="#F59E0B" stroke-width="1"/><rect x="112.0" y="122.0" width="56" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="140" y="134.0" font-size="11" fill="#F59E0B" text-anchor="middle" font-weight="700">假跌破</text><circle cx="224" cy="104.8" r="3.5" fill="#EF4444"/><line x1="224" y1="104.8" x2="224" y2="88.8" stroke="#EF4444" stroke-width="1"/><rect x="190.0" y="74.8" width="68" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="224" y="86.8" font-size="11" fill="#EF4444" text-anchor="middle" font-weight="700">快速收復</text><rect x="96.0" y="326.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="140.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">跌破量能不大</text>
+  <line x1="140" y1="324.0" x2="140" y2="273.1" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="180.0" y="213.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="224.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">收復爆量確認</text>
+  <line x1="224" y1="227.0" x2="224" y2="274.2" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+    <div class="chart-caption">示意圖:跌破當天量能不大,收復當天明顯放量確認(合成教學用圖,非真實個股數據)</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">案例四:「頂部量價背離」出貨走勢</div>
+  <div class="card">
+    <div class="card-body">
+      股價一路墊高,連續創下三個波段新高,乍看之下氣勢如虹。但仔細比對成交量會發現:第一次創高時量能最大,第二次略為縮小,第三次創下最終新高時,量能反而是三次之中最小的一次——這正是「量價背離」的經典教材,呼應第三章提到的觀念。<br><br>
+      套用五步驟:①均線仍呈現多頭排列,表面上看不出異狀 ②近期高點不斷墊高,乍看沒有明顯壓力 ③關鍵在量能：三次創高,量能卻一次比一次小,買盤追價意願正在減弱 ④創高時K棒上影線逐漸變長,顯示上檔賣壓浮現 ⑤綜合判斷:價創新高但量未創新高,是主力可能正在高檔分批出貨的警訊,此時應提高警覺,而非因為股價續創新高就盲目追價。
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 398 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="378" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,194.8 32,191.9 44,188.5 56,185.3 68,182.1 80,175.1 92,167.7 104,159.8 116,150.8 128,141.4 140,134.5 152,128.3 164,122.9 176,118.1 188,113.4 200,105.6 212,97.0 224,89.2 236,82.8 248,77.6 260,72.9 272,67.9 284,61.6 296,58.7 308,59.1 320,64.2 332,73.5 344,86.5 356,98.5 368,110.7" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="189.0" x2="20" y2="210.0" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="194.8" width="8" height="7.6" fill="#EF4444"/><line x1="32" y1="186.9" x2="32" y2="201.6" stroke="#EF4444" stroke-width="1.3"/><rect x="28" y="189.0" width="8" height="5.8" fill="#EF4444"/><line x1="44" y1="174.4" x2="44" y2="195.6" stroke="#EF4444" stroke-width="1.3"/><rect x="40" y="181.5" width="8" height="7.5" fill="#EF4444"/><line x1="56" y1="172.7" x2="56" y2="188.0" stroke="#EF4444" stroke-width="1.3"/><rect x="52" y="175.8" width="8" height="5.7" fill="#EF4444"/><line x1="68" y1="163.3" x2="68" y2="178.7" stroke="#EF4444" stroke-width="1.3"/><rect x="64" y="169.1" width="8" height="6.8" fill="#EF4444"/><line x1="80" y1="155.7" x2="80" y2="175.1" stroke="#EF4444" stroke-width="1.3"/><rect x="76" y="160.1" width="8" height="9.0" fill="#EF4444"/><line x1="92" y1="148.7" x2="92" y2="162.2" stroke="#EF4444" stroke-width="1.3"/><rect x="88" y="151.9" width="8" height="8.2" fill="#EF4444"/><line x1="104" y1="139.5" x2="104" y2="154.3" stroke="#EF4444" stroke-width="1.3"/><rect x="100" y="142.3" width="8" height="9.6" fill="#EF4444"/><line x1="116" y1="125.5" x2="116" y2="146.1" stroke="#EF4444" stroke-width="1.3"/><rect x="112" y="130.5" width="8" height="11.8" fill="#EF4444"/><line x1="128" y1="118.3" x2="128" y2="133.6" stroke="#EF4444" stroke-width="1.3"/><rect x="124" y="122.4" width="8" height="8.2" fill="#EF4444"/><line x1="140" y1="117.0" x2="140" y2="127.0" stroke="#10B981" stroke-width="1.3"/><rect x="136" y="122.4" width="8" height="2.9" fill="#10B981"/><line x1="152" y1="115.3" x2="152" y2="130.0" stroke="#EF4444" stroke-width="1.3"/><rect x="148" y="121.1" width="8" height="4.2" fill="#EF4444"/><line x1="164" y1="108.6" x2="164" y2="128.5" stroke="#EF4444" stroke-width="1.3"/><rect x="160" y="115.2" width="8" height="5.9" fill="#EF4444"/><line x1="176" y1="99.8" x2="176" y2="117.2" stroke="#EF4444" stroke-width="1.3"/><rect x="172" y="106.6" width="8" height="8.6" fill="#EF4444"/><line x1="188" y1="93.4" x2="188" y2="109.6" stroke="#EF4444" stroke-width="1.3"/><rect x="184" y="98.7" width="8" height="7.9" fill="#EF4444"/><line x1="200" y1="79.2" x2="200" y2="105.9" stroke="#EF4444" stroke-width="1.3"/><rect x="196" y="86.6" width="8" height="12.1" fill="#EF4444"/><line x1="212" y1="73.4" x2="212" y2="91.4" stroke="#EF4444" stroke-width="1.3"/><rect x="208" y="78.0" width="8" height="8.6" fill="#EF4444"/><line x1="224" y1="69.3" x2="224" y2="82.4" stroke="#EF4444" stroke-width="1.3"/><rect x="220" y="76.3" width="8" height="1.7" fill="#EF4444"/><line x1="236" y1="68.0" x2="236" y2="80.4" stroke="#EF4444" stroke-width="1.3"/><rect x="232" y="74.5" width="8" height="1.7" fill="#EF4444"/><line x1="248" y1="66.0" x2="248" y2="81.1" stroke="#EF4444" stroke-width="1.3"/><rect x="244" y="72.5" width="8" height="2.0" fill="#EF4444"/><line x1="260" y1="60.7" x2="260" y2="76.9" stroke="#EF4444" stroke-width="1.3"/><rect x="256" y="63.0" width="8" height="9.5" fill="#EF4444"/><line x1="272" y1="48.2" x2="272" y2="67.0" stroke="#EF4444" stroke-width="1.3"/><rect x="268" y="53.2" width="8" height="9.8" fill="#EF4444"/><line x1="284" y1="40.0" x2="284" y2="57.0" stroke="#EF4444" stroke-width="1.3"/><rect x="280" y="44.7" width="8" height="8.5" fill="#EF4444"/><line x1="296" y1="42.6" x2="296" y2="66.2" stroke="#10B981" stroke-width="1.3"/><rect x="292" y="44.7" width="8" height="15.2" fill="#10B981"/><line x1="308" y1="56.1" x2="308" y2="76.5" stroke="#10B981" stroke-width="1.3"/><rect x="304" y="59.9" width="8" height="14.9" fill="#10B981"/><line x1="320" y1="70.1" x2="320" y2="92.6" stroke="#10B981" stroke-width="1.3"/><rect x="316" y="74.8" width="8" height="13.5" fill="#10B981"/><line x1="332" y1="86.8" x2="332" y2="105.4" stroke="#10B981" stroke-width="1.3"/><rect x="328" y="88.4" width="8" height="11.6" fill="#10B981"/><line x1="344" y1="98.4" x2="344" y2="111.2" stroke="#10B981" stroke-width="1.3"/><rect x="340" y="99.9" width="8" height="9.7" fill="#10B981"/><line x1="356" y1="104.5" x2="356" y2="123.2" stroke="#10B981" stroke-width="1.3"/><rect x="352" y="109.7" width="8" height="10.1" fill="#10B981"/><line x1="368" y1="115.7" x2="368" y2="139.6" stroke="#10B981" stroke-width="1.3"/><rect x="364" y="119.7" width="8" height="16.2" fill="#10B981"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  <line x1="10" y1="245" x2="378" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="378" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="295.3" width="8" height="24.7" fill="#EF4444" opacity="0.8"/><rect x="28" y="297.2" width="8" height="22.8" fill="#EF4444" opacity="0.8"/><rect x="40" y="297.5" width="8" height="22.5" fill="#EF4444" opacity="0.8"/><rect x="52" y="300.5" width="8" height="19.5" fill="#EF4444" opacity="0.8"/><rect x="64" y="298.6" width="8" height="21.4" fill="#EF4444" opacity="0.8"/><rect x="76" y="291.1" width="8" height="28.9" fill="#EF4444" opacity="0.8"/><rect x="88" y="303.3" width="8" height="16.7" fill="#EF4444" opacity="0.8"/><rect x="100" y="303.7" width="8" height="16.3" fill="#EF4444" opacity="0.8"/><rect x="112" y="261.4" width="8" height="58.6" fill="#EF4444" opacity="0.8"/><rect x="124" y="263.0" width="8" height="57.0" fill="#EF4444" opacity="0.8"/><rect x="136" y="302.9" width="8" height="17.1" fill="#10B981" opacity="0.8"/><rect x="148" y="300.3" width="8" height="19.7" fill="#EF4444" opacity="0.8"/><rect x="160" y="293.9" width="8" height="26.1" fill="#EF4444" opacity="0.8"/><rect x="172" y="290.6" width="8" height="29.4" fill="#EF4444" opacity="0.8"/><rect x="184" y="304.8" width="8" height="15.2" fill="#EF4444" opacity="0.8"/><rect x="196" y="275.7" width="8" height="44.3" fill="#EF4444" opacity="0.8"/><rect x="208" y="279.2" width="8" height="40.8" fill="#EF4444" opacity="0.8"/><rect x="220" y="291.5" width="8" height="28.5" fill="#EF4444" opacity="0.8"/><rect x="232" y="290.1" width="8" height="29.9" fill="#EF4444" opacity="0.8"/><rect x="244" y="294.5" width="8" height="25.5" fill="#EF4444" opacity="0.8"/><rect x="256" y="304.6" width="8" height="15.4" fill="#EF4444" opacity="0.8"/><rect x="268" y="294.6" width="8" height="25.4" fill="#EF4444" opacity="0.8"/><rect x="280" y="295.1" width="8" height="24.9" fill="#EF4444" opacity="0.8"/><rect x="292" y="301.6" width="8" height="18.4" fill="#10B981" opacity="0.8"/><rect x="304" y="304.5" width="8" height="15.5" fill="#10B981" opacity="0.8"/><rect x="316" y="306.3" width="8" height="13.7" fill="#10B981" opacity="0.8"/><rect x="328" y="301.1" width="8" height="18.9" fill="#10B981" opacity="0.8"/><rect x="340" y="299.1" width="8" height="20.9" fill="#10B981" opacity="0.8"/><rect x="352" y="303.5" width="8" height="16.5" fill="#10B981" opacity="0.8"/><rect x="364" y="303.1" width="8" height="16.9" fill="#10B981" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <polyline points="128.0,114.3 212.0,69.4 284.0,36.0" fill="none" stroke="#F1F5F9" stroke-width="1.2" stroke-dasharray="3,2"/><circle cx="128" cy="118.3" r="3.5" fill="#F1F5F9"/><line x1="128" y1="118.3" x2="128" y2="102.3" stroke="#F1F5F9" stroke-width="1"/><rect x="98.0" y="88.3" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="128" y="100.3" font-size="11" fill="#F1F5F9" text-anchor="middle" font-weight="700">高點①</text><circle cx="284" cy="40.0" r="3.5" fill="#F1F5F9"/><line x1="284" y1="40.0" x2="284" y2="24.0" stroke="#F1F5F9" stroke-width="1"/><rect x="254.0" y="10.0" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="284" y="22.0" font-size="11" fill="#F1F5F9" text-anchor="middle" font-weight="700">高點③創新高</text><rect x="84.0" y="213.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="128.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">第一次量最大</text>
+  <line x1="128" y1="227.0" x2="128" y2="263.0" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="168.0" y="213.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="212.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">第二次量縮小</text>
+  <line x1="212" y1="227.0" x2="212" y2="279.2" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="232.0" y="213.0" width="104" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="284.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">創高量反而更小</text>
+  <line x1="284" y1="227.0" x2="284" y2="295.1" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+    <div class="chart-caption">示意圖:三次波段新高,成交量卻一次比一次小,典型的頂部量價背離(合成教學用圖,非真實個股數據)</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">案例五:「健康拉回不破支撐」續勢走勢</div>
+  <div class="card">
+    <div class="card-body">
+      股價處於上升趨勢,途中出現兩次正常的拉回,但兩次拉回的低點都沒有跌破前一波的低點,且都在拉回後帶量重新上攻,最終股價續創新高。這是與案例一形成對比的另一種結果——同樣是「上漲後拉回」,但這次拉回沒有破壞原本的多頭結構。<br><br>
+      套用五步驟:①均線全程維持多頭排列,拉回時也未出現死亡交叉 ②兩次拉回的低點都守在同一支撐區之上,前一波低點沒有被跌破 ③每次重新上攻都伴隨量能放大,顯示買盤持續回補 ④拉回時的K棒下影線不長、實體收斂,顯示賣壓有限 ⑤綜合判斷:這種「拉回不破前低、量能持續配合」的走勢,是相對健康的上升趨勢延續訊號,可以和案例一(拉回轉弱)互相對照,體會兩者在支撐與量能表現上的關鍵差異。
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 410 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="390" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,198.4 32,195.2 44,191.0 56,187.1 68,183.6 80,176.2 92,169.1 104,162.1 116,155.0 128,146.9 140,138.3 152,131.8 164,128.0 176,127.0 188,127.5 200,130.4 212,130.6 224,128.1 236,122.0 248,114.4 260,107.8 272,103.8 284,102.5 296,103.1 308,105.7 320,104.8 332,100.5 344,93.6 356,84.2 368,73.1 380,62.5" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="195.5" x2="20" y2="210.0" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="198.4" width="8" height="6.1" fill="#EF4444"/><line x1="32" y1="186.0" x2="32" y2="201.7" stroke="#EF4444" stroke-width="1.3"/><rect x="28" y="192.0" width="8" height="6.4" fill="#EF4444"/><line x1="44" y1="180.8" x2="44" y2="197.2" stroke="#EF4444" stroke-width="1.3"/><rect x="40" y="182.6" width="8" height="9.4" fill="#EF4444"/><line x1="56" y1="171.2" x2="56" y2="184.5" stroke="#EF4444" stroke-width="1.3"/><rect x="52" y="175.3" width="8" height="7.3" fill="#EF4444"/><line x1="68" y1="164.1" x2="68" y2="178.1" stroke="#EF4444" stroke-width="1.3"/><rect x="64" y="170.0" width="8" height="5.3" fill="#EF4444"/><line x1="80" y1="157.1" x2="80" y2="173.6" stroke="#EF4444" stroke-width="1.3"/><rect x="76" y="161.4" width="8" height="8.6" fill="#EF4444"/><line x1="92" y1="150.3" x2="92" y2="162.8" stroke="#EF4444" stroke-width="1.3"/><rect x="88" y="156.1" width="8" height="5.3" fill="#EF4444"/><line x1="104" y1="144.5" x2="104" y2="159.3" stroke="#EF4444" stroke-width="1.3"/><rect x="100" y="147.7" width="8" height="8.4" fill="#EF4444"/><line x1="116" y1="136.6" x2="116" y2="149.8" stroke="#EF4444" stroke-width="1.3"/><rect x="112" y="140.0" width="8" height="7.7" fill="#EF4444"/><line x1="128" y1="126.5" x2="128" y2="143.1" stroke="#EF4444" stroke-width="1.3"/><rect x="124" y="129.5" width="8" height="10.5" fill="#EF4444"/><line x1="140" y1="115.0" x2="140" y2="132.2" stroke="#EF4444" stroke-width="1.3"/><rect x="136" y="118.0" width="8" height="11.5" fill="#EF4444"/><line x1="152" y1="115.1" x2="152" y2="129.0" stroke="#10B981" stroke-width="1.3"/><rect x="148" y="118.0" width="8" height="5.9" fill="#10B981"/><line x1="164" y1="122.3" x2="164" y2="132.2" stroke="#10B981" stroke-width="1.3"/><rect x="160" y="123.9" width="8" height="4.5" fill="#10B981"/><line x1="176" y1="122.4" x2="176" y2="137.7" stroke="#10B981" stroke-width="1.3"/><rect x="172" y="128.4" width="8" height="6.8" fill="#10B981"/><line x1="188" y1="127.1" x2="188" y2="139.4" stroke="#EF4444" stroke-width="1.3"/><rect x="184" y="131.9" width="8" height="3.4" fill="#EF4444"/><line x1="200" y1="127.3" x2="200" y2="136.1" stroke="#10B981" stroke-width="1.3"/><rect x="196" y="131.9" width="8" height="1.5" fill="#10B981"/><line x1="212" y1="121.2" x2="212" y2="134.9" stroke="#EF4444" stroke-width="1.3"/><rect x="208" y="125.1" width="8" height="7.5" fill="#EF4444"/><line x1="224" y1="113.4" x2="224" y2="130.1" stroke="#EF4444" stroke-width="1.3"/><rect x="220" y="115.6" width="8" height="9.5" fill="#EF4444"/><line x1="236" y1="102.3" x2="236" y2="119.7" stroke="#EF4444" stroke-width="1.3"/><rect x="232" y="104.7" width="8" height="10.9" fill="#EF4444"/><line x1="248" y1="88.1" x2="248" y2="106.0" stroke="#EF4444" stroke-width="1.3"/><rect x="244" y="94.0" width="8" height="10.6" fill="#EF4444"/><line x1="260" y1="88.8" x2="260" y2="103.7" stroke="#10B981" stroke-width="1.3"/><rect x="256" y="94.0" width="8" height="5.8" fill="#10B981"/><line x1="272" y1="96.3" x2="272" y2="108.3" stroke="#10B981" stroke-width="1.3"/><rect x="268" y="99.8" width="8" height="5.3" fill="#10B981"/><line x1="284" y1="100.2" x2="284" y2="110.5" stroke="#10B981" stroke-width="1.3"/><rect x="280" y="105.1" width="8" height="3.8" fill="#10B981"/><line x1="296" y1="101.6" x2="296" y2="114.9" stroke="#EF4444" stroke-width="1.3"/><rect x="292" y="107.5" width="8" height="1.5" fill="#EF4444"/><line x1="308" y1="105.9" x2="308" y2="111.8" stroke="#EF4444" stroke-width="1.3"/><rect x="304" y="107.4" width="8" height="1.5" fill="#EF4444"/><line x1="320" y1="92.0" x2="320" y2="113.5" stroke="#EF4444" stroke-width="1.3"/><rect x="316" y="95.1" width="8" height="12.3" fill="#EF4444"/><line x1="332" y1="80.6" x2="332" y2="98.6" stroke="#EF4444" stroke-width="1.3"/><rect x="328" y="83.8" width="8" height="11.3" fill="#EF4444"/><line x1="344" y1="71.5" x2="344" y2="87.2" stroke="#EF4444" stroke-width="1.3"/><rect x="340" y="74.4" width="8" height="9.4" fill="#EF4444"/><line x1="356" y1="56.5" x2="356" y2="76.4" stroke="#EF4444" stroke-width="1.3"/><rect x="352" y="60.4" width="8" height="14.1" fill="#EF4444"/><line x1="368" y1="49.4" x2="368" y2="64.8" stroke="#EF4444" stroke-width="1.3"/><rect x="364" y="52.1" width="8" height="8.2" fill="#EF4444"/><line x1="380" y1="40.0" x2="380" y2="55.7" stroke="#EF4444" stroke-width="1.3"/><rect x="376" y="41.8" width="8" height="10.3" fill="#EF4444"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  <line x1="10" y1="245" x2="390" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="390" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="302.3" width="8" height="17.7" fill="#EF4444" opacity="0.8"/><rect x="28" y="292.4" width="8" height="27.6" fill="#EF4444" opacity="0.8"/><rect x="40" y="296.1" width="8" height="23.9" fill="#EF4444" opacity="0.8"/><rect x="52" y="303.7" width="8" height="16.3" fill="#EF4444" opacity="0.8"/><rect x="64" y="290.3" width="8" height="29.7" fill="#EF4444" opacity="0.8"/><rect x="76" y="298.7" width="8" height="21.3" fill="#EF4444" opacity="0.8"/><rect x="88" y="291.1" width="8" height="28.9" fill="#EF4444" opacity="0.8"/><rect x="100" y="298.8" width="8" height="21.2" fill="#EF4444" opacity="0.8"/><rect x="112" y="304.2" width="8" height="15.8" fill="#EF4444" opacity="0.8"/><rect x="124" y="264.7" width="8" height="55.3" fill="#EF4444" opacity="0.8"/><rect x="136" y="267.4" width="8" height="52.6" fill="#EF4444" opacity="0.8"/><rect x="148" y="293.3" width="8" height="26.7" fill="#10B981" opacity="0.8"/><rect x="160" y="297.6" width="8" height="22.4" fill="#10B981" opacity="0.8"/><rect x="172" y="299.4" width="8" height="20.6" fill="#10B981" opacity="0.8"/><rect x="184" y="298.8" width="8" height="21.2" fill="#EF4444" opacity="0.8"/><rect x="196" y="297.8" width="8" height="22.2" fill="#10B981" opacity="0.8"/><rect x="208" y="294.1" width="8" height="25.9" fill="#EF4444" opacity="0.8"/><rect x="220" y="293.4" width="8" height="26.6" fill="#EF4444" opacity="0.8"/><rect x="232" y="299.0" width="8" height="21.0" fill="#EF4444" opacity="0.8"/><rect x="244" y="302.9" width="8" height="17.1" fill="#EF4444" opacity="0.8"/><rect x="256" y="304.8" width="8" height="15.2" fill="#10B981" opacity="0.8"/><rect x="268" y="296.0" width="8" height="24.0" fill="#10B981" opacity="0.8"/><rect x="280" y="301.5" width="8" height="18.5" fill="#10B981" opacity="0.8"/><rect x="292" y="292.2" width="8" height="27.8" fill="#EF4444" opacity="0.8"/><rect x="304" y="298.6" width="8" height="21.4" fill="#EF4444" opacity="0.8"/><rect x="316" y="290.6" width="8" height="29.4" fill="#EF4444" opacity="0.8"/><rect x="328" y="303.8" width="8" height="16.2" fill="#EF4444" opacity="0.8"/><rect x="340" y="253.7" width="8" height="66.3" fill="#EF4444" opacity="0.8"/><rect x="352" y="265.5" width="8" height="54.5" fill="#EF4444" opacity="0.8"/><rect x="364" y="301.3" width="8" height="18.7" fill="#EF4444" opacity="0.8"/><rect x="376" y="298.9" width="8" height="21.1" fill="#EF4444" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <line x1="10" y1="139.7" x2="390" y2="139.7" stroke="#10B981" stroke-width="1" stroke-dasharray="4,3"/><circle cx="176" cy="137.7" r="3.5" fill="#10B981"/><line x1="176" y1="137.7" x2="176" y2="153.7" stroke="#10B981" stroke-width="1"/><rect x="146.0" y="153.7" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="176" y="165.7" font-size="11" fill="#10B981" text-anchor="middle" font-weight="700">拉回不破</text><circle cx="260" cy="103.7" r="3.5" fill="#10B981"/><line x1="260" y1="103.7" x2="260" y2="119.7" stroke="#10B981" stroke-width="1"/><rect x="230.0" y="119.7" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="260" y="131.7" font-size="11" fill="#10B981" text-anchor="middle" font-weight="700">再次不破</text><circle cx="380" cy="40.0" r="3.5" fill="#EF4444"/><line x1="380" y1="40.0" x2="380" y2="24.0" stroke="#EF4444" stroke-width="1"/><rect x="350.0" y="10.0" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="380" y="22.0" font-size="11" fill="#EF4444" text-anchor="middle" font-weight="700">續創新高</text><rect x="96.0" y="213.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="140.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">第一次帶量上攻</text>
+  <line x1="140" y1="227.0" x2="140" y2="267.4" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="312.0" y="213.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="356.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">第二次帶量上攻</text>
+  <line x1="356" y1="227.0" x2="356" y2="265.5" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+    <div class="chart-caption">示意圖:兩次拉回都不破前低且帶量回攻,趨勢健康延續(合成教學用圖,非真實個股數據)</div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 練習建議</div>
+    <p>找一張你自己有興趣的個股K線圖,依照上面五步驟,自己動手寫一次分析筆記。反覆練習幾次之後,讀圖的速度和判斷力會明顯提升。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第六章隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 讀圖五步驟中,第一步應該先看什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">均線排列,確認目前趨勢的大方向</button>
+      <button class="quiz-opt" data-correct="0">最新一根K棒的顏色</button>
+      <button class="quiz-opt" data-correct="0">今天的新聞消息面</button>
+      <button class="quiz-opt" data-correct="0">技術指標的細部數值</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼讀圖時建議「綜合判斷」而不是只看單一訊號?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為單一訊號永遠是錯的</button>
+      <button class="quiz-opt" data-correct="1">因為各項訊號如果能互相印證,判斷會更可靠;訊號矛盾時代表趨勢不明朗</button>
+      <button class="quiz-opt" data-correct="0">因為多看幾個指標可以保證獲利</button>
+      <button class="quiz-opt" data-correct="0">因為均線和成交量其實沒有關聯</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：常見誤區與心理陷阱 →</button>
+</div>
+`;
+}
+
+
+// ============================================================
+// CHAPTER 7: 常見誤區與心理陷阱
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧠 第七章</div>
+  <h1>常見誤區與心理陷阱<br>技術分析不是萬能,別掉進這些坑</h1>
+  <p class="desc">技術分析是輔助工具,不是預測未來的水晶球。這一章整理新手最容易犯的幾個誤區與心理偏誤,幫助你更客觀地看圖。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">六個常見誤區</div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 只看單一訊號就下結論</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>看到一次黃金交叉或一根長紅K就急著進場,忽略了均線排列、量能、支撐壓力等其他條件是否同步印證。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 事後諸葛(後見之明偏誤)</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>回頭看歷史圖表時,覺得「這裡明明就該買、那裡明明就該賣」,但當下沒有未來資訊,判斷其實沒有那麼容易。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 確認偏誤</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>一旦心裡已經認定股價會漲或會跌,就只挑選符合自己想法的訊號來看,忽略掉相反的訊號。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 過度擬合(把雜訊當規律)</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>在少數幾次歷史案例中找到某種型態「每次都準」,但樣本太少,可能只是巧合,不代表未來也會重複發生。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑤ 忽略基本面與消息面</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>技術分析反映的是過去的價量行為,不包含公司財務體質、產業前景、突發消息等資訊,單靠技術分析容易忽略重大風險。</p></div>
+  </div>
+  <div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑥ 追高殺低的心理慣性</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p>看到股價噴出就害怕錯過而追進,看到股價重挫就恐慌殺出,這種情緒化反應常常剛好買在高點、賣在低點。</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">技術分析的合理定位</div>
+  <div class="box box-info">
+    <div class="box-title">💡 正確心態</div>
+    <p>技術分析比較適合用來輔助「進出場時機」與「風險控管」的判斷,而不是用來預測「這檔股票未來一定會漲/會跌」。把它當成一種機率工具、而不是保證答案的公式,會讓你少走很多冤枉路。</p>
+  </div>
+  <div class="box box-danger">
+    <div class="box-title">🚨 特別提醒</div>
+    <p>市場上任何宣稱「這套指標/型態100%準確、穩賺不賠」的說法都值得高度懷疑。技術分析有其局限性,沒有任何方法能保證獲利。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第七章隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「回頭看歷史圖表覺得每個轉折點都很明顯」,這種現象屬於什麼心理偏誤?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">後見之明偏誤(事後諸葛)</button>
+      <button class="quiz-opt" data-correct="0">量價背離</button>
+      <button class="quiz-opt" data-correct="0">支撐壓力轉換</button>
+      <button class="quiz-opt" data-correct="0">黃金交叉</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於技術分析的合理定位,下列何者正確?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">技術分析可以完全取代基本面分析</button>
+      <button class="quiz-opt" data-correct="1">技術分析適合輔助進出場時機與風險控管,但無法保證獲利</button>
+      <button class="quiz-opt" data-correct="0">只要用了技術指標,判斷就一定客觀正確</button>
+      <button class="quiz-opt" data-correct="0">技術分析可以預測消息面的突發事件</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：風險管理與紀律 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8: 風險管理與紀律
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🛡️ 第八章</div>
+  <h1>風險管理與紀律<br>停損停利、部位控制的基本原則</h1>
+  <p class="desc">再厲害的技術分析都會有判斷錯誤的時候。這一章帶你認識停損停利、部位控制等風險管理觀念,這往往比「準不準」更能決定長期成敗。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">停損與停利的基本觀念</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">✂️</div>
+      <div class="card-title">停損</div>
+      <div class="card-body">預先設定一個可承受的最大虧損程度(例如跌破某個支撐、或虧損達一定百分比),一旦觸及就出場,避免虧損無限擴大。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <div class="card-title">停利</div>
+      <div class="card-body">預先設定一個目標獲利程度或觀察訊號(例如觸及前波高點、或跌破上升趨勢的關鍵均線),達到後分批或全部獲利了結。</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 為什麼要「先」設定,而不是走一步算一步</div>
+    <p>在還沒有部位、情緒還冷靜的時候先設好停損停利點,才不會等到真正套牢或大賺的當下,被情緒牽著鼻子走,做出不理性的決定。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">部位控制的基本原則</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>原則</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>單一標的曝險上限</td><td>避免把資金全部押在同一檔股票上,降低單一個股風險對整體資產的衝擊</td></tr>
+      <tr><td>分批進出場</td><td>不在單一價位一次投入全部資金,而是分批建立或了結部位,降低判斷失誤的衝擊</td></tr>
+      <tr><td>虧損上限設定</td><td>預先設定單筆交易可承受的最大虧損金額或比例,並嚴格遵守</td></tr>
+      <tr><td>避免過度槓桿</td><td>融資、信用交易等槓桿工具會同時放大獲利與虧損,新手須格外謹慎</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 常見誤區</div>
+    <p>「凹單」——已經跌破停損點卻捨不得出場、告訴自己再等等看——是最常見也最傷本金的紀律破口。設定好的停損點,建議事先想清楚要嚴格執行,而不是等虧損擴大後才臨時決定。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第八章隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 為什麼建議在建立部位「之前」就先設定好停損點?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">避免真正套牢時被情緒牽著走,做出不理性的決定</button>
+      <button class="quiz-opt" data-correct="0">因為停損點設定之後就不能再調整</button>
+      <button class="quiz-opt" data-correct="0">因為這樣可以保證不會虧損</button>
+      <button class="quiz-opt" data-correct="0">停損點只是形式,不需要真的執行</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 「凹單」指的是什麼行為?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">按照原訂計畫分批停利</button>
+      <button class="quiz-opt" data-correct="1">已經跌破停損點卻捨不得出場,持續拖延不執行</button>
+      <button class="quiz-opt" data-correct="0">在建倉前先設好資金配置比例</button>
+      <button class="quiz-opt" data-correct="0">分散投資到多檔不同個股</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：打造你的看盤檢查清單 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9: 打造你的看盤檢查清單
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第九章</div>
+  <h1>打造你的看盤檢查清單<br>把知識變成行動</h1>
+  <p class="desc">恭喜你完成整套課程!這一章帶你把前面所學整合成一份可隨時對照的看盤檢查清單,以及總複習測驗,確認觀念是否穩固。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你的看盤檢查清單</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>我已確認今天的紅綠K顏色對應的市場慣例(避免看反方向)。</li>
+    <li><span class="check-icon">✅</span>我已檢查MA5/10/20/30目前是多頭排列、空頭排列還是糾結。</li>
+    <li><span class="check-icon">✅</span>我已標出近期的波段高點(壓力)與波段低點(支撐)。</li>
+    <li><span class="check-icon">✅</span>我已比對今天的成交量與VOL5、VOL10,判斷是否異常放大或萎縮。</li>
+    <li><span class="check-icon">✅</span>我已檢查是否出現量價背離的警訊。</li>
+    <li><span class="check-icon">✅</span>我已確認多項訊號是否互相印證,而非只看單一訊號下結論。</li>
+    <li><span class="check-icon">✅</span>我已預先想好這筆交易的停損點與停利點。</li>
+    <li><span class="check-icon">✅</span>我知道這檔標的占我整體資金的比例是否合理。</li>
+  </ul>
+  <div class="box box-info">
+    <div class="box-title">💡 建議行動</div>
+    <p>把以上檢查表存到手機備忘錄,每次看盤前逐項對照。不需要一次全部做到完美,可以先從「均線排列」與「量能比較」這兩項開始養成習慣。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+  <div class="quiz-card" style="margin-top:0;">
+    <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">股票技術分析入門課程總複習</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 一根K棒出現長長的上影線,最常被解讀為什麼?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">代表下檔有很強的支撐</button>
+        <button class="quiz-opt" data-correct="1">盤中一度衝高但被賣壓打回來,顯示上檔賣壓沉重</button>
+        <button class="quiz-opt" data-correct="0">代表成交量一定創新高</button>
+        <button class="quiz-opt" data-correct="0">跟多空力道完全無關</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 標準的多頭排列,均線由上而下應該怎麼排?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="1">MA5 > MA10 > MA20 > MA30</button>
+        <button class="quiz-opt" data-correct="0">MA30 > MA20 > MA10 > MA5</button>
+        <button class="quiz-opt" data-correct="0">均線排列跟趨勢判斷無關</button>
+        <button class="quiz-opt" data-correct="0">所有均線必須完全重疊</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q3. 股價創新高但成交量卻沒有跟著放大,這種現象叫做什麼?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">黃金交叉</button>
+        <button class="quiz-opt" data-correct="1">量價背離</button>
+        <button class="quiz-opt" data-correct="0">支撐壓力轉換</button>
+        <button class="quiz-opt" data-correct="0">假突破</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q4. 關於技術分析的合理使用方式,下列何者正確?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">只要抓到一個訊號就應該立刻重壓進場</button>
+        <button class="quiz-opt" data-correct="1">應綜合均線、量價、支撐壓力等多項訊號,並搭配停損停利與部位控制</button>
+        <button class="quiz-opt" data-correct="0">技術分析可以保證100%獲利</button>
+        <button class="quiz-opt" data-correct="0">技術分析可以完全取代基本面與風險管理</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ 免責聲明：本課程內容僅為一般性技術分析知識教育之用,旨在協助建立看圖與判讀的基礎觀念,不構成對任何個股或商品的投資建議,亦不保證任何報酬。技術分析有其局限性,過去走勢不代表未來表現,所有投資均有虧損本金的可能。做出實際投資決策前,請自行審慎評估並留意風險,必要時可諮詢合格的理財顧問或金融機構。
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>
