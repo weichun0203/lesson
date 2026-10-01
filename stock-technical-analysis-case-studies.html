@@ -199,13 +199,12 @@ const chapters = [
   { id:4, title:'頂部量價背離', subtitle:'案例四:價創新高、量卻走弱的出貨訊號', icon:'📉', time:'10 分鐘', level:'複習', content: renderCh4 },
   { id:5, title:'健康拉回不破支撐', subtitle:'案例五:上升趨勢中最理想的拉回', icon:'✅', time:'10 分鐘', level:'複習', content: renderCh5 },
   { id:6, title:'假突破誘多後真跌破', subtitle:'案例六:衝過壓力卻無量,反手向下', icon:'🎭', time:'10 分鐘', level:'新案例', content: renderCh6 },
-  { id:7, title:'箱型整理後向上突破', subtitle:'案例七:量縮盤整蓄勢,帶量向上突破', icon:'📦', time:'10 分鐘', level:'新案例', content: renderCh7 },
-  { id:8, title:'箱型整理後向下跌破', subtitle:'案例八:同樣的盤整,這次選擇向下', icon:'📦', time:'10 分鐘', level:'新案例', content: renderCh8 },
-  { id:9, title:'黃金交叉確認上升趨勢', subtitle:'案例九:短均上穿長均,帶量延續', icon:'✨', time:'10 分鐘', level:'新案例', content: renderCh9 },
-  { id:10, title:'死亡交叉確認下降趨勢', subtitle:'案例十:短均下穿長均,趨勢轉空', icon:'💀', time:'10 分鐘', level:'新案例', content: renderCh10 },
-  { id:11, title:'M頭雙重頂反轉', subtitle:'案例十一:兩個高點、跌破頸線確認反轉', icon:'🗻', time:'10 分鐘', level:'新案例', content: renderCh11 },
-  { id:12, title:'W底雙重底反轉', subtitle:'案例十二:兩個低點、突破頸線確認反轉', icon:'⛰️', time:'10 分鐘', level:'新案例', content: renderCh12 },
-  { id:13, title:'總複習與案例分類表', subtitle:'12個案例一次盤點,總複習測驗', icon:'📝', time:'15 分鐘', level:'總複習', content: renderCh13 }
+  { id:7, title:'箱型整理後突破', subtitle:'案例七:向上與向下對照', icon:'📦', time:'15 分鐘', level:'新案例·合併', content: renderCh7 },
+  { id:8, title:'均線交叉確認趨勢', subtitle:'案例八:黃金交叉與死亡交叉對照', icon:'✨', time:'15 分鐘', level:'新案例·合併', content: renderCh8 },
+  { id:9, title:'M頭與W底反轉型態', subtitle:'案例九:雙重頂與雙重底對照', icon:'🗻', time:'15 分鐘', level:'新案例·合併', content: renderCh9 },
+  { id:10, title:'V轉與倒V轉', subtitle:'案例十:急速反轉走勢對照', icon:'⚡', time:'15 分鐘', level:'新案例·合併', content: renderCh10 },
+  { id:11, title:'跳空缺口與回補', subtitle:'案例十一:向上與向下跳空對照', icon:'🕳️', time:'15 分鐘', level:'新案例·合併', content: renderCh11 },
+  { id:12, title:'總複習與案例分類表', subtitle:'11個章節一次盤點,總複習測驗', icon:'📝', time:'15 分鐘', level:'總複習', content: renderCh12 }
 ];
 
 let currentChapter = 0;
@@ -293,11 +292,11 @@ function renderCh0(){
 return `
 <div class="chapter-hero">
   <div class="chapter-badge">🗺️ 課程總覽</div>
-  <h1>技術分析實戰案例課程<br>12個經典K線案例逐一拆解</h1>
-  <p class="desc">這是一份專注在「實戰案例」的技術分析案例庫,適合已經了解K線、均線、量價關係等基礎知識的人,拿真實常見的走勢情境反覆練習判讀。每個案例都套用同一套「讀圖五步驟」拆解,並附上一題小測驗檢查理解。前五個案例延續自入門課程,方便你隨時複習;後七個是全新案例,涵蓋假訊號、箱型突破、均線交叉與經典反轉型態。</p>
+  <h1>技術分析實戰案例課程<br>經典K線案例逐一拆解</h1>
+  <p class="desc">這是一份專注在「實戰案例」的技術分析案例庫,適合已經了解K線、均線、量價關係等基礎知識的人,拿真實常見的走勢情境反覆練習判讀。每個案例都套用同一套「讀圖五步驟」拆解,並附上小測驗檢查理解。前六個案例延續自入門課程,方便你隨時複習;後五個章節是全新內容,同類型的案例(箱型突破、均線交叉、M頭W底、V轉倒V轉、跳空缺口)都合併成單一章節,用左右對照圖直接比較差異。</p>
   <div class="meta">
-    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 2 小時</div>
-    <div class="meta-item"><span class="meta-icon">📚</span>12 個案例 + 總複習</div>
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 2.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>18 張案例圖 + 總複習</div>
     <div class="meta-item"><span class="meta-icon">🎯</span>適合已具備技術分析基礎的人</div>
   </div>
 </div>
@@ -305,15 +304,15 @@ return `
 <div class="section">
   <div class="section-title">案例庫總覽</div>
   <div class="stat-grid">
-    <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">複習案例</div></div>
-    <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">全新案例</div></div>
-    <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">案例分類</div></div>
-    <div class="stat-card"><div class="stat-num">17</div><div class="stat-label">隨堂+總複習測驗題</div></div>
+    <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">複習案例</div></div>
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">全新對照章節</div></div>
+    <div class="stat-card"><div class="stat-num">18</div><div class="stat-label">案例圖表</div></div>
+    <div class="stat-card"><div class="stat-num">24</div><div class="stat-label">隨堂+總複習測驗題</div></div>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">快速跳轉：12個案例一覽</div>
+  <div class="section-title">快速跳轉：11個章節一覽</div>
   <div class="case-nav-grid">
     <div class="case-nav-item" onclick="goChapter(1)">🚀 案例一<br>噴出後拉回</div>
     <div class="case-nav-item" onclick="goChapter(2)">🔄 案例二<br>底部反轉</div>
@@ -321,12 +320,11 @@ return `
     <div class="case-nav-item" onclick="goChapter(4)">📉 案例四<br>頂部量價背離</div>
     <div class="case-nav-item" onclick="goChapter(5)">✅ 案例五<br>健康拉回不破支撐</div>
     <div class="case-nav-item" onclick="goChapter(6)">🎭 案例六<br>假突破真跌破</div>
-    <div class="case-nav-item" onclick="goChapter(7)">📦 案例七<br>箱型向上突破</div>
-    <div class="case-nav-item" onclick="goChapter(8)">📦 案例八<br>箱型向下跌破</div>
-    <div class="case-nav-item" onclick="goChapter(9)">✨ 案例九<br>黃金交叉</div>
-    <div class="case-nav-item" onclick="goChapter(10)">💀 案例十<br>死亡交叉</div>
-    <div class="case-nav-item" onclick="goChapter(11)">🗻 案例十一<br>M頭雙重頂</div>
-    <div class="case-nav-item" onclick="goChapter(12)">⛰️ 案例十二<br>W底雙重底</div>
+    <div class="case-nav-item" onclick="goChapter(7)">📦 案例七<br>箱型突破(上/下對照)</div>
+    <div class="case-nav-item" onclick="goChapter(8)">✨ 案例八<br>均線交叉(黃金/死亡對照)</div>
+    <div class="case-nav-item" onclick="goChapter(9)">🗻 案例九<br>M頭/W底對照</div>
+    <div class="case-nav-item" onclick="goChapter(10)">⚡ 案例十<br>V轉/倒V轉對照</div>
+    <div class="case-nav-item" onclick="goChapter(11)">🕳️ 案例十一<br>跳空缺口對照</div>
   </div>
 </div>
 
@@ -337,7 +335,7 @@ return `
       <ul class="checklist">
         <li><span class="check-icon">✅</span>已經熟悉K線、均線、量價關係的人,可以直接照順序做一輪案例練習。</li>
         <li><span class="check-icon">✅</span>每個案例都套用相同的「讀圖五步驟」,建議先自己看圖試著分析,再對照文字說明。</li>
-        <li><span class="check-icon">✅</span>前五個案例(一~五)是入門課程的原班案例,適合快速複習;後七個(六~十二)是新增案例。</li>
+        <li><span class="check-icon">✅</span>案例一~六是入門課程的原班案例,適合快速複習;案例七~十一是全新章節,每章都用左右對照圖比較兩種相反或鏡像的走勢。</li>
         <li><span class="check-icon">✅</span>所有圖表皆為合成教學用圖,用來呈現典型走勢邏輯,並非任何真實個股的實際數據。</li>
         <li><span class="check-icon">✅</span>進度自動記錄,可隨時從側邊欄跳到任何一個案例複習。</li>
       </ul>
@@ -986,7 +984,7 @@ return `
 
 <div class="chapter-nav">
   <button class="btn btn-ghost" onclick="goChapter(5)">← 案例五:健康拉回不破支撐</button>
-  <button class="btn btn-primary" onclick="goChapter(7)">案例七:箱型整理後向上突破 →</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">案例七:箱型整理後突破 →</button>
 </div>
 `;
 }
@@ -995,11 +993,11 @@ function renderCh7(){
 return `
 <div class="chapter-hero">
   <div class="chapter-badge">📦 案例七</div>
-  <h1>箱型整理後向上突破<br>量縮盤整蓄勢,帶量向上突破</h1>
-  <p class="desc">股價長時間在一個區間內來回震盪,成交量持續低迷,顯示多空僵持、觀望氣氛濃厚。某天股價帶量突破區間上緣,確認多方在盤整後取得主導。</p>
+  <h1>箱型整理後突破<br>向上與向下對照</h1>
+  <p class="desc">股價長時間在一個區間內來回震盪,成交量持續低迷,顯示多空僵持、觀望氣氛濃厚。盤整結束後,股價會帶量突破區間的上緣或下緣——這兩張圖用完全相同的起手式(同樣長度的盤整、同樣的量縮特徵),分別走出向上與向下兩種結果,方便直接對照。</p>
   <div class="meta">
-    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
-    <div class="meta-item"><span class="meta-icon">🏆</span>新案例</div>
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>新案例·合併對照</div>
   </div>
 </div>
 
@@ -1010,44 +1008,45 @@ return `
       <div class="step-num">1</div>
       <div class="step-content">
         <div class="step-title">均線觀察</div>
-        <div class="step-desc">均線在盤整期間糾結,突破後開始翻揚向上。</div>
+        <div class="step-desc">兩種情況下,均線在盤整期間都呈現糾結,直到突破方向確定後才開始翻揚(向上突破翻多)或翻轉(向下跌破翻空)。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <div class="step-content">
         <div class="step-title">支撐與壓力</div>
-        <div class="step-desc">區間上緣成為觀察壓力,突破後可能轉為新支撐。</div>
+        <div class="step-desc">區間上緣是觀察壓力,區間下緣是觀察支撐;突破後原本的壓力或支撐可能轉換角色,變成新的支撐或壓力。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <div class="step-content">
         <div class="step-title">成交量</div>
-        <div class="step-desc">盤整期間量能持續低迷,突破當天明顯放大,是確認訊號的關鍵。</div>
+        <div class="step-desc">兩張圖的盤整期間量能都持續低迷,差異只發生在突破當天——量能明顯放大才是確認訊號的關鍵,而不是猜測方向。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
       <div class="step-content">
         <div class="step-title">K棒型態</div>
-        <div class="step-desc">突破的K棒實體較大、收在高點附近。</div>
+        <div class="step-desc">不論向上或向下,真正的突破K棒實體通常較大,並收在當天最高或最低價附近,顯示方向明確、沒有太多猶豫。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">5</div>
       <div class="step-content">
         <div class="step-title">綜合判斷</div>
-        <div class="step-desc">「量縮盤整、放量突破」是相對可靠的方向確認訊號,盤整時間越長、量縮越明顯,突破後的力道往往越有想像空間。</div>
+        <div class="step-desc">盤整格局本身沒有方向性,這兩張圖用相同的起手式走出相反的結果,提醒我們不要預設盤整「一定會」往哪個方向突破,應該等實際的量價訊號出現再判斷。</div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">圖表實況</div>
-  <div class="chart-wrap">
-    <svg viewBox="0 0 278 340" xmlns="http://www.w3.org/2000/svg">
+  <div class="section-title">圖表對照:向上突破 vs 向下跌破</div>
+  <div class="chart-grid-2">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 278 340" xmlns="http://www.w3.org/2000/svg">
   <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
   <line x1="10" y1="210" x2="258" y2="210" stroke="#334155" stroke-width="1"/>
   <polyline points="20,180.3 32,174.2 44,166.9 56,161.8 68,157.6 80,152.3 92,152.6 104,156.1 116,165.2 128,173.7 140,176.4 152,173.8 164,169.5 176,163.1 188,159.8 200,161.5 212,166.6 224,163.3 236,150.2 248,128.3" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
@@ -1067,93 +1066,10 @@ return `
   <text x="224.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">突破爆量</text>
   <line x1="224" y1="227.0" x2="224" y2="267.2" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
 </svg>
-    <div class="chart-caption">示意圖:長時間量縮盤整後,帶量向上突破區間(合成教學用圖,非真實個股數據)</div>
-  </div>
-  <div class="box box-info">
-    <div class="box-title">🔍 圖表重點解讀</div>
-    <p>圖中兩條灰色虛線畫出箱型區間的上緣與下緣,股價在裡面反覆震盪。下方VOL量能圖對應「箱型量縮」期間明顯偏低,直到「向上突破」當天才出現「突破爆量」的高柱狀量能,這種前後量能的強烈對比,正是確認突破有效性的重要依據。</p>
-  </div>
-</div>
-
-<div class="quiz-card">
-  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例七隨堂測驗</span></div>
-  <div class="quiz-q">
-    <div class="quiz-q-text">Q. 「量縮盤整、放量突破」這個組合,說明了什麼道理?</div>
-    <div class="quiz-options">
-      <button class="quiz-opt" data-correct="0">盤整時間越長,量能一定會爆增</button>
-      <button class="quiz-opt" data-correct="1">盤整期間量能低迷、方向不明,實際突破時的量能放大才是確認訊號</button>
-      <button class="quiz-opt" data-correct="0">只要有盤整就一定會向上突破</button>
-      <button class="quiz-opt" data-correct="0">成交量跟突破方向完全無關</button>
+      <div class="chart-caption">示意圖(向上):量縮盤整後帶量突破區間上緣(合成教學用圖,非真實個股數據)</div>
     </div>
-  </div>
-  <div class="quiz-result"></div>
-  <button class="btn-quiz">🔄 重新測驗</button>
-</div>
-
-<div class="chapter-nav">
-  <button class="btn btn-ghost" onclick="goChapter(6)">← 案例六:假突破誘多後真跌破</button>
-  <button class="btn btn-primary" onclick="goChapter(8)">案例八:箱型整理後向下跌破 →</button>
-</div>
-`;
-}
-
-function renderCh8(){
-return `
-<div class="chapter-hero">
-  <div class="chapter-badge">📦 案例八</div>
-  <h1>箱型整理後向下跌破<br>同樣的盤整,這次選擇向下</h1>
-  <p class="desc">與案例七相同的區間盤整,但這次股價選擇帶量向下跌破區間下緣,顯示多方在僵持後失去主導,盤整不代表未來一定往上。</p>
-  <div class="meta">
-    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
-    <div class="meta-item"><span class="meta-icon">🏆</span>新案例</div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-title">套用五步驟拆解</div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <div class="step-title">均線觀察</div>
-        <div class="step-desc">均線同樣在盤整期間糾結,跌破後開始翻轉向下。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <div class="step-title">支撐與壓力</div>
-        <div class="step-desc">區間下緣成為觀察支撐,跌破後可能轉為新壓力。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <div class="step-title">成交量</div>
-        <div class="step-desc">盤整期間量能低迷,跌破當天明顯放大。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <div class="step-title">K棒型態</div>
-        <div class="step-desc">跌破的K棒實體較大、收在低點附近。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-content">
-        <div class="step-title">綜合判斷</div>
-        <div class="step-desc">盤整格局本身沒有方向性,案例七和案例八用完全相同的起手式,卻走出相反的結果,提醒我們不要預設盤整「一定會」往哪個方向突破,應該等實際的量價訊號出現再判斷。</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-title">圖表實況</div>
-  <div class="chart-wrap">
-    <svg viewBox="0 0 278 340" xmlns="http://www.w3.org/2000/svg">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 278 340" xmlns="http://www.w3.org/2000/svg">
   <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
   <line x1="10" y1="210" x2="258" y2="210" stroke="#334155" stroke-width="1"/>
   <polyline points="20,68.6 32,72.1 44,76.5 56,83.3 68,89.7 80,96.8 92,100.1 104,98.3 116,89.0 128,78.8 140,75.0 152,75.8 164,80.5 176,86.5 188,92.0 200,91.1 212,85.9 224,88.8 236,102.0 248,123.7" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
@@ -1173,18 +1089,19 @@ return `
   <text x="224.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">跌破爆量</text>
   <line x1="224" y1="324.0" x2="224" y2="269.7" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
 </svg>
-    <div class="chart-caption">示意圖:同樣長時間盤整,這次帶量向下跌破區間(合成教學用圖,非真實個股數據)</div>
+      <div class="chart-caption">示意圖(向下):相同的盤整,這次帶量跌破區間下緣(合成教學用圖,非真實個股數據)</div>
+    </div>
   </div>
   <div class="box box-info">
     <div class="box-title">🔍 圖表重點解讀</div>
-    <p>這張圖的箱型區間畫法和案例七完全一樣,兩條灰色虛線標出上緣與下緣。差別在於「箱型量縮」之後,股價選擇跌破下緣,對應VOL量能圖的「跌破爆量」明顯放大——同樣的起手式,不同的量價結果,建議把這張圖和案例七放在一起對照著看。</p>
+    <p>兩張圖的灰色虛線都標出箱型區間的上緣與下緣,盤整期間的量能柱狀圖同樣偏低。差異就在最後一天:左圖在「向上突破」時放出「突破爆量」,右圖則在「向下跌破」時放出「跌破爆量」——起手式一模一樣,最後的量價訊號卻完全相反,這正是這組對照圖想呈現的重點。</p>
   </div>
 </div>
 
 <div class="quiz-card">
-  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例八隨堂測驗</span></div>
+  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例七隨堂測驗</span></div>
   <div class="quiz-q">
-    <div class="quiz-q-text">Q. 對照案例七與案例八,這兩個案例最重要的共同啟示是什麼?</div>
+    <div class="quiz-q-text">Q. 對照這兩張圖,箱型整理格局最重要的共同啟示是什麼?</div>
     <div class="quiz-options">
       <button class="quiz-opt" data-correct="0">盤整格局一定會向上突破</button>
       <button class="quiz-opt" data-correct="0">盤整格局一定會向下跌破</button>
@@ -1192,26 +1109,35 @@ return `
       <button class="quiz-opt" data-correct="0">盤整期間的成交量完全不需要關注</button>
     </div>
   </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q. 這兩張圖在盤整期間的成交量表現有什麼共同特徵?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">盤整期間量能都異常龐大</button>
+      <button class="quiz-opt" data-correct="1">盤整期間量能都持續低迷,直到突破當天才放大</button>
+      <button class="quiz-opt" data-correct="0">盤整期間量能完全沒有紀錄</button>
+      <button class="quiz-opt" data-correct="0">盤整期間量能只在向上時偏低</button>
+    </div>
+  </div>
   <div class="quiz-result"></div>
   <button class="btn-quiz">🔄 重新測驗</button>
 </div>
 
 <div class="chapter-nav">
-  <button class="btn btn-ghost" onclick="goChapter(7)">← 案例七:箱型整理後向上突破</button>
-  <button class="btn btn-primary" onclick="goChapter(9)">案例九:黃金交叉確認上升趨勢 →</button>
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 案例六:假突破誘多後真跌破</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">案例八:均線交叉確認 →</button>
 </div>
 `;
 }
 
-function renderCh9(){
+function renderCh8(){
 return `
 <div class="chapter-hero">
-  <div class="chapter-badge">✨ 案例九</div>
-  <h1>黃金交叉確認上升趨勢<br>短均上穿長均,帶量延續</h1>
-  <p class="desc">股價經過一段下跌整理後止穩,短期均線(MA5)由下往上穿越長期均線(MA10),交叉後續出現帶量上攻,確認這波反彈具有延續性。</p>
+  <div class="chapter-badge">✨ 案例八</div>
+  <h1>均線交叉確認趨勢<br>黃金交叉與死亡交叉對照</h1>
+  <p class="desc">短期均線(MA5)與長期均線(MA10)的交叉,是最常被討論的均線訊號。黃金交叉(短均上穿長均)常被視為偏多訊號,死亡交叉(短均下穿長均)則常被視為偏空訊號。這兩張圖分別呈現交叉後續有量能與價格持續確認的「確認型」案例,方便對照上漲與下跌兩種鏡像走勢。</p>
   <div class="meta">
-    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
-    <div class="meta-item"><span class="meta-icon">🏆</span>新案例</div>
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>新案例·合併對照</div>
   </div>
 </div>
 
@@ -1222,44 +1148,45 @@ return `
       <div class="step-num">1</div>
       <div class="step-content">
         <div class="step-title">均線觀察</div>
-        <div class="step-desc">均線出現黃金交叉,由空頭排列逐漸轉為多頭排列。</div>
+        <div class="step-desc">左圖MA5由下往上穿越MA10,均線從空頭排列轉為多頭排列;右圖則完全相反,MA5由上往下跌破MA10,均線從多頭排列轉為空頭排列。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <div class="step-content">
         <div class="step-title">支撐與壓力</div>
-        <div class="step-desc">交叉發生的價位可作為後續拉回的觀察支撐。</div>
+        <div class="step-desc">交叉發生的價位,在黃金交叉案例中可作為後續拉回的觀察支撐;在死亡交叉案例中則可作為後續反彈的觀察壓力。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <div class="step-content">
         <div class="step-title">成交量</div>
-        <div class="step-desc">交叉後續兩次上攻都伴隨明顯放量,顯示買盤持續進場。</div>
+        <div class="step-desc">兩張圖在交叉之後都出現連續兩次放量,差別在於黃金交叉是帶量上攻,死亡交叉是帶量下殺,量能方向與價格方向一致。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
       <div class="step-content">
         <div class="step-title">K棒型態</div>
-        <div class="step-desc">K棒實體轉為連續紅K、量增價漲。</div>
+        <div class="step-desc">黃金交叉後K棒轉為連續紅K、量增價漲;死亡交叉後K棒轉為連續綠K、量增價跌,兩者呈現鏡像對照。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">5</div>
       <div class="step-content">
         <div class="step-title">綜合判斷</div>
-        <div class="step-desc">黃金交叉本身是落後指標,不建議看到交叉就立刻進場,但如果交叉後續能有量能配合、價格持續墊高,這樣的「確認型」黃金交叉會比單純的交叉訊號更可靠。</div>
+        <div class="step-desc">均線交叉本身都是落後指標,不建議看到交叉就立刻進出場;但如果交叉後續能有量能配合、價格持續朝同方向發展,這樣的「確認型」交叉會比單純的交叉訊號更可靠。</div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">圖表實況</div>
-  <div class="chart-wrap">
-    <svg viewBox="0 0 326 340" xmlns="http://www.w3.org/2000/svg">
+  <div class="section-title">圖表對照:黃金交叉 vs 死亡交叉</div>
+  <div class="chart-grid-2">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 326 340" xmlns="http://www.w3.org/2000/svg">
   <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
   <line x1="10" y1="210" x2="306" y2="210" stroke="#334155" stroke-width="1"/>
   <polyline points="20,154.7 32,159.1 44,162.7 56,167.1 68,170.6 80,177.3 92,184.1 104,190.1 116,193.9 128,197.7 140,200.9 152,199.4 164,196.0 176,189.2 188,179.8 200,167.7 212,156.0 224,144.0 236,133.0 248,120.9 260,108.5 272,96.2 284,84.0 296,71.6" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/><polyline points="20,154.7 32,159.1 44,162.7 56,167.1 68,170.6 80,173.5 92,176.9 104,179.8 116,182.0 128,184.1 140,189.1 152,191.7 164,193.0 176,191.5 188,188.7 200,184.3 212,177.7 224,170.0 236,161.1 248,150.3 260,138.1 272,126.1 284,114.0 296,102.3" fill="none" stroke="#22D3EE" stroke-width="1.6" opacity="0.9"/>
@@ -1279,93 +1206,10 @@ return `
   <text x="272.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">延續性帶量上攻</text>
   <line x1="272" y1="227.0" x2="272" y2="271.1" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
 </svg>
-    <div class="chart-caption">示意圖:MA5向上穿越MA10後,連續兩次帶量上攻確認趨勢(合成教學用圖,非真實個股數據)</div>
-  </div>
-  <div class="box box-info">
-    <div class="box-title">🔍 圖表重點解讀</div>
-    <p>圖上黃色的MA5線在「黃金交叉」標記處由下往上穿越藍色的MA10線,交叉之後對照下方VOL量能圖的「交叉後帶量攻擊」與「延續性帶量上攻」,可以看到量能連續兩次放大,價格也隨之持續墊高,這就是「交叉+量能確認」的完整畫面。</p>
-  </div>
-</div>
-
-<div class="quiz-card">
-  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例九隨堂測驗</span></div>
-  <div class="quiz-q">
-    <div class="quiz-q-text">Q. 為什麼「確認型」黃金交叉會比單純的交叉訊號更可靠?</div>
-    <div class="quiz-options">
-      <button class="quiz-opt" data-correct="0">因為交叉本身就保證股價會一直上漲</button>
-      <button class="quiz-opt" data-correct="1">因為交叉後續有量能持續配合、價格持續墊高,提供額外的驗證</button>
-      <button class="quiz-opt" data-correct="0">因為黃金交叉是領先指標,一定準確</button>
-      <button class="quiz-opt" data-correct="0">因為只要交叉,均線就會永遠維持多頭排列</button>
+      <div class="chart-caption">示意圖(黃金交叉):MA5向上穿越MA10後,連續兩次帶量上攻確認趨勢(合成教學用圖,非真實個股數據)</div>
     </div>
-  </div>
-  <div class="quiz-result"></div>
-  <button class="btn-quiz">🔄 重新測驗</button>
-</div>
-
-<div class="chapter-nav">
-  <button class="btn btn-ghost" onclick="goChapter(8)">← 案例八:箱型整理後向下跌破</button>
-  <button class="btn btn-primary" onclick="goChapter(10)">案例十:死亡交叉確認下降趨勢 →</button>
-</div>
-`;
-}
-
-function renderCh10(){
-return `
-<div class="chapter-hero">
-  <div class="chapter-badge">💀 案例十</div>
-  <h1>死亡交叉確認下降趨勢<br>短均下穿長均,趨勢轉空</h1>
-  <p class="desc">股價經過一段上漲後轉弱,短期均線(MA5)由上往下跌破長期均線(MA10),交叉後續出現帶量下殺,確認這波回檔具有延續性。</p>
-  <div class="meta">
-    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
-    <div class="meta-item"><span class="meta-icon">🏆</span>新案例</div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-title">套用五步驟拆解</div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <div class="step-title">均線觀察</div>
-        <div class="step-desc">均線出現死亡交叉,由多頭排列逐漸轉為空頭排列。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <div class="step-title">支撐與壓力</div>
-        <div class="step-desc">交叉發生的價位可作為後續反彈的觀察壓力。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <div class="step-title">成交量</div>
-        <div class="step-desc">交叉後續兩次下跌都伴隨明顯放量,顯示賣壓持續出籠。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <div class="step-title">K棒型態</div>
-        <div class="step-desc">K棒實體轉為連續綠K、量增價跌。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-content">
-        <div class="step-title">綜合判斷</div>
-        <div class="step-desc">與黃金交叉相同,死亡交叉本身也是落後指標,如果交叉後續量能同步放大、價格持續破底,這樣的「確認型」死亡交叉會比單純的交叉訊號更值得留意風險。</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-title">圖表實況</div>
-  <div class="chart-wrap">
-    <svg viewBox="0 0 326 340" xmlns="http://www.w3.org/2000/svg">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 326 340" xmlns="http://www.w3.org/2000/svg">
   <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
   <line x1="10" y1="210" x2="306" y2="210" stroke="#334155" stroke-width="1"/>
   <polyline points="20,94.4 32,91.8 44,87.5 56,84.7 68,81.2 80,74.8 92,67.7 104,62.9 116,57.9 128,54.4 140,51.3 152,52.0 164,54.7 176,61.6 188,70.3 200,82.5 212,94.9 224,107.3 236,118.5 248,130.5 260,142.7 272,154.5 284,165.8 296,178.2" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/><polyline points="20,94.4 32,91.8 44,87.5 56,84.7 68,81.2 80,78.1 92,74.6 104,72.1 116,69.8 128,67.8 140,63.0 152,59.8 164,58.8 176,59.7 188,62.4 200,66.9 212,73.5 224,81.0 236,90.1 248,100.4 260,112.6 272,124.7 284,136.6 296,148.4" fill="none" stroke="#22D3EE" stroke-width="1.6" opacity="0.9"/>
@@ -1385,23 +1229,33 @@ return `
   <text x="272.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">延續性帶量下跌</text>
   <line x1="272" y1="324.0" x2="272" y2="264.9" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
 </svg>
-    <div class="chart-caption">示意圖:MA5向下跌破MA10後,連續兩次帶量下跌確認趨勢(合成教學用圖,非真實個股數據)</div>
+      <div class="chart-caption">示意圖(死亡交叉):MA5向下跌破MA10後,連續兩次帶量下跌確認趨勢(合成教學用圖,非真實個股數據)</div>
+    </div>
   </div>
   <div class="box box-info">
     <div class="box-title">🔍 圖表重點解讀</div>
-    <p>圖上黃色的MA5線在「死亡交叉」標記處由上往下跌破藍色的MA10線,交叉之後對照下方VOL量能圖的「交叉後帶量下殺」與「延續性帶量下跌」,量能同樣連續兩次放大,只是這次價格是持續破底,和案例九形成鏡像對照。</p>
+    <p>左圖黃色的MA5線在「黃金交叉」標記處向上穿越藍色的MA10線,右圖則在「死亡交叉」標記處向下跌破。兩張圖交叉之後都出現兩次量能標示(「交叉後帶量攻擊/下殺」「延續性帶量上攻/下跌」),量能連續放大的節奏完全相同,只是方向相反——這正是「確認型」交叉訊號該有的樣子。</p>
   </div>
 </div>
 
 <div class="quiz-card">
-  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例十隨堂測驗</span></div>
+  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例八隨堂測驗</span></div>
   <div class="quiz-q">
-    <div class="quiz-q-text">Q. 死亡交叉發生後,案例中股價後續出現了什麼確認訊號?</div>
+    <div class="quiz-q-text">Q. 為什麼「確認型」的均線交叉會比單純的交叉訊號更可靠?</div>
     <div class="quiz-options">
-      <button class="quiz-opt" data-correct="0">股價立刻反彈,量能持續萎縮</button>
-      <button class="quiz-opt" data-correct="1">連續兩次帶量下跌,K棒轉為連續綠K</button>
-      <button class="quiz-opt" data-correct="0">均線重新轉為多頭排列</button>
-      <button class="quiz-opt" data-correct="0">成交量完全沒有變化</button>
+      <button class="quiz-opt" data-correct="0">因為交叉本身就保證股價會一直朝同方向走</button>
+      <button class="quiz-opt" data-correct="1">因為交叉後續有量能持續配合、價格持續朝同方向發展,提供額外的驗證</button>
+      <button class="quiz-opt" data-correct="0">因為均線交叉是領先指標,一定準確</button>
+      <button class="quiz-opt" data-correct="0">因為只要交叉,均線就會永遠維持同樣排列</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q. 對照黃金交叉與死亡交叉兩張圖,兩者最主要的鏡像關係是什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">黃金交叉沒有成交量變化,死亡交叉有</button>
+      <button class="quiz-opt" data-correct="1">兩者的均線排列變化方向相反,但交叉後的量能確認邏輯完全相同</button>
+      <button class="quiz-opt" data-correct="0">死亡交叉發生後股價一定會止跌回升</button>
+      <button class="quiz-opt" data-correct="0">黃金交叉只會出現在盤整格局中</button>
     </div>
   </div>
   <div class="quiz-result"></div>
@@ -1409,21 +1263,21 @@ return `
 </div>
 
 <div class="chapter-nav">
-  <button class="btn btn-ghost" onclick="goChapter(9)">← 案例九:黃金交叉確認上升趨勢</button>
-  <button class="btn btn-primary" onclick="goChapter(11)">案例十一:M頭雙重頂反轉 →</button>
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 案例七:箱型整理後突破</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">案例九:M頭與W底反轉型態 →</button>
 </div>
 `;
 }
 
-function renderCh11(){
+function renderCh9(){
 return `
 <div class="chapter-hero">
-  <div class="chapter-badge">🗻 案例十一</div>
-  <h1>M頭雙重頂反轉<br>兩個高點、跌破頸線確認反轉</h1>
-  <p class="desc">股價上漲至第一個高點後拉回,隨後再次上攻至與第一個高點相近的價位,但量能明顯縮小,兩個高點之間的低點形成「頸線」。股價隨後跌破頸線,確認M頭反轉成立。</p>
+  <div class="chapter-badge">🗻 案例九</div>
+  <h1>M頭與W底反轉型態<br>雙重頂與雙重底對照</h1>
+  <p class="desc">M頭(雙重頂)與W底(雙重底)是最經典的反轉型態,兩者的判斷邏輯完全對稱:都需要兩個高度相近的高點(或低點),中間夾著一條「頸線」,且第二次量能明顯小於第一次,最後價格確實突破或跌破頸線,型態才算真正成立。</p>
   <div class="meta">
-    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
-    <div class="meta-item"><span class="meta-icon">🏆</span>新案例</div>
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>新案例·合併對照</div>
   </div>
 </div>
 
@@ -1434,44 +1288,45 @@ return `
       <div class="step-num">1</div>
       <div class="step-content">
         <div class="step-title">均線觀察</div>
-        <div class="step-desc">均線在兩個高點之間逐漸走平、糾結。</div>
+        <div class="step-desc">兩張圖的均線在兩個高點(或低點)之間都逐漸走平、糾結,直到頸線被突破或跌破後才明確轉向。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <div class="step-content">
         <div class="step-title">支撐與壓力</div>
-        <div class="step-desc">頸線(兩高點之間的低點)成為關鍵觀察支撐,跌破後轉為壓力。</div>
+        <div class="step-desc">M頭的頸線(兩高點之間的低點)是關鍵支撐,跌破後轉為壓力;W底的頸線(兩低點之間的高點)是關鍵壓力,突破後轉為支撐。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <div class="step-content">
         <div class="step-title">成交量</div>
-        <div class="step-desc">第二個高點的量能明顯小於第一個高點,是量價背離的具體案例。</div>
+        <div class="step-desc">兩張圖的第二個高點/低點,量能都明顯小於第一個,這是量價背離的具體案例,顯示原方向的力道正在減弱。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
       <div class="step-content">
         <div class="step-title">K棒型態</div>
-        <div class="step-desc">跌破頸線時常伴隨量能放大,確認賣壓湧現。</div>
+        <div class="step-desc">跌破頸線(M頭)或突破頸線(W底)時,通常都會伴隨量能放大,確認賣壓湧現或買盤轉強。</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">5</div>
       <div class="step-content">
         <div class="step-title">綜合判斷</div>
-        <div class="step-desc">M頭是經典的頭部反轉型態,「兩個高點、量能一次比一次小,且跌破頸線」是判斷成立與否的關鍵,若只出現兩個高點但沒跌破頸線,則型態尚未完成,不宜提前認定反轉。</div>
+        <div class="step-desc">「兩個高/低點、量能一次比一次小,且股價確實突破/跌破頸線」是判斷這兩種型態是否成立的共同關鍵,若只出現兩個高/低點但沒有突破頸線,型態尚未完成,不宜提前認定反轉。</div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">圖表實況</div>
-  <div class="chart-wrap">
-    <svg viewBox="0 0 326 340" xmlns="http://www.w3.org/2000/svg">
+  <div class="section-title">圖表對照:M頭雙重頂 vs W底雙重底</div>
+  <div class="chart-grid-2">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 326 340" xmlns="http://www.w3.org/2000/svg">
   <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
   <line x1="10" y1="210" x2="306" y2="210" stroke="#334155" stroke-width="1"/>
   <polyline points="20,176.7 32,165.9 44,151.9 56,139.5 68,127.1 80,101.9 92,85.2 104,78.0 116,78.1 128,86.6 140,97.1 152,101.0 164,98.7 176,90.8 188,76.3 200,68.5 212,66.8 224,72.8 236,84.7 248,103.9 260,122.5 272,141.2 284,157.5 296,173.9" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
@@ -1493,93 +1348,10 @@ return `
   <text x="272.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">跌破頸線放量</text>
   <line x1="272" y1="324.0" x2="272" y2="274.9" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
 </svg>
-    <div class="chart-caption">示意圖:兩個高度相近的高點,第二次量能明顯縮小,跌破頸線確認M頭(合成教學用圖,非真實個股數據)</div>
-  </div>
-  <div class="box box-info">
-    <div class="box-title">🔍 圖表重點解讀</div>
-    <p>圖上「頭①」與「頭②」兩個高點高度相近,中間的灰色虛線就是頸線位置。對照下方VOL量能圖,「第一次量大」明顯高於「第二次量縮小」,最後跌破頸線時「跌破頸線放量」的柱狀圖再度放大,三個量能標記依序遞減又反彈,正好完整呈現M頭成立的整個過程。</p>
-  </div>
-</div>
-
-<div class="quiz-card">
-  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例十一隨堂測驗</span></div>
-  <div class="quiz-q">
-    <div class="quiz-q-text">Q. 判斷M頭(雙重頂)是否真的成立,最關鍵的確認條件是什麼?</div>
-    <div class="quiz-options">
-      <button class="quiz-opt" data-correct="0">只要出現兩個相近的高點就算成立</button>
-      <button class="quiz-opt" data-correct="1">兩個高點量能一次比一次小,且股價確實跌破兩高點之間的頸線</button>
-      <button class="quiz-opt" data-correct="0">股價只要下跌就代表M頭成立</button>
-      <button class="quiz-opt" data-correct="0">頸線位置完全不重要</button>
+      <div class="chart-caption">示意圖(M頭):兩個高度相近的高點,第二次量能明顯縮小,跌破頸線確認反轉(合成教學用圖,非真實個股數據)</div>
     </div>
-  </div>
-  <div class="quiz-result"></div>
-  <button class="btn-quiz">🔄 重新測驗</button>
-</div>
-
-<div class="chapter-nav">
-  <button class="btn btn-ghost" onclick="goChapter(10)">← 案例十:死亡交叉確認下降趨勢</button>
-  <button class="btn btn-primary" onclick="goChapter(12)">案例十二:W底雙重底反轉 →</button>
-</div>
-`;
-}
-
-function renderCh12(){
-return `
-<div class="chapter-hero">
-  <div class="chapter-badge">⛰️ 案例十二</div>
-  <h1>W底雙重底反轉<br>兩個低點、突破頸線確認反轉</h1>
-  <p class="desc">股價下跌至第一個低點後反彈,隨後再次回測與第一個低點相近的價位,但量能明顯縮小,兩個低點之間的高點形成「頸線」。股價隨後突破頸線,確認W底反轉成立。</p>
-  <div class="meta">
-    <div class="meta-item"><span class="meta-icon">⏱️</span>10 分鐘</div>
-    <div class="meta-item"><span class="meta-icon">🏆</span>新案例</div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-title">套用五步驟拆解</div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <div class="step-title">均線觀察</div>
-        <div class="step-desc">均線在兩個低點之間逐漸走平、糾結。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <div class="step-title">支撐與壓力</div>
-        <div class="step-desc">頸線(兩低點之間的高點)成為關鍵觀察壓力,突破後轉為支撐。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <div class="step-title">成交量</div>
-        <div class="step-desc">第二個低點的量能明顯小於第一個低點,顯示賣壓逐漸衰竭。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <div class="step-title">K棒型態</div>
-        <div class="step-desc">突破頸線時常伴隨量能放大,確認買盤轉強。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-content">
-        <div class="step-title">綜合判斷</div>
-        <div class="step-desc">W底是經典的底部反轉型態,「兩個低點、量能一次比一次小,且突破頸線」是判斷成立與否的關鍵,若只出現兩個低點但沒突破頸線,型態同樣尚未完成,仍應謹慎看待。</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-title">圖表實況</div>
-  <div class="chart-wrap">
-    <svg viewBox="0 0 326 340" xmlns="http://www.w3.org/2000/svg">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 326 340" xmlns="http://www.w3.org/2000/svg">
   <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
   <line x1="10" y1="210" x2="306" y2="210" stroke="#334155" stroke-width="1"/>
   <polyline points="20,74.5 32,85.5 44,97.2 56,109.0 68,120.5 80,144.2 92,161.0 104,169.6 116,170.0 128,162.4 140,151.7 152,146.7 164,148.2 176,156.2 188,170.1 200,178.0 212,178.5 224,173.3 236,161.1 248,142.4 260,124.7 272,109.1 284,93.4 296,78.3" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
@@ -1601,23 +1373,33 @@ return `
   <text x="272.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">突破頸線放量</text>
   <line x1="272" y1="227.0" x2="272" y2="259.3" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
 </svg>
-    <div class="chart-caption">示意圖:兩個高度相近的低點,第二次量能明顯縮小,突破頸線確認W底(合成教學用圖,非真實個股數據)</div>
+      <div class="chart-caption">示意圖(W底):兩個高度相近的低點,第二次量能明顯縮小,突破頸線確認反轉(合成教學用圖,非真實個股數據)</div>
+    </div>
   </div>
   <div class="box box-info">
     <div class="box-title">🔍 圖表重點解讀</div>
-    <p>圖上「底①」與「底②」兩個低點高度相近,中間的灰色虛線就是頸線位置。對照下方VOL量能圖,「第一次量大」明顯高於「第二次量縮小」,最後突破頸線時「突破頸線放量」的柱狀圖再度放大——這張圖和案例十一(M頭)剛好上下顛倒,可以放在一起對照練習。</p>
+    <p>左圖「頭①」「頭②」兩個高點高度相近,右圖「底①」「底②」兩個低點高度相近,中間的灰色虛線都是頸線。兩張圖的VOL量能圖都呈現「第一次量大→第二次量縮小→跌破/突破頸線放量」的三段式節奏,把這兩張圖上下對照著看,能更清楚體會「頭部」與「底部」在鏡像邏輯上的一致性。</p>
   </div>
 </div>
 
 <div class="quiz-card">
-  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例十二隨堂測驗</span></div>
+  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例九隨堂測驗</span></div>
   <div class="quiz-q">
-    <div class="quiz-q-text">Q. W底與M頭在判斷邏輯上,有什麼共通之處?</div>
+    <div class="quiz-q-text">Q. M頭與W底在判斷是否成立時,共同的關鍵條件是什麼?</div>
     <div class="quiz-options">
-      <button class="quiz-opt" data-correct="1">都需要兩個相近的高/低點,量能一次比一次小,並且確實突破/跌破頸線</button>
-      <button class="quiz-opt" data-correct="0">W底完全不需要參考成交量</button>
-      <button class="quiz-opt" data-correct="0">只要出現一個低點就可以確認W底成立</button>
-      <button class="quiz-opt" data-correct="0">M頭和W底的判斷邏輯完全無關</button>
+      <button class="quiz-opt" data-correct="0">只要出現兩個相近的高點或低點就算成立</button>
+      <button class="quiz-opt" data-correct="1">兩個高/低點量能一次比一次小,且股價確實突破/跌破頸線</button>
+      <button class="quiz-opt" data-correct="0">股價只要變動就代表型態成立</button>
+      <button class="quiz-opt" data-correct="0">頸線位置完全不重要</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q. 對照這兩張圖,「頸線」在M頭與W底中分別扮演什麼角色?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">M頭的頸線是壓力、W底的頸線也是壓力</button>
+      <button class="quiz-opt" data-correct="1">M頭的頸線是兩高點間的低點(支撐),W底的頸線是兩低點間的高點(壓力)</button>
+      <button class="quiz-opt" data-correct="0">頸線只存在於M頭,W底沒有頸線</button>
+      <button class="quiz-opt" data-correct="0">頸線的角色跟量能完全無關</button>
     </div>
   </div>
   <div class="quiz-result"></div>
@@ -1625,18 +1407,294 @@ return `
 </div>
 
 <div class="chapter-nav">
-  <button class="btn btn-ghost" onclick="goChapter(11)">← 案例十一:M頭雙重頂反轉</button>
-  <button class="btn btn-primary" onclick="goChapter(13)">總複習與案例分類表 →</button>
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 案例八:均線交叉確認</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">案例十:V轉與倒V轉 →</button>
 </div>
 `;
 }
 
-function renderCh13(){
+function renderCh10(){
 return `
 <div class="chapter-hero">
-  <div class="chapter-badge">📝 案例十三</div>
-  <h1>總複習與案例分類表<br>12個案例一次盤點</h1>
-  <p class="desc">恭喜你走完整套案例庫!這一章用一張分類表把12個案例重新整理,並提供一份總複習測驗,檢查你是否能分辨相似情境之間的關鍵差異。</p>
+  <div class="chapter-badge">⚡ 案例十</div>
+  <h1>V轉與倒V轉<br>急速反轉走勢對照</h1>
+  <p class="desc">V轉(V型反轉)與倒V轉是「急速反轉」的代表:不像案例二(底部反轉)或案例一(噴出後拉回)那樣需要多天醞釀,V轉與倒V轉往往在一兩天內就急速改變方向,轉折點通常伴隨當天的爆量,是一種節奏更快、更容易讓人措手不及的走勢型態。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>新案例·合併對照</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">套用五步驟拆解</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">均線觀察</div>
+        <div class="step-desc">急速反轉發生時,均線通常來不及反應,轉折當下仍維持原本的排列,要等反轉確立後均線才會跟著翻轉。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">支撐與壓力</div>
+        <div class="step-desc">V轉的最低點、倒V轉的最高點,本身就是最重要的觀察價位,因為型態成立後價格不會再回到這個轉折點附近整理。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">成交量</div>
+        <div class="step-desc">轉折當天的成交量通常會出現異常放大(恐慌性殺盤或衝高出貨),這是急速反轉最明顯的辨識特徵。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">K棒型態</div>
+        <div class="step-desc">轉折點附近常出現長下影線(V轉)或長上影線(倒V轉)的K棒,顯示當天盤中一度延續原方向,卻在尾盤被強力扭轉。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">綜合判斷</div>
+        <div class="step-desc">急速反轉發生的速度快、預警訊號少,不像漸進式的頂部或底部反轉有較長的觀察期,因此更需要留意轉折當天異常放大的成交量,作為判斷的重要線索。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">圖表對照:V型急速反轉 vs 倒V型急速反轉</div>
+  <div class="chart-grid-2">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 266 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="246" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,46.4 32,55.2 44,64.6 56,73.1 68,81.1 80,97.9 92,114.9 104,131.1 116,148.1 128,165.8 140,176.2 152,180.1 164,176.9 176,166.5 188,149.1 200,132.5 212,114.5 224,97.8 236,80.7" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="43.1" x2="20" y2="57.2" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="46.4" width="8" height="8.9" fill="#EF4444"/><line x1="32" y1="41.6" x2="32" y2="67.6" stroke="#10B981" stroke-width="1.3"/><rect x="28" y="46.4" width="8" height="17.7" fill="#10B981"/><line x1="44" y1="59.1" x2="44" y2="89.8" stroke="#10B981" stroke-width="1.3"/><rect x="40" y="64.0" width="8" height="19.3" fill="#10B981"/><line x1="56" y1="81.4" x2="56" y2="102.4" stroke="#10B981" stroke-width="1.3"/><rect x="52" y="83.4" width="8" height="15.4" fill="#10B981"/><line x1="68" y1="89.3" x2="68" y2="116.6" stroke="#10B981" stroke-width="1.3"/><rect x="64" y="98.7" width="8" height="14.1" fill="#10B981"/><line x1="80" y1="110.2" x2="80" y2="135.3" stroke="#10B981" stroke-width="1.3"/><rect x="76" y="112.8" width="8" height="17.6" fill="#10B981"/><line x1="92" y1="120.7" x2="92" y2="157.0" stroke="#10B981" stroke-width="1.3"/><rect x="88" y="130.4" width="8" height="18.7" fill="#10B981"/><line x1="104" y1="145.8" x2="104" y2="173.7" stroke="#10B981" stroke-width="1.3"/><rect x="100" y="149.1" width="8" height="15.3" fill="#10B981"/><line x1="116" y1="155.6" x2="116" y2="188.3" stroke="#10B981" stroke-width="1.3"/><rect x="112" y="164.4" width="8" height="19.2" fill="#10B981"/><line x1="128" y1="176.1" x2="128" y2="206.4" stroke="#10B981" stroke-width="1.3"/><rect x="124" y="183.7" width="8" height="17.5" fill="#10B981"/><line x1="140" y1="176.0" x2="140" y2="210.0" stroke="#EF4444" stroke-width="1.3"/><rect x="136" y="182.6" width="8" height="18.6" fill="#EF4444"/><line x1="152" y1="165.5" x2="152" y2="190.9" stroke="#EF4444" stroke-width="1.3"/><rect x="148" y="168.5" width="8" height="14.1" fill="#EF4444"/><line x1="164" y1="144.1" x2="164" y2="177.4" stroke="#EF4444" stroke-width="1.3"/><rect x="160" y="148.5" width="8" height="20.0" fill="#EF4444"/><line x1="176" y1="123.1" x2="176" y2="150.6" stroke="#EF4444" stroke-width="1.3"/><rect x="172" y="131.9" width="8" height="16.6" fill="#EF4444"/><line x1="188" y1="108.8" x2="188" y2="137.5" stroke="#EF4444" stroke-width="1.3"/><rect x="184" y="114.3" width="8" height="17.6" fill="#EF4444"/><line x1="200" y1="92.6" x2="200" y2="121.2" stroke="#EF4444" stroke-width="1.3"/><rect x="196" y="99.2" width="8" height="15.1" fill="#EF4444"/><line x1="212" y1="68.9" x2="212" y2="108.5" stroke="#EF4444" stroke-width="1.3"/><rect x="208" y="78.8" width="8" height="20.4" fill="#EF4444"/><line x1="224" y1="61.1" x2="224" y2="85.7" stroke="#EF4444" stroke-width="1.3"/><rect x="220" y="64.9" width="8" height="13.8" fill="#EF4444"/><line x1="236" y1="40.0" x2="236" y2="68.4" stroke="#EF4444" stroke-width="1.3"/><rect x="232" y="46.5" width="8" height="18.4" fill="#EF4444"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  
+  <line x1="10" y1="245" x2="246" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="246" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="292.6" width="8" height="27.4" fill="#EF4444" opacity="0.8"/><rect x="28" y="293.7" width="8" height="26.3" fill="#10B981" opacity="0.8"/><rect x="40" y="298.2" width="8" height="21.8" fill="#10B981" opacity="0.8"/><rect x="52" y="296.4" width="8" height="23.6" fill="#10B981" opacity="0.8"/><rect x="64" y="300.3" width="8" height="19.7" fill="#10B981" opacity="0.8"/><rect x="76" y="300.4" width="8" height="19.6" fill="#10B981" opacity="0.8"/><rect x="88" y="298.3" width="8" height="21.7" fill="#10B981" opacity="0.8"/><rect x="100" y="256.0" width="8" height="64.0" fill="#10B981" opacity="0.8"/><rect x="112" y="249.6" width="8" height="70.4" fill="#10B981" opacity="0.8"/><rect x="124" y="263.5" width="8" height="56.5" fill="#10B981" opacity="0.8"/><rect x="136" y="251.1" width="8" height="68.9" fill="#EF4444" opacity="0.8"/><rect x="148" y="269.2" width="8" height="50.8" fill="#EF4444" opacity="0.8"/><rect x="160" y="278.5" width="8" height="41.5" fill="#EF4444" opacity="0.8"/><rect x="172" y="283.8" width="8" height="36.2" fill="#EF4444" opacity="0.8"/><rect x="184" y="273.1" width="8" height="46.9" fill="#EF4444" opacity="0.8"/><rect x="196" y="285.6" width="8" height="34.4" fill="#EF4444" opacity="0.8"/><rect x="208" y="272.9" width="8" height="47.1" fill="#EF4444" opacity="0.8"/><rect x="220" y="273.7" width="8" height="46.3" fill="#EF4444" opacity="0.8"/><rect x="232" y="302.0" width="8" height="18.0" fill="#EF4444" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <circle cx="128" cy="206.4" r="3.5" fill="#EF4444"/><line x1="128" y1="206.4" x2="128" y2="222.4" stroke="#EF4444" stroke-width="1"/><rect x="93.0" y="222.4" width="70" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="128" y="234.4" font-size="11" fill="#EF4444" text-anchor="middle" font-weight="700">V型急速反轉</text><rect x="72.0" y="326.0" width="88" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="116.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">恐慌性爆量</text>
+  <line x1="116" y1="324.0" x2="116" y2="249.6" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="126.0" y="213.0" width="100" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="176.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">反彈同步放量</text>
+  <line x1="176" y1="227.0" x2="176" y2="283.8" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+      <div class="chart-caption">示意圖(V轉):股價急速下跌後在低點爆量,隨即急速反彈(合成教學用圖,非真實個股數據)</div>
+    </div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 266 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="246" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,194.5 32,186.1 44,178.4 56,170.7 68,162.3 80,145.4 92,129.3 104,112.4 116,96.2 128,79.9 140,71.0 152,67.7 164,71.3 176,80.1 188,96.5 200,112.1 212,128.7 224,145.6 236,162.7" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="190.5" x2="20" y2="210.0" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="194.5" width="8" height="8.4" fill="#EF4444"/><line x1="32" y1="172.5" x2="32" y2="202.7" stroke="#EF4444" stroke-width="1.3"/><rect x="28" y="177.8" width="8" height="16.8" fill="#EF4444"/><line x1="44" y1="154.3" x2="44" y2="180.9" stroke="#EF4444" stroke-width="1.3"/><rect x="40" y="162.9" width="8" height="14.9" fill="#EF4444"/><line x1="56" y1="139.4" x2="56" y2="169.1" stroke="#EF4444" stroke-width="1.3"/><rect x="52" y="147.8" width="8" height="15.0" fill="#EF4444"/><line x1="68" y1="119.6" x2="68" y2="150.0" stroke="#EF4444" stroke-width="1.3"/><rect x="64" y="128.4" width="8" height="19.4" fill="#EF4444"/><line x1="80" y1="108.1" x2="80" y2="133.4" stroke="#EF4444" stroke-width="1.3"/><rect x="76" y="110.2" width="8" height="18.2" fill="#EF4444"/><line x1="92" y1="93.2" x2="92" y2="118.6" stroke="#EF4444" stroke-width="1.3"/><rect x="88" y="97.2" width="8" height="13.0" fill="#EF4444"/><line x1="104" y1="68.9" x2="104" y2="105.3" stroke="#EF4444" stroke-width="1.3"/><rect x="100" y="78.2" width="8" height="19.1" fill="#EF4444"/><line x1="116" y1="62.5" x2="116" y2="82.9" stroke="#EF4444" stroke-width="1.3"/><rect x="112" y="66.9" width="8" height="11.2" fill="#EF4444"/><line x1="128" y1="40.0" x2="128" y2="69.6" stroke="#EF4444" stroke-width="1.3"/><rect x="124" y="47.1" width="8" height="19.8" fill="#EF4444"/><line x1="140" y1="44.2" x2="140" y2="70.1" stroke="#10B981" stroke-width="1.3"/><rect x="136" y="47.1" width="8" height="18.8" fill="#10B981"/><line x1="152" y1="60.8" x2="152" y2="83.0" stroke="#10B981" stroke-width="1.3"/><rect x="148" y="65.9" width="8" height="14.5" fill="#10B981"/><line x1="164" y1="72.7" x2="164" y2="103.9" stroke="#10B981" stroke-width="1.3"/><rect x="160" y="80.4" width="8" height="15.6" fill="#10B981"/><line x1="176" y1="90.4" x2="176" y2="119.9" stroke="#10B981" stroke-width="1.3"/><rect x="172" y="96.1" width="8" height="14.8" fill="#10B981"/><line x1="188" y1="102.7" x2="188" y2="133.9" stroke="#10B981" stroke-width="1.3"/><rect x="184" y="110.9" width="8" height="18.5" fill="#10B981"/><line x1="200" y1="126.7" x2="200" y2="150.6" stroke="#10B981" stroke-width="1.3"/><rect x="196" y="129.4" width="8" height="14.2" fill="#10B981"/><line x1="212" y1="139.5" x2="212" y2="167.3" stroke="#10B981" stroke-width="1.3"/><rect x="208" y="143.6" width="8" height="19.8" fill="#10B981"/><line x1="224" y1="161.2" x2="224" y2="189.1" stroke="#10B981" stroke-width="1.3"/><rect x="220" y="163.4" width="8" height="17.6" fill="#10B981"/><line x1="236" y1="178.2" x2="236" y2="198.9" stroke="#10B981" stroke-width="1.3"/><rect x="232" y="181.0" width="8" height="15.2" fill="#10B981"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  
+  <line x1="10" y1="245" x2="246" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="246" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="304.1" width="8" height="15.9" fill="#EF4444" opacity="0.8"/><rect x="28" y="295.3" width="8" height="24.7" fill="#EF4444" opacity="0.8"/><rect x="40" y="300.5" width="8" height="19.5" fill="#EF4444" opacity="0.8"/><rect x="52" y="299.7" width="8" height="20.3" fill="#EF4444" opacity="0.8"/><rect x="64" y="302.3" width="8" height="17.7" fill="#EF4444" opacity="0.8"/><rect x="76" y="290.9" width="8" height="29.1" fill="#EF4444" opacity="0.8"/><rect x="88" y="298.9" width="8" height="21.1" fill="#EF4444" opacity="0.8"/><rect x="100" y="253.3" width="8" height="66.7" fill="#EF4444" opacity="0.8"/><rect x="112" y="261.0" width="8" height="59.0" fill="#EF4444" opacity="0.8"/><rect x="124" y="250.4" width="8" height="69.6" fill="#EF4444" opacity="0.8"/><rect x="136" y="252.3" width="8" height="67.7" fill="#10B981" opacity="0.8"/><rect x="148" y="283.8" width="8" height="36.2" fill="#10B981" opacity="0.8"/><rect x="160" y="285.5" width="8" height="34.5" fill="#10B981" opacity="0.8"/><rect x="172" y="268.9" width="8" height="51.1" fill="#10B981" opacity="0.8"/><rect x="184" y="274.5" width="8" height="45.5" fill="#10B981" opacity="0.8"/><rect x="196" y="268.3" width="8" height="51.7" fill="#10B981" opacity="0.8"/><rect x="208" y="284.4" width="8" height="35.6" fill="#10B981" opacity="0.8"/><rect x="220" y="274.6" width="8" height="45.4" fill="#10B981" opacity="0.8"/><rect x="232" y="299.8" width="8" height="20.2" fill="#10B981" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <circle cx="128" cy="40.0" r="3.5" fill="#10B981"/><line x1="128" y1="40.0" x2="128" y2="24.0" stroke="#10B981" stroke-width="1"/><rect x="93.0" y="10.0" width="70" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="128" y="22.0" font-size="11" fill="#10B981" text-anchor="middle" font-weight="700">倒V型急速反轉</text><rect x="66.0" y="213.0" width="100" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="116.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">衝高爆量出貨</text>
+  <line x1="116" y1="227.0" x2="116" y2="261.0" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><rect x="126.0" y="326.0" width="100" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="176.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">下跌同步放量</text>
+  <line x1="176" y1="324.0" x2="176" y2="268.9" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+      <div class="chart-caption">示意圖(倒V轉):股價急速上漲後在高點爆量,隨即急速下跌(合成教學用圖,非真實個股數據)</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">🔍 圖表重點解讀</div>
+    <p>兩張圖的轉折點都標示在圖上(「V型急速反轉」「倒V型急速反轉」),對照下方VOL量能圖會發現,轉折當下都出現「恐慌性爆量」或「衝高爆量出貨」的異常高柱,這就是急速反轉最典型的量能特徵——反轉不是慢慢醞釀出來的,而是在轉折的那一兩天就用巨量表態。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例十隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q. V轉與倒V轉這類「急速反轉」,和案例二(底部反轉)最主要的差異是什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">急速反轉需要更長的醞釀時間</button>
+      <button class="quiz-opt" data-correct="1">急速反轉往往在一兩天內就改變方向,轉折當下伴隨異常放大的成交量</button>
+      <button class="quiz-opt" data-correct="0">急速反轉完全不需要參考成交量</button>
+      <button class="quiz-opt" data-correct="0">急速反轉一定會出現在上漲趨勢中</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q. 判斷V轉或倒V轉是否成立,最需要留意的線索是什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">轉折點附近K棒的顏色</button>
+      <button class="quiz-opt" data-correct="1">轉折當天是否出現異常放大的成交量,以及長上/下影線的K棒</button>
+      <button class="quiz-opt" data-correct="0">只要股價曾經下跌就代表V轉成立</button>
+      <button class="quiz-opt" data-correct="0">均線排列在轉折當下就會立刻改變</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 案例九:M頭與W底反轉型態</button>
+  <button class="btn btn-primary" onclick="goChapter(11)">案例十一:跳空缺口與回補 →</button>
+</div>
+`;
+}
+
+function renderCh11(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🕳️ 案例十一</div>
+  <h1>跳空缺口與回補<br>向上與向下跳空對照</h1>
+  <p class="desc">跳空缺口是指今天的價格區間和昨天的價格區間之間出現一段「沒有成交」的空隙,常發生在重大消息公布或市場情緒劇烈變化時。如果缺口出現後遲遲沒有被填補(回補),通常代表這是一個「趨勢缺口」,顯示原方向的力道相當強勁。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>新案例·合併對照</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">套用五步驟拆解</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">均線觀察</div>
+        <div class="step-desc">跳空當天通常伴隨股價快速脫離原本的均線糾結區,均線開始明確朝缺口方向翻揚或翻轉。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">支撐與壓力</div>
+        <div class="step-desc">缺口的邊界(前一天的高點或低點)成為關鍵觀察價位:向上跳空時,缺口下緣常轉為新支撐;向下跳空時,缺口上緣常轉為新壓力。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">成交量</div>
+        <div class="step-desc">跳空當天的成交量通常會明顯放大,這是判斷缺口重要性的關鍵——量能夠大的跳空,才比較可能是真正的趨勢缺口而非雜訊。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">K棒型態</div>
+        <div class="step-desc">跳空當天的K棒實體通常較大,且開盤價已經跳出前一天的高低點範圍之外,和一般的漲跌K棒有明顯區別。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">綜合判斷</div>
+        <div class="step-desc">如果缺口出現後,股價持續朝缺口方向前進、遲遲沒有回補,通常代表這是一個力道強勁的「趨勢缺口」;但如果缺口很快就被回補,則可能只是短暫的情緒性跳空,參考價值較低。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">圖表對照:向上跳空缺口 vs 向下跳空缺口</div>
+  <div class="chart-grid-2">
+    <div class="chart-wrap">
+      <svg viewBox="0 0 266 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="246" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,193.3 32,189.0 44,185.9 56,182.5 68,179.4 80,172.0 92,164.9 104,157.3 116,151.3 128,144.8 140,129.3 152,122.7 164,115.4 176,105.6 188,95.6 200,95.4 212,85.4 224,75.1 236,66.2" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="183.1" x2="20" y2="207.4" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="193.3" width="8" height="11.7" fill="#EF4444"/><line x1="32" y1="180.7" x2="32" y2="210.0" stroke="#EF4444" stroke-width="1.3"/><rect x="28" y="184.7" width="8" height="19.1" fill="#EF4444"/><line x1="44" y1="175.4" x2="44" y2="203.7" stroke="#EF4444" stroke-width="1.3"/><rect x="40" y="179.6" width="8" height="15.6" fill="#EF4444"/><line x1="56" y1="169.9" x2="56" y2="196.1" stroke="#EF4444" stroke-width="1.3"/><rect x="52" y="172.5" width="8" height="16.2" fill="#EF4444"/><line x1="68" y1="161.2" x2="68" y2="185.4" stroke="#EF4444" stroke-width="1.3"/><rect x="64" y="166.8" width="8" height="14.9" fill="#EF4444"/><line x1="80" y1="147.9" x2="80" y2="181.1" stroke="#EF4444" stroke-width="1.3"/><rect x="76" y="156.3" width="8" height="19.5" fill="#EF4444"/><line x1="92" y1="145.5" x2="92" y2="168.6" stroke="#EF4444" stroke-width="1.3"/><rect x="88" y="149.3" width="8" height="15.3" fill="#EF4444"/><line x1="104" y1="137.6" x2="104" y2="164.0" stroke="#EF4444" stroke-width="1.3"/><rect x="100" y="141.8" width="8" height="14.0" fill="#EF4444"/><line x1="116" y1="138.4" x2="116" y2="155.7" stroke="#EF4444" stroke-width="1.3"/><rect x="112" y="142.3" width="8" height="6.6" fill="#EF4444"/><line x1="128" y1="128.3" x2="128" y2="158.9" stroke="#EF4444" stroke-width="1.3"/><rect x="124" y="134.1" width="8" height="17.6" fill="#EF4444"/><line x1="140" y1="72.9" x2="140" y2="107.8" stroke="#EF4444" stroke-width="1.3"/><rect x="136" y="78.8" width="8" height="26.0" fill="#EF4444"/><line x1="152" y1="109.1" x2="152" y2="138.6" stroke="#EF4444" stroke-width="1.3"/><rect x="148" y="116.3" width="8" height="19.8" fill="#EF4444"/><line x1="164" y1="97.7" x2="164" y2="131.5" stroke="#EF4444" stroke-width="1.3"/><rect x="160" y="105.7" width="8" height="19.2" fill="#EF4444"/><line x1="176" y1="85.4" x2="176" y2="124.2" stroke="#EF4444" stroke-width="1.3"/><rect x="172" y="93.0" width="8" height="21.6" fill="#EF4444"/><line x1="188" y1="75.7" x2="188" y2="104.7" stroke="#EF4444" stroke-width="1.3"/><rect x="184" y="84.0" width="8" height="15.5" fill="#EF4444"/><line x1="200" y1="69.4" x2="200" y2="101.2" stroke="#EF4444" stroke-width="1.3"/><rect x="196" y="78.1" width="8" height="16.7" fill="#EF4444"/><line x1="212" y1="61.0" x2="212" y2="92.6" stroke="#EF4444" stroke-width="1.3"/><rect x="208" y="66.0" width="8" height="20.0" fill="#EF4444"/><line x1="224" y1="44.6" x2="224" y2="83.2" stroke="#EF4444" stroke-width="1.3"/><rect x="220" y="54.5" width="8" height="21.0" fill="#EF4444"/><line x1="236" y1="40.0" x2="236" y2="68.9" stroke="#EF4444" stroke-width="1.3"/><rect x="232" y="48.2" width="8" height="13.6" fill="#EF4444"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  
+  <line x1="10" y1="245" x2="246" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="246" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="295.8" width="8" height="24.2" fill="#EF4444" opacity="0.8"/><rect x="28" y="304.4" width="8" height="15.6" fill="#EF4444" opacity="0.8"/><rect x="40" y="300.9" width="8" height="19.1" fill="#EF4444" opacity="0.8"/><rect x="52" y="292.9" width="8" height="27.1" fill="#EF4444" opacity="0.8"/><rect x="64" y="300.7" width="8" height="19.3" fill="#EF4444" opacity="0.8"/><rect x="76" y="292.8" width="8" height="27.2" fill="#EF4444" opacity="0.8"/><rect x="88" y="293.6" width="8" height="26.4" fill="#EF4444" opacity="0.8"/><rect x="100" y="302.5" width="8" height="17.5" fill="#EF4444" opacity="0.8"/><rect x="112" y="297.2" width="8" height="22.8" fill="#EF4444" opacity="0.8"/><rect x="124" y="298.4" width="8" height="21.6" fill="#EF4444" opacity="0.8"/><rect x="136" y="263.3" width="8" height="56.7" fill="#EF4444" opacity="0.8"/><rect x="148" y="281.8" width="8" height="38.2" fill="#EF4444" opacity="0.8"/><rect x="160" y="277.1" width="8" height="42.9" fill="#EF4444" opacity="0.8"/><rect x="172" y="298.4" width="8" height="21.6" fill="#EF4444" opacity="0.8"/><rect x="184" y="296.8" width="8" height="23.2" fill="#EF4444" opacity="0.8"/><rect x="196" y="294.5" width="8" height="25.5" fill="#EF4444" opacity="0.8"/><rect x="208" y="303.9" width="8" height="16.1" fill="#EF4444" opacity="0.8"/><rect x="220" y="292.8" width="8" height="27.2" fill="#EF4444" opacity="0.8"/><rect x="232" y="291.8" width="8" height="28.2" fill="#EF4444" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <rect x="124" y="107.8" width="32" height="20.6" fill="#EF4444" opacity="0.18"/><circle cx="140" cy="107.8" r="3.5" fill="#EF4444"/><line x1="140" y1="107.8" x2="140" y2="91.8" stroke="#EF4444" stroke-width="1"/><rect x="110.0" y="77.8" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="140" y="89.8" font-size="11" fill="#EF4444" text-anchor="middle" font-weight="700">向上跳空</text><rect x="90.0" y="213.0" width="100" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="140.0" y="224.0" font-size="10" fill="#94A3B8" text-anchor="middle">跳空當天爆量</text>
+  <line x1="140" y1="227.0" x2="140" y2="263.3" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><line x1="10" y1="107.8" x2="246" y2="107.8" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+      <div class="chart-caption">示意圖(向上跳空):股價向上跳空後持續上漲,缺口未被回補(合成教學用圖,非真實個股數據)</div>
+    </div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 266 340" xmlns="http://www.w3.org/2000/svg">
+  <line x1="10" y1="30" x2="10" y2="210" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="210" x2="246" y2="210" stroke="#334155" stroke-width="1"/>
+  <polyline points="20,42.8 32,47.1 44,51.1 56,55.3 68,59.8 80,68.5 92,76.2 104,83.6 116,89.9 128,95.8 140,112.4 152,120.7 164,128.8 176,139.4 188,150.2 200,150.6 212,159.7 224,170.1 236,179.6" fill="none" stroke="#FBBF24" stroke-width="1.6" opacity="0.9"/>
+  <line x1="20" y1="40.0" x2="20" y2="59.2" stroke="#EF4444" stroke-width="1.3"/><rect x="16" y="42.8" width="8" height="12.5" fill="#EF4444"/><line x1="32" y1="41.6" x2="32" y2="62.3" stroke="#EF4444" stroke-width="1.3"/><rect x="28" y="51.4" width="8" height="3.5" fill="#EF4444"/><line x1="44" y1="49.8" x2="44" y2="72.2" stroke="#EF4444" stroke-width="1.3"/><rect x="40" y="59.2" width="8" height="4.2" fill="#EF4444"/><line x1="56" y1="62.1" x2="56" y2="74.8" stroke="#EF4444" stroke-width="1.3"/><rect x="52" y="67.6" width="8" height="1.5" fill="#EF4444"/><line x1="68" y1="67.9" x2="68" y2="85.6" stroke="#10B981" stroke-width="1.3"/><rect x="64" y="76.4" width="8" height="1.5" fill="#10B981"/><line x1="80" y1="78.6" x2="80" y2="91.4" stroke="#10B981" stroke-width="1.3"/><rect x="76" y="85.7" width="8" height="1.5" fill="#10B981"/><line x1="92" y1="80.7" x2="92" y2="108.9" stroke="#EF4444" stroke-width="1.3"/><rect x="88" y="89.5" width="8" height="9.7" fill="#EF4444"/><line x1="104" y1="90.2" x2="104" y2="102.4" stroke="#10B981" stroke-width="1.3"/><rect x="100" y="95.9" width="8" height="1.5" fill="#10B981"/><line x1="116" y1="89.6" x2="116" y2="116.2" stroke="#EF4444" stroke-width="1.3"/><rect x="112" y="99.3" width="8" height="8.4" fill="#EF4444"/><line x1="128" y1="103.2" x2="128" y2="116.0" stroke="#EF4444" stroke-width="1.3"/><rect x="124" y="107.0" width="8" height="1.5" fill="#EF4444"/><line x1="140" y1="137.9" x2="140" y2="176.5" stroke="#10B981" stroke-width="1.3"/><rect x="136" y="141.1" width="8" height="29.1" fill="#10B981"/><line x1="152" y1="120.2" x2="152" y2="140.1" stroke="#10B981" stroke-width="1.3"/><rect x="148" y="123.0" width="8" height="7.6" fill="#10B981"/><line x1="164" y1="129.5" x2="164" y2="152.9" stroke="#EF4444" stroke-width="1.3"/><rect x="160" y="136.8" width="8" height="5.6" fill="#EF4444"/><line x1="176" y1="138.4" x2="176" y2="154.6" stroke="#10B981" stroke-width="1.3"/><rect x="172" y="148.7" width="8" height="3.5" fill="#10B981"/><line x1="188" y1="150.7" x2="188" y2="166.9" stroke="#EF4444" stroke-width="1.3"/><rect x="184" y="161.1" width="8" height="1.6" fill="#EF4444"/><line x1="200" y1="159.9" x2="200" y2="178.5" stroke="#10B981" stroke-width="1.3"/><rect x="196" y="170.8" width="8" height="1.5" fill="#10B981"/><line x1="212" y1="172.3" x2="212" y2="184.9" stroke="#EF4444" stroke-width="1.3"/><rect x="208" y="176.1" width="8" height="5.7" fill="#EF4444"/><line x1="224" y1="180.8" x2="224" y2="195.1" stroke="#10B981" stroke-width="1.3"/><rect x="220" y="185.1" width="8" height="3.8" fill="#10B981"/><line x1="236" y1="190.3" x2="236" y2="210.0" stroke="#10B981" stroke-width="1.3"/><rect x="232" y="196.6" width="8" height="3.0" fill="#10B981"/>
+  <rect x="10" y="6" width="112" height="16" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="18" font-size="11" fill="#FBBF24" font-weight="700">MA(5) 均線</text>
+  
+  <line x1="10" y1="245" x2="246" y2="245" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="245" x2="10" y2="320" stroke="#334155" stroke-width="1"/>
+  <line x1="10" y1="320" x2="246" y2="320" stroke="#334155" stroke-width="1"/>
+  <rect x="16" y="295.5" width="8" height="24.5" fill="#EF4444" opacity="0.8"/><rect x="28" y="304.6" width="8" height="15.4" fill="#EF4444" opacity="0.8"/><rect x="40" y="296.8" width="8" height="23.2" fill="#EF4444" opacity="0.8"/><rect x="52" y="301.1" width="8" height="18.9" fill="#EF4444" opacity="0.8"/><rect x="64" y="295.1" width="8" height="24.9" fill="#10B981" opacity="0.8"/><rect x="76" y="295.2" width="8" height="24.8" fill="#10B981" opacity="0.8"/><rect x="88" y="300.5" width="8" height="19.5" fill="#EF4444" opacity="0.8"/><rect x="100" y="303.4" width="8" height="16.6" fill="#10B981" opacity="0.8"/><rect x="112" y="301.8" width="8" height="18.2" fill="#EF4444" opacity="0.8"/><rect x="124" y="296.9" width="8" height="23.1" fill="#EF4444" opacity="0.8"/><rect x="136" y="262.5" width="8" height="57.5" fill="#10B981" opacity="0.8"/><rect x="148" y="282.9" width="8" height="37.1" fill="#10B981" opacity="0.8"/><rect x="160" y="283.8" width="8" height="36.2" fill="#EF4444" opacity="0.8"/><rect x="172" y="301.0" width="8" height="19.0" fill="#10B981" opacity="0.8"/><rect x="184" y="294.7" width="8" height="25.3" fill="#EF4444" opacity="0.8"/><rect x="196" y="291.9" width="8" height="28.1" fill="#10B981" opacity="0.8"/><rect x="208" y="299.8" width="8" height="20.2" fill="#EF4444" opacity="0.8"/><rect x="220" y="304.8" width="8" height="15.2" fill="#10B981" opacity="0.8"/><rect x="232" y="302.6" width="8" height="17.4" fill="#10B981" opacity="0.8"/>
+  <rect x="10" y="249" width="34" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="14" y="260" font-size="10.5" fill="#94A3B8">VOL</text>
+  <rect x="124" y="116.0" width="32" height="22.0" fill="#10B981" opacity="0.18"/><circle cx="140" cy="137.9" r="3.5" fill="#10B981"/><line x1="140" y1="137.9" x2="140" y2="153.9" stroke="#10B981" stroke-width="1"/><rect x="110.0" y="153.9" width="60" height="16" fill="#1E293B" opacity="0.92" rx="3"/><text x="140" y="165.9" font-size="11" fill="#10B981" text-anchor="middle" font-weight="700">向下跳空</text><rect x="90.0" y="326.0" width="100" height="14" fill="#1E293B" opacity="0.92" rx="3"/>
+  <text x="140.0" y="337.0" font-size="10" fill="#94A3B8" text-anchor="middle">跳空當天爆量</text>
+  <line x1="140" y1="324.0" x2="140" y2="262.5" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/><line x1="10" y1="137.9" x2="246" y2="137.9" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
+      <div class="chart-caption">示意圖(向下跳空):股價向下跳空後持續下跌,缺口未被回補(合成教學用圖,非真實個股數據)</div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">🔍 圖表重點解讀</div>
+    <p>兩張圖中間都用色塊標出「跳空」當天與前一天之間的價格空隙——左圖是「向上跳空」,色塊上方沒有任何K棒經過,顯示缺口完全沒有被回補,股價持續墊高;右圖「向下跳空」則是色塊下方沒有K棒經過,股價持續破底。兩張圖跳空當天的VOL量能都放出「跳空當天爆量」,呼應「量夠大才是真缺口」的判斷原則。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 案例小測驗</span><span class="quiz-title">案例十一隨堂測驗</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q. 判斷一個跳空缺口是否為「趨勢缺口」,最重要的觀察重點是什麼?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">缺口出現後是否快速被回補,以及跳空當天的成交量是否夠大</button>
+      <button class="quiz-opt" data-correct="0">缺口的顏色是紅色還是綠色</button>
+      <button class="quiz-opt" data-correct="0">缺口出現後股價一定會立刻回補</button>
+      <button class="quiz-opt" data-correct="0">跳空缺口跟成交量完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q. 對照這兩張圖,向上跳空與向下跳空在缺口邊界的角色轉換上有什麼共通點?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">向上跳空的缺口下緣可能轉為新支撐,向下跳空的缺口上緣可能轉為新壓力,兩者邏輯對稱</button>
+      <button class="quiz-opt" data-correct="0">向上跳空和向下跳空的缺口邊界完全沒有意義</button>
+      <button class="quiz-opt" data-correct="0">缺口邊界只在向上跳空時才有參考價值</button>
+      <button class="quiz-opt" data-correct="0">缺口邊界會在幾分鐘內自動消失</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(10)">← 案例十:V轉與倒V轉</button>
+  <button class="btn btn-primary" onclick="goChapter(12)">總複習與案例分類表 →</button>
+</div>
+`;
+}
+
+function renderCh12(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 案例十二</div>
+  <h1>總複習與案例分類表<br>11個章節一次盤點</h1>
+  <p class="desc">恭喜你走完整套案例庫!這一章用一張分類表把所有案例重新整理,並提供一份總複習測驗,檢查你是否能分辨相似情境之間的關鍵差異。</p>
   <div class="meta">
     <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
     <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
@@ -1644,36 +1702,40 @@ return `
 </div>
 
 <div class="section">
-  <div class="section-title">12個案例分類表</div>
+  <div class="section-title">案例分類表</div>
   <div class="table-wrap">
   <table>
     <thead><tr><th>分類</th><th>案例</th><th>一句話重點</th></tr></thead>
     <tbody>
       <tr><td rowspan="3">延續與健康走勢</td><td>案例五:健康拉回不破支撐</td><td>拉回不破前低、帶量回攻,趨勢健康延續</td></tr>
-      <tr><td>案例七:箱型整理後向上突破</td><td>量縮盤整蓄勢,放量突破確認方向</td></tr>
-      <tr><td>案例九:黃金交叉確認上升趨勢</td><td>短均上穿長均,後續帶量延續才可靠</td></tr>
+      <tr><td>案例七(上):箱型整理後向上突破</td><td>量縮盤整蓄勢,放量突破確認方向</td></tr>
+      <tr><td>案例八(黃金交叉):均線交叉確認上升趨勢</td><td>短均上穿長均,後續帶量延續才可靠</td></tr>
       <tr><td rowspan="3">頭部警訊</td><td>案例一:噴出後拉回</td><td>創高後量能萎縮,主升段獲利了結</td></tr>
       <tr><td>案例四:頂部量價背離</td><td>價創新高、量卻一次比一次小</td></tr>
-      <tr><td>案例十一:M頭雙重頂反轉</td><td>兩高點量能遞減,跌破頸線確認反轉</td></tr>
+      <tr><td>案例九(M頭):雙重頂反轉</td><td>兩高點量能遞減,跌破頸線確認反轉</td></tr>
       <tr><td rowspan="2">底部反轉</td><td>案例二:底部反轉</td><td>低檔帶量長紅,量先價行</td></tr>
-      <tr><td>案例十二:W底雙重底反轉</td><td>兩低點量能遞減,突破頸線確認反轉</td></tr>
+      <tr><td>案例九(W底):雙重底反轉</td><td>兩低點量能遞減,突破頸線確認反轉</td></tr>
       <tr><td rowspan="2">假訊號辨識</td><td>案例三:假跌破後快速收復</td><td>跌破量不大,收復才是真訊號</td></tr>
       <tr><td>案例六:假突破誘多後真跌破</td><td>突破量普通,反手下跌才放量</td></tr>
-      <tr><td rowspan="2">趨勢轉弱確認</td><td>案例八:箱型整理後向下跌破</td><td>同樣盤整,這次選擇放量向下</td></tr>
-      <tr><td>案例十:死亡交叉確認下降趨勢</td><td>短均下穿長均,後續帶量下殺確認</td></tr>
+      <tr><td rowspan="2">趨勢轉弱確認</td><td>案例七(下):箱型整理後向下跌破</td><td>同樣盤整,這次選擇放量向下</td></tr>
+      <tr><td>案例八(死亡交叉):均線交叉確認下降趨勢</td><td>短均下穿長均,後續帶量下殺確認</td></tr>
+      <tr><td rowspan="2">急速反轉</td><td>案例十(V轉):V型急速反轉</td><td>恐慌性爆量後急速反彈,轉折又快又急</td></tr>
+      <tr><td>案例十(倒V轉):倒V型急速反轉</td><td>衝高爆量出貨後急速下跌,轉折又快又急</td></tr>
+      <tr><td rowspan="2">跳空缺口</td><td>案例十一(向上跳空):缺口未回補續漲</td><td>跳空放量、缺口不補,趨勢力道強勁</td></tr>
+      <tr><td>案例十一(向下跳空):缺口未回補續跌</td><td>跳空放量、缺口不補,跌勢力道強勁</td></tr>
     </tbody>
   </table>
   </div>
   <div class="box box-info">
     <div class="box-title">💡 使用建議</div>
-    <p>之後看盤時,若發現當下走勢跟某個分類「感覺很像」,可以回到對應的案例章節重新對照五步驟拆解,會比單純憑印象判斷更扎實。</p>
+    <p>之後看盤時,若發現當下走勢跟某個分類「感覺很像」,可以回到對應的案例章節重新對照五步驟拆解,會比單純憑印象判斷更扎實。同類型的章節(七、八、九、十、十一)都是左右對照圖,建議兩張一起看,體會「同樣的起手式、相反的結果」這件事有多常發生。</p>
   </div>
 </div>
 
 <div class="section">
   <div class="section-title">全案例庫總複習測驗</div>
   <div class="quiz-card" style="margin-top:0;">
-    <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">12個案例總複習</span></div>
+    <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">案例庫總複習</span></div>
     <div class="quiz-q">
       <div class="quiz-q-text">Q1. 案例一(噴出後拉回)與案例五(健康拉回不破支撐)最主要的差異是什麼?</div>
       <div class="quiz-options">
@@ -1693,7 +1755,7 @@ return `
       </div>
     </div>
     <div class="quiz-q">
-      <div class="quiz-q-text">Q3. M頭(案例十一)與W底(案例十二)在判斷是否成立時,共同的關鍵條件是什麼?</div>
+      <div class="quiz-q-text">Q3. 案例九中,M頭與W底在判斷是否成立時,共同的關鍵條件是什麼?</div>
       <div class="quiz-options">
         <button class="quiz-opt" data-correct="1">兩個高/低點之間量能一次比一次小,且股價確實突破或跌破頸線</button>
         <button class="quiz-opt" data-correct="0">只要出現兩個相近的高點或低點就一定成立</button>
@@ -1702,7 +1764,7 @@ return `
       </div>
     </div>
     <div class="quiz-q">
-      <div class="quiz-q-text">Q4. 案例七與案例八都是箱型整理後突破,這兩者最重要的共同啟示是什麼?</div>
+      <div class="quiz-q-text">Q4. 案例七中,箱型整理後向上突破與向下跌破這兩種結果,最重要的共同啟示是什麼?</div>
       <div class="quiz-options">
         <button class="quiz-opt" data-correct="0">箱型整理最終一定會向上突破</button>
         <button class="quiz-opt" data-correct="0">箱型整理最終一定會向下跌破</button>
@@ -1711,7 +1773,7 @@ return `
       </div>
     </div>
     <div class="quiz-q">
-      <div class="quiz-q-text">Q5. 黃金交叉(案例九)與死亡交叉(案例十)本身屬於什麼類型的訊號?</div>
+      <div class="quiz-q-text">Q5. 案例八中,黃金交叉與死亡交叉本身屬於什麼類型的訊號?</div>
       <div class="quiz-options">
         <button class="quiz-opt" data-correct="0">領先指標,發生當下就保證後續走勢</button>
         <button class="quiz-opt" data-correct="1">落後指標,建議搭配後續量能與價格是否持續確認,才更具參考價值</button>
@@ -1728,6 +1790,24 @@ return `
         <button class="quiz-opt" data-correct="0">跟均線排列完全無關</button>
       </div>
     </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q7. 案例十(V轉/倒V轉)這類「急速反轉」,和漸進式的頂部/底部反轉案例最主要的差異是什麼?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">急速反轉需要更長的醞釀時間,訊號更明確</button>
+        <button class="quiz-opt" data-correct="1">急速反轉往往在一兩天內就改變方向,轉折當下伴隨異常放大的成交量</button>
+        <button class="quiz-opt" data-correct="0">急速反轉完全不需要參考成交量</button>
+        <button class="quiz-opt" data-correct="0">急速反轉一定會出現在上漲趨勢中</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q8. 案例十一中,判斷跳空缺口是否為有力道的「趨勢缺口」,最重要的觀察重點是什麼?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">缺口的顏色是紅色還是綠色</button>
+        <button class="quiz-opt" data-correct="1">缺口出現後是否快速被回補,以及跳空當天的成交量是否夠大</button>
+        <button class="quiz-opt" data-correct="0">缺口出現後股價一定會立刻回補</button>
+        <button class="quiz-opt" data-correct="0">跳空缺口跟成交量完全無關</button>
+      </div>
+    </div>
     <div class="quiz-result"></div>
     <button class="btn-quiz">🔄 重新測驗</button>
   </div>
@@ -1738,11 +1818,12 @@ return `
 </div>
 
 <div class="chapter-nav">
-  <button class="btn btn-ghost" onclick="goChapter(12)">← 案例十二</button>
+  <button class="btn btn-ghost" onclick="goChapter(11)">← 案例十一</button>
   <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
 </div>
 `;
 }
+
 
 
 
