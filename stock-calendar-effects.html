@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>股市月曆效應完全解析｜看懂統計現象，破解「送分題」迷思</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">📊 股市月曆效應解析課</div>
+    <div class="sidebar-title">股市月曆效應完全解析<br>看懂統計現象，破解「送分題」迷思</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'學習地圖與使用說明', icon:'🗺️', time:'5 分鐘', level:'入門', content: renderCh0 },
+  { id:1, title:'什麼是「月曆效應」', subtitle:'季節性效應的基本概念', icon:'📅', time:'15 分鐘', level:'基礎', content: renderCh1 },
+  { id:2, title:'常見的月曆效應總覽', subtitle:'一月效應、聖誕老人行情、月初效應…', icon:'🗓️', time:'20 分鐘', level:'基礎', content: renderCh2 },
+  { id:3, title:'「近5年勝率85%」的陷阱', subtitle:'資料探勘、樣本太小、倖存者偏差', icon:'🕵️', time:'18 分鐘', level:'進階', content: renderCh3 },
+  { id:4, title:'成本才是真正的對手', subtitle:'手續費、稅費、滑價怎麼吃掉優勢', icon:'💸', time:'15 分鐘', level:'進階', content: renderCh4 },
+  { id:5, title:'效應被發現後會怎樣', subtitle:'市場效率化與異常現象的消退', icon:'⚙️', time:'15 分鐘', level:'進階', content: renderCh5 },
+  { id:6, title:'如果你想自己動手驗證', subtitle:'回測的基本心法（不是報明牌）', icon:'🧪', time:'18 分鐘', level:'進階', content: renderCh6 },
+  { id:7, title:'辨識「送分題」話術', subtitle:'常見誘導語言與詐騙紅旗', icon:'🚨', time:'15 分鐘', level:'進階', content: renderCh7 },
+  { id:8, title:'建立你的檢核清單', subtitle:'總複習：把觀念變成判斷力', icon:'📝', time:'15 分鐘', level:'總複習', content: renderCh8 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('stock_calendar_fx_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('stock_calendar_fx_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// CHAPTER 0: 課程總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>股市月曆效應完全解析<br>看懂統計現象，破解「送分題」迷思</h1>
+  <p class="desc">網路上常有人說「近5年每個月都有高勝率的送分交易法」。這套課程不會給你一份「照抄就贏」的清單，而是帶你搞懂「月曆效應／季節性效應」到底是什麼、學術上怎麼看待它、以及為什麼「過去表現」離「保證獲利」還有很大一段距離。學完之後，你會有能力自己拆解、驗證任何一種「送分題」說法。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 2 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>9 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適合對股市季節性說法好奇、但想先搞懂原理再行動的人</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">6+</div><div class="stat-label">常見月曆效應總覽</div></div>
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">大統計陷阱拆解</div></div>
+    <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">套自己驗證的心法</div></div>
+    <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">章節測驗</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">📅 基本概念（第1-2章）</div>
+        <div class="step-desc">什麼是月曆效應／季節性效應，市場上最常被提到的幾種現象分別是什麼、從哪裡來的。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">🕵️ 統計陷阱（第3-5章）</div>
+        <div class="step-desc">「近5年勝率85%」這種話術背後的樣本數問題、交易成本如何吃掉優勢，以及效應被公開後為什麼容易失效。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">🧪 自己動手驗證（第6章）</div>
+        <div class="step-desc">如果你想自己檢驗一個說法是否合理，該用什麼樣的心法與流程，而不是直接相信別人的結論。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">🚨 風險辨識（第7章）</div>
+        <div class="step-desc">認識「送分題」「穩賺不賠」等話術常見的包裝方式，學會辨識詐騙與過度誇大的招生手法。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">📝 總複習與行動（第8章）</div>
+        <div class="step-desc">建立一份屬於你自己的「看到高勝率說法時」檢核清單，把批判性思考變成可執行的習慣。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">如何使用本課程</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>按順序學習：先建立「什麼是月曆效應」的正確認識，再看陷阱與辨識方法會更清楚。</li>
+        <li><span class="check-icon">✅</span>做完每章測驗：60分以上才算過關，幫助你鞏固知識。</li>
+        <li><span class="check-icon">✅</span>抱持懷疑：任何聲稱「勝率85%」「送分題」「穩賺」的說法，都值得用本課程的方法拆解看看。</li>
+        <li><span class="check-icon">✅</span>不要急著下單：本課程是統計與思辨教育，不是操作建議。</li>
+        <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 開始前的提醒</div>
+    <p>本課程僅提供一般性的統計與金融教育內容，說明「月曆效應」這類學術上曾被討論的現象，<b>不構成任何個股、ETF或交易策略的投資建議，也不保證任何報酬或勝率</b>。過去出現過的統計現象不代表未來會重複發生，實際交易前請諮詢合格的理財顧問並自行審慎評估風險。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1: 什麼是「月曆效應」
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📅 第一章</div>
+  <h1>什麼是「月曆效應」<br>季節性效應的基本概念</h1>
+  <p class="desc">「近5年每個月都有高勝率的送分題」這句話，其實是在講一種叫做「月曆效應」（calendar effect）或「季節性效應」（seasonality）的現象。這一章先搞懂它的定義，以及為什麼它會讓效率市場理論的支持者皺眉頭。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">月曆效應的定義</div>
+  <div class="card">
+    <div class="card-body">「月曆效應」指的是：股價報酬率在特定的時間點（例如某個月份、某週、某天、月初月底）<b>統計上</b>呈現出與其他時間不同的規律性傾向。例如有研究觀察到某些市場在特定月份的平均報酬率，長期統計下來略高或略低於其他月份。</div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 關鍵字是「統計上」</div>
+    <p>「統計上觀察到傾向」跟「每年、每次都會發生」是兩件完全不同的事。統計傾向是把很多年份的數字平均、計算出來的結果，不代表今年、明年一定會照著劇本走。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">效率市場假說 vs 月曆效應</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <div class="card-title">效率市場假說</div>
+      <div class="card-body">主張股價已經充分反映所有可得的資訊，任何「已知的規律」理論上都會被市場參與者發現並套利，直到這個規律因為大家搶著利用而消失。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📆</div>
+      <div class="card-title">月曆效應／異常現象</div>
+      <div class="card-body">學術文獻中被歸類為「市場異常現象」（market anomaly）：曾經在某些歷史資料中被觀察到，但強度不穩定、會隨時間減弱，也可能只是統計上的巧合或資料探勘的產物。</div>
+    </div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 兩者其實不衝突</div>
+    <p>即使月曆效應真的存在過，也不代表市場「不效率」，更不代表它會一直穩定重複。事實上，正是因為市場會逐漸「消化」已知的規律，這類效應才會隨時間變弱甚至消失（第五章會詳細說明）。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">為什麼這類說法特別吸引人</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>「送分題」暗示不需要判斷、不需要學習，降低了心理門檻。</li>
+    <li><span class="check-icon">✅</span>「近5年」聽起來很「有數據佐證」，給人一種科學、可驗證的錯覺。</li>
+    <li><span class="check-icon">✅</span>「高勝率」比「高報酬」更容易讓人產生「穩贏」的聯想，卻忽略了單次虧損可能吃掉多次獲利。</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 第一章測驗</span><span class="quiz-title">什麼是月曆效應</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「月曆效應」比較準確的說法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">每一年、每一次都會百分之百重複發生的規律</button>
+      <button class="quiz-opt" data-correct="1">在歷史資料中統計上觀察到的傾向，強度不穩定且可能隨時間改變</button>
+      <button class="quiz-opt" data-correct="0">政府公告的官方交易規則</button>
+      <button class="quiz-opt" data-correct="0">只要用了就保證獲利的交易系統</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 效率市場假說如何看待「已知的規律」？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">已知的規律會永遠穩定存在，不會改變</button>
+      <button class="quiz-opt" data-correct="1">一旦規律被廣泛得知，市場參與者的套利行為往往會讓它逐漸減弱或消失</button>
+      <button class="quiz-opt" data-correct="0">效率市場假說認為規律只會越來越明顯</button>
+      <button class="quiz-opt" data-correct="0">效率市場假說與月曆效應毫無關聯</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：常見的月曆效應總覽 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2: 常見的月曆效應總覽
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗓️ 第二章</div>
+  <h1>常見的月曆效應總覽<br>認識這些名詞，才能判斷話術真假</h1>
+  <p class="desc">網路上流傳的「送分題」，很多其實是把幾個學術界曾經討論過的現象換個包裝重新販售。這一章介紹幾個最常被提到的名稱，讓你聽到時能認出來，而不是照單全收。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見月曆效應一覽</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>名稱</th><th>大致說法</th><th>常見的解釋角度</th></tr></thead>
+    <tbody>
+      <tr><td>一月效應<br>January Effect</td><td>部分研究觀察到一月（尤其是小型股）報酬曾偏高</td><td>年底稅務賣壓在新年初回補、投資組合重新調整</td></tr>
+      <tr><td>聖誕老人行情<br>Santa Claus Rally</td><td>年底最後幾個交易日到隔年年初，市場氣氛偏樂觀的說法</td><td>假期交易量低、樂觀情緒、機構調節部位</td></tr>
+      <tr><td>月初效應<br>Turn-of-the-month</td><td>月底最後幾天到月初前幾天，資金流動較活躍的現象</td><td>發薪日、退休金／定期定額資金於月初集中進場</td></tr>
+      <tr><td>五月效應<br>Sell in May</td><td>民間流傳「五月到十月」市場表現相對平淡的說法</td><td>夏季交易清淡、機構部分獲利了結</td></tr>
+      <tr><td>季底作帳行情<br>Window Dressing</td><td>基金經理人在季底調整持股，讓報表「好看」的操作行為</td><td>績效考核壓力下的部位調整</td></tr>
+      <tr><td>週間效應<br>Day-of-week Effect</td><td>部分研究曾觀察到週一與週五報酬型態略有不同</td><td>週末新聞消化、投資人情緒週期</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 請注意</div>
+    <p>以上僅為<b>常見說法與可能的解釋角度</b>整理，並非本課程對任何市場的實測數據，也<b>沒有標示具體勝率或報酬率</b>。這些現象在不同市場、不同年代、不同研究方法下，結論並不一致，強度也有爭議，有些甚至在近年的研究中已經觀察不到明顯效果。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">為什麼本課程不列出「具體勝率數字」</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📉</div>
+      <div class="card-title">市場、標的不同，結果差很大</div>
+      <div class="card-body">同一個效應，在美股、台股、不同產業類股，甚至不同指數，計算出來的「勝率」都可能完全不同，任何一組數字都只適用於特定條件。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧮</div>
+      <div class="card-title">計算方式一改，結論就變</div>
+      <div class="card-body">「勝率」怎麼定義（漲多少算贏？扣不扣成本？用收盤價還是均價？）稍微一改，數字就可能從「85%」變成「55%」。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <div class="card-title">沒有查證來源的數字不能用</div>
+      <div class="card-body">網路上常見的「近5年勝率XX%」若查不到明確的資料來源、計算方法與樣本範圍，就應該視為未經驗證的行銷話術，而不是可信的統計結論。</div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 第二章測驗</span><span class="quiz-title">常見的月曆效應</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「Sell in May」（五月效應）大致上是在說什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">五月一定會大跌，必須清空所有部位</button>
+      <button class="quiz-opt" data-correct="1">民間流傳的一種說法，認為五月到十月市場表現相對平淡</button>
+      <button class="quiz-opt" data-correct="0">政府規定五月不能交易股票</button>
+      <button class="quiz-opt" data-correct="0">五月是唯一保證獲利的月份</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼看到「近5年勝率XX%」這種數字時要特別謹慎？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為這種數字一定是假的，不可能有人算過</button>
+      <button class="quiz-opt" data-correct="1">因為勝率的定義、樣本範圍、計算方法一改變，結果就可能完全不同，需要查證來源</button>
+      <button class="quiz-opt" data-correct="0">因為勝率跟報酬完全沒有關係，不需要理會</button>
+      <button class="quiz-opt" data-correct="0">因為只有月曆效應才會有勝率這個概念</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：「近5年勝率85%」的陷阱 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3: 「近5年勝率85%」的陷阱
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🕵️ 第三章</div>
+  <h1>「近5年勝率85%」的陷阱<br>樣本太小、資料探勘、倖存者偏差</h1>
+  <p class="desc">這一章拆解「近5年」這個時間範圍本身的統計問題。聽起來像是很紮實的數據佐證，但仔細一想，樣本數其實少得驚人。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">「近5年」其實只有5個樣本</div>
+  <div class="formula">「近5年每月高勝率」
+→ 如果看的是「每年這個月漲不漲」
+→ 5年 = 只有 5 次觀察值</div>
+  <div class="box box-danger">
+    <div class="box-title">🚨 5筆資料能代表什麼</div>
+    <p>如果一個月份在過去5年中有4年上漲，話術上就可能被包裝成「勝率80%」。但用統計的角度來看，<b>丟一枚公平的硬幣連續5次，出現4次正面的機率也不算低</b>——樣本數只有5，很難排除「純屬巧合」的可能性。要能有意義地談「勝率」，通常需要遠多於個位數的獨立樣本，而且還要考慮這些年份彼此之間是否真的獨立。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">資料探勘（Data Mining）：只挑「有效」的結果來講</div>
+  <div class="card">
+    <div class="card-body">如果你把「12個月份 × 各種進出場規則 × 各種持有天數」全部排列組合去測試，光靠機率，一定會有某幾個組合「剛好」在過去5年表現特別亮眼。問題是：<b>這種「事後挑出來最好看的組合」，不代表它背後有真正穩定的邏輯</b>，很可能只是在大量嘗試中剛好中獎的巧合。</div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 如何判斷是不是資料探勘的產物</div>
+    <ul>
+      <li>對方是否只公布「表現最好」的月份／規則，卻不提其他失敗的組合？</li>
+      <li>這個規則背後有沒有合理的經濟或行為邏輯，還是純粹「湊出來」的數字？</li>
+      <li>同樣的規則，套用在不同市場、不同時間區段，是否還能維持類似的結果？</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">倖存者偏差：你看到的，是還活著的</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🏆</div>
+      <div class="card-title">被展示的「成功案例」</div>
+      <div class="card-body">課程廣告、社群貼文喜歡展示「用這招賺到錢」的學員截圖，但這些通常是眾多學員中表現最好的少數幾位。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🙈</div>
+      <div class="card-title">被沉默的「失敗案例」</div>
+      <div class="card-body">虧損、停用、退課的人通常不會被拿出來宣傳，也很少主動公開分享，導致你看到的樣本天生就偏向「成功的那一小群」。</div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 第三章測驗</span><span class="quiz-title">統計陷阱拆解</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「近5年」這個時間範圍在統計上最大的問題是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">5年已經是統計學上足夠大的樣本，完全沒有問題</button>
+      <button class="quiz-opt" data-correct="1">如果是看「每年這個月漲不漲」，實際上只有5筆獨立觀察值，很難排除巧合</button>
+      <button class="quiz-opt" data-correct="0">5年這個數字只是巧合，跟樣本數無關</button>
+      <button class="quiz-opt" data-correct="0">近5年的資料一定比近10年更準確</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 什麼是「資料探勘」在這裡想描述的問題？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">用電腦分析資料本身就是一種詐騙行為</button>
+      <button class="quiz-opt" data-correct="1">在大量嘗試各種規則組合後，事後挑出剛好表現最好的那一組來宣傳，可能只是巧合</button>
+      <button class="quiz-opt" data-correct="0">資料探勘保證能找到穩定有效的交易策略</button>
+      <button class="quiz-opt" data-correct="0">資料探勘只發生在人工智慧領域，跟股市無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：成本才是真正的對手 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4: 成本才是真正的對手
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">💸 第四章</div>
+  <h1>成本才是真正的對手<br>手續費、稅費、滑價怎麼吃掉「送分題」優勢</h1>
+  <p class="desc">就算某個月曆效應真的存在一點微小的統計優勢，只要把交易成本算進去，這個優勢往往就被吃光了。這一章帶你認識常被忽略的交易成本。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">交易背後隱藏的成本</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>成本類型</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>手續費</td><td>每次買進賣出券商收取的費用，頻繁進出會累積成不小的負擔。</td></tr>
+      <tr><td>證交稅／交易稅</td><td>賣出時依規定課徵的稅費，是額外的固定成本，不會因為「送分題」而豁免。</td></tr>
+      <tr><td>滑價（Slippage）</td><td>實際成交價與你預期價格之間的落差，尤其在成交量小或市場波動大時更明顯。</td></tr>
+      <tr><td>價差（Bid-Ask Spread）</td><td>買價與賣價之間本來就存在的差距，每進出一次都要先跨過這個差距才會開始賺錢。</td></tr>
+      <tr><td>時間與機會成本</td><td>盯盤、研究、等待進出場訊號所花的時間，也是一種成本，只是不會直接反映在帳戶上。</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">一個簡化的概念示範</div>
+  <div class="formula">假設某月曆效應的「毛利邊際」只有 0.5%
+扣掉：手續費＋稅費＋滑價 合計約 0.3%~0.6%
+→ 淨優勢可能所剩無幾，甚至轉負</div>
+  <div class="box box-info">
+    <div class="box-title">💡 這只是示意，不是實際數據</div>
+    <p>上面的百分比只是用來說明「成本會侵蝕優勢」這個概念，並不是任何真實市場或策略的實測結果。實際的成本結構因券商、市場、交易頻率而異，若要評估一個策略是否可行，必須把你自己實際會付出的成本完整算進去。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">越頻繁交易，成本吃掉優勢的速度越快</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>「每個月都進出一次」聽起來規律又安心，但一年12次交易的成本會不斷累加。</li>
+    <li><span class="check-icon">✅</span>統計上的「平均優勢」通常很小，遠小於一般人想像的「送分題」等級。</li>
+    <li><span class="check-icon">✅</span>任何策略在評估「值不值得做」之前，都應該先把稅費、手續費、滑價完整納入計算。</li>
+  </ul>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 第四章測驗</span><span class="quiz-title">交易成本</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 下列何者不屬於一般所說的「交易成本」？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">手續費</button>
+      <button class="quiz-opt" data-correct="0">滑價</button>
+      <button class="quiz-opt" data-correct="1">股票的長期基本面價值</button>
+      <button class="quiz-opt" data-correct="0">買賣價差</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼「頻繁進出」特別容易讓月曆效應的優勢消失？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為頻繁交易會讓券商自動取消手續費</button>
+      <button class="quiz-opt" data-correct="1">因為每一次交易都會產生成本，次數越多，累積下來吃掉的優勢就越多</button>
+      <button class="quiz-opt" data-correct="0">因為頻繁交易在法律上是被禁止的</button>
+      <button class="quiz-opt" data-correct="0">因為交易次數跟成本完全無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：效應被發現後會怎樣 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5: 效應被發現後會怎樣
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚙️ 第五章</div>
+  <h1>效應被發現後會怎樣<br>市場效率化與異常現象的消退</h1>
+  <p class="desc">就算某個月曆效應在過去某段時間確實存在過，一旦它變得眾所皆知，通常會發生什麼事？這一章談談「規律被套利掉」這個現象。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">規律被公開之後：套利者湧入</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">現象被觀察到</div>
+        <div class="step-desc">研究者或市場參與者在歷史資料中發現某個時間點報酬似乎特別高。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">現象被公開、廣為流傳</div>
+        <div class="step-desc">論文發表、媒體報導、社群與課程開始傳播這個「規律」。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">越來越多人提前卡位</div>
+        <div class="step-desc">大家都想搶在「規律」發生前先買進，導致價格提前反映，原本的時間點反而不再特別。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">效應減弱甚至消失</div>
+        <div class="step-desc">後續研究者重新檢驗時，往往會發現效應強度已經大不如前，或已觀察不到明顯的統計顯著性。</div>
+      </div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 這是效率市場運作的方式之一</div>
+    <p>這種「規律出現→被利用→消失」的過程，正好呼應第一章提到的效率市場概念：市場會逐漸把「已知」的資訊消化掉，讓純粹靠公開規律賺錢變得越來越困難。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">這對「近5年送分題」代表什麼</div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 過去有效 ≠ 未來有效</div>
+    <p>即使某個月曆效應在過去5年、10年的某些統計方式下確實出現過，只要這個說法已經被廣泛傳播、被拿來招生賣課，它就更可能已經進入「被套利消化」的階段——這正是「歷史績效不代表未來表現」這句常見警語背後的真正原因，而不只是一句免責聲明的樣板文字。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 第五章測驗</span><span class="quiz-title">效應消退</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 為什麼「規律被公開」之後往往會逐漸減弱？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為政府會立法禁止這種規律</button>
+      <button class="quiz-opt" data-correct="1">因為越來越多人搶著提前利用這個規律，導致價格提前反映，原本的效果被稀釋</button>
+      <button class="quiz-opt" data-correct="0">因為規律公開後股票會停止交易</button>
+      <button class="quiz-opt" data-correct="0">規律被公開後通常會變得更穩定、更強</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 「歷史績效不代表未來表現」這句話，在月曆效應的脈絡下特別重要的原因是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">這只是法規要求印在文件上的樣板文字，沒有實質意義</button>
+      <button class="quiz-opt" data-correct="1">已被廣泛傳播的規律更可能已進入被套利消化的階段，過去的統計結果未必能延續</button>
+      <button class="quiz-opt" data-correct="0">因為歷史資料通常是造假的</button>
+      <button class="quiz-opt" data-correct="0">因為股市每年都會全部重新設計規則</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：如果你想自己動手驗證 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6: 如果你想自己動手驗證
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧪 第六章</div>
+  <h1>如果你想自己動手驗證<br>回測的基本心法（不是報明牌）</h1>
+  <p class="desc">與其相信別人講的「勝率85%」，不如學會自己檢驗一個說法是否站得住腳。這一章談的是思考流程與心法，<b>不是任何工具、平台或標的的推薦</b>。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">自我驗證的基本流程</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">先把規則寫清楚</div>
+        <div class="step-desc">「幾號進場、幾號出場、用什麼標的、用什麼價格計算」都要明確定義，避免事後憑印象修改規則。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">盡量拉長觀察區間</div>
+        <div class="step-desc">只看5年往往樣本太少，能拿到更長期、涵蓋不同景氣循環的資料會更有參考價值。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">切分「樣本內」與「樣本外」</div>
+        <div class="step-desc">先用一段資料找規則，再拿另一段完全沒用過的資料驗證，看規則是否仍然成立，而不是只在同一段資料上「越調越準」。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">把成本算進去</div>
+        <div class="step-desc">依照第四章提到的手續費、稅費、滑價，計算扣除成本後是否還有意義的優勢。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">評估最大回撤與極端情境</div>
+        <div class="step-desc">除了平均勝率，也要看最壞的情況可能虧多少、能不能承受，因為單次大虧可能抵消掉多次小賺。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">檢驗別人說法時可以問的問題</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>樣本涵蓋幾年？涵蓋哪些市場狀況（多頭、空頭、盤整）？</li>
+    <li><span class="check-icon">✅</span>「勝率」的定義是什麼？有沒有扣掉成本？</li>
+    <li><span class="check-icon">✅</span>是否有公開失敗或效果不佳的組合，還是只挑「贏」的那組來講？</li>
+    <li><span class="check-icon">✅</span>這個規則背後有沒有合理的邏輯，而不只是「湊出來剛好準」？</li>
+  </ul>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 提醒</div>
+    <p>本章談的是「批判性思考與驗證心法」，目的是幫助你判斷一個說法是否合理，<b>並非教學實際下單、也不構成投資建議</b>。任何交易決策都涉及虧損本金的風險，請務必自行審慎評估或諮詢合格的理財顧問。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：辨識「送分題」話術 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7: 辨識「送分題」話術
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🚨 第七章</div>
+  <h1>辨識「送分題」話術<br>常見誘導語言與詐騙紅旗</h1>
+  <p class="desc">「送分題」「穩賺不賠」「近5年沒失手過」這類語言，經常出現在招生課程、投顧群組、社群廣告中。這一章整理常見的紅旗，幫助你保護自己的荷包。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見的紅旗話術</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">💯</div>
+      <div class="card-title">「保證」「穩賺」「零風險」</div>
+      <div class="card-body">任何合法的投資都無法保證獲利，只要出現這類字眼，就應該視為高度警訊。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-title">無來源的高勝率數字</div>
+      <div class="card-body">「勝率85%」「近5年沒失手」若查不到明確的計算方式與資料來源，就是未經驗證的行銷語言。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⏳</div>
+      <div class="card-title">製造急迫感</div>
+      <div class="card-body">「限時優惠」「名額有限」「今晚截止」等話術，目的是讓你來不及冷靜查證就先付費。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">👥</div>
+      <div class="card-title">老師帶單、群組跟單</div>
+      <div class="card-body">要求加入群組、跟著「老師」訊號進出，往往缺乏透明的績效紀錄與風險揭露。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏆</div>
+      <div class="card-title">只展示成功案例</div>
+      <div class="card-body">呼應第三章提到的倖存者偏差：只秀出賺錢的學員截圖，卻不提虧損或退出的人。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔁</div>
+      <div class="card-title">要求先繳費才能看到「完整規則」</div>
+      <div class="card-body">正常的教育內容通常願意先講清楚原理與限制；一味要求先付費才揭露細節，值得多一分警覺。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">遇到這類邀約時，可以怎麼做</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>先問清楚：勝率怎麼算？有沒有扣成本？資料來源是什麼？</li>
+    <li><span class="check-icon">✅</span>給自己至少24小時冷靜期，不要當下被急迫感推著付費。</li>
+    <li><span class="check-icon">✅</span>查證招生方或平台是否有相關主管機關的合法登記與紀錄。</li>
+    <li><span class="check-icon">✅</span>與信任的家人、朋友或理財顧問討論後再決定。</li>
+  </ul>
+  <div class="box box-danger">
+    <div class="box-title">🚨 記住這個原則</div>
+    <p>沒有任何合法的投資或交易方法可以保證「送分」。凡是強調「穩贏」「零風險」「保證高勝率」的邀約，都應該優先假設它是誇大或詐騙，直到你能拿到充分、透明、可驗證的資訊為止。</p>
+  </div>
+</div>
+
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📝 第七章測驗</span><span class="quiz-title">辨識送分題話術</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 看到「限時優惠、名額有限、今晚截止」這類話術時，最合理的反應是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">立刻搶著付費，以免錯過機會</button>
+      <button class="quiz-opt" data-correct="1">意識到這是製造急迫感的常見手法，先冷靜查證再決定</button>
+      <button class="quiz-opt" data-correct="0">只要朋友也在群組裡就可以完全信任</button>
+      <button class="quiz-opt" data-correct="0">急迫感代表這個機會一定是真的</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 對方只展示「學員賺錢的截圖」作為證明，這代表什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">代表所有學員都賺錢，沒有例外</button>
+      <button class="quiz-opt" data-correct="1">可能只是倖存者偏差：展示表現最好的少數人，隱藏虧損或退出的多數人</button>
+      <button class="quiz-opt" data-correct="0">截圖是官方認證的績效證明，可以完全採信</button>
+      <button class="quiz-opt" data-correct="0">這種做法在法規上是被要求必須做的</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：建立你的檢核清單 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8: 建立你的檢核清單
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第八章</div>
+  <h1>建立你的檢核清單<br>總複習：把觀念變成判斷力</h1>
+  <p class="desc">恭喜你完成整套課程！這一章把前面所學整合成一份「遇到高勝率說法時」的檢核清單，並附上總複習測驗，確認觀念是否穩固。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">遇到「送分題」說法時的快速檢核表</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>檢核項目</th><th>該問的問題</th></tr></thead>
+    <tbody>
+      <tr><td>樣本大小</td><td>這個「勝率」是基於幾筆獨立觀察值算出來的？5筆夠嗎？</td></tr>
+      <tr><td>計算方式</td><td>勝率、報酬率是怎麼定義的？有沒有查證來源？</td></tr>
+      <tr><td>是否扣成本</td><td>手續費、稅費、滑價是否已經算進去？</td></tr>
+      <tr><td>是否經過篩選</td><td>是不是從很多組合中「事後挑」出表現最好的一組？</td></tr>
+      <tr><td>是否已被廣泛公開</td><td>如果這個規律已經被很多人知道，還能維持原本的效果嗎？</td></tr>
+      <tr><td>話術紅旗</td><td>有沒有出現「保證」「穩賺」「限時」「先繳費才揭露」等字眼？</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">給自己的行動檢查表</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>我理解「月曆效應」是統計上觀察到的傾向，不是保證會重複發生的規律。</li>
+    <li><span class="check-icon">✅</span>我知道評估任何「高勝率」說法時，要先確認樣本數與計算方式。</li>
+    <li><span class="check-icon">✅</span>我會把手續費、稅費、滑價等交易成本納入判斷，而不是只看毛勝率。</li>
+    <li><span class="check-icon">✅</span>我理解規律一旦被廣泛公開，效果可能已經減弱或消失。</li>
+    <li><span class="check-icon">✅</span>我能辨識「保證」「穩賺」「限時搶購」等常見的招生話術紅旗。</li>
+    <li><span class="check-icon">✅</span>做任何實際交易決策前，我會審慎評估自身風險承受度，必要時諮詢合格的理財顧問。</li>
+  </ul>
+  <div class="box box-info">
+    <div class="box-title">💡 建議行動</div>
+    <p>把以上檢核表存到手機備忘錄。下次再看到「近X年送分題」「高勝率交易法」這類貼文或廣告時，先照著清單問一輪，再決定要不要進一步了解或付費。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+  <div class="quiz-card" style="margin-top:0;">
+    <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">股市月曆效應總複習</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 「月曆效應」最準確的定義是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">政府規定的交易時段</button>
+        <button class="quiz-opt" data-correct="1">歷史資料中統計上觀察到的時間性傾向，強度不穩定且可能隨時間改變</button>
+        <button class="quiz-opt" data-correct="0">保證每年重複發生、穩賺不賠的規律</button>
+        <button class="quiz-opt" data-correct="0">只存在於加密貨幣市場的現象</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 「近5年勝率85%」這類話術，最主要的統計問題是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">5年的資料量已經非常足夠，不需要任何質疑</button>
+        <button class="quiz-opt" data-correct="1">實際獨立樣本數可能只有個位數，且可能是資料探勘或倖存者偏差下的結果</button>
+        <button class="quiz-opt" data-correct="0">勝率數字通常是政府審核過的，一定正確</button>
+        <button class="quiz-opt" data-correct="0">這類話術跟統計學完全無關</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q3. 為什麼交易成本會影響「送分題」的實際可行性？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">交易成本只會出現在虧損的交易上</button>
+        <button class="quiz-opt" data-correct="1">手續費、稅費、滑價會侵蝕原本就不大的統計優勢，頻繁交易累積下來影響更明顯</button>
+        <button class="quiz-opt" data-correct="0">交易成本已經被證交所全面取消</button>
+        <button class="quiz-opt" data-correct="0">只要勝率夠高，交易成本就完全不重要</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q4. 面對「保證高勝率、穩賺不賠」的投資邀約，最合理的態度是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">相信對方一定有特殊管道或內線消息</button>
+        <button class="quiz-opt" data-correct="1">提高警覺，因為任何合法投資或交易方法都無法保證獲利</button>
+        <button class="quiz-opt" data-correct="0">只要身邊朋友都參加了，自己也應該跟進</button>
+        <button class="quiz-opt" data-correct="0">限時優惠代表機會難得，應該立刻付費</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ 免責聲明：本課程內容僅為一般性統計與金融教育之用，旨在協助理解「月曆效應／季節性效應」等市場現象與相關統計思辨方法，<b>不構成對任何個股、ETF、指數或交易策略的投資建議，也不保證任何報酬或勝率</b>。過去出現過的統計現象或歷史績效，不代表未來會重複發生，所有投資與交易均有虧損本金的可能。做出實際投資或交易決策前，請依自身財務狀況、風險承受能力審慎評估，並可諮詢合格的理財顧問或金融機構。
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>
