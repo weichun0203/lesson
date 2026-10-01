@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣期貨交易 Domain Know-how｜規格、保證金、策略與風控</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">📉 台灣期貨交易課</div>
+    <div class="sidebar-title">台灣期貨交易 Know-how<br>規格・保證金・價差・風控</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'學習地圖與使用說明', icon:'🗺️', time:'5 分鐘', level:'總覽', content: renderCh0 },
+  { id:1, title:'期貨的本質', subtitle:'契約、多空雙向、到期與零和', icon:'📜', time:'15 分鐘', level:'基礎', content: renderCh1 },
+  { id:2, title:'台灣期貨商品與規格', subtitle:'大台、小台、微台、個股期', icon:'📋', time:'20 分鐘', level:'基礎', content: renderCh2 },
+  { id:3, title:'保證金與槓桿', subtitle:'權益數、風險指標、追繳與砍倉', icon:'⚖️', time:'22 分鐘', level:'核心', content: renderCh3 },
+  { id:4, title:'價差、結算與轉倉', subtitle:'正逆價差、除息季、結算日效應', icon:'🔄', time:'20 分鐘', level:'核心', content: renderCh4 },
+  { id:5, title:'盤勢分析', subtitle:'現貨連動、夜盤、期權籌碼', icon:'🔭', time:'22 分鐘', level:'核心', content: renderCh5 },
+  { id:6, title:'交易策略', subtitle:'順勢、突破、區間與日內／波段', icon:'🎯', time:'22 分鐘', level:'實戰', content: renderCh6 },
+  { id:7, title:'風險與口數控管', subtitle:'每點價值、停損點數、口數公式', icon:'🛡️', time:'22 分鐘', level:'實戰', content: renderCh7 },
+  { id:8, title:'避險應用', subtitle:'用期貨保護股票部位', icon:'☂️', time:'18 分鐘', level:'進階', content: renderCh8 },
+  { id:9, title:'交易心理與常見陷阱', subtitle:'凹單、過度槓桿、地下期貨', icon:'🧠', time:'18 分鐘', level:'進階', content: renderCh9 },
+  { id:10, title:'交易計畫與總複習', subtitle:'例行流程、日誌、檢查表', icon:'📝', time:'18 分鐘', level:'總複習', content: renderCh10 }
+];
+
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('twfutures_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('twfutures_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+
+// ============================================================
+// CHAPTER 0
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>台灣期貨交易 Domain Know-how<br>先懂規則與風險，再談獲利</h1>
+  <p class="desc">這套課程整理交易台灣期貨（以台指期、小台、微台為主）需要的領域知識：契約規格與成本、保證金與槓桿的真實運作、正逆價差與結算、盤勢與期權籌碼判讀，以及真正決定能否長期存活的口數控管、避險應用與交易心理。不報明牌、不教速成，目標是讓你能寫出一份自己的期貨交易計畫。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 3.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>適合已有股票經驗、想了解或開始交易期貨的人</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-num">3</div><div class="stat-label">種指數期貨規格：大台・小台・微台</div></div>
+<div class="stat-card"><div class="stat-num">25%</div><div class="stat-label">風險指標砍倉門檻</div></div>
+<div class="stat-card"><div class="stat-num">1%</div><div class="stat-label">單筆風險控管原則</div></div>
+<div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">📜 本質與規格（第1-2章）</div><div class="step-desc">期貨契約的運作方式、多空雙向與到期特性，以及台灣主要期貨商品規格、交易時間、稅費與結算日。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">⚖️ 保證金、價差與結算（第3-4章）</div><div class="step-desc">保證金、權益數、風險指標與追繳砍倉機制；正逆價差的成因、除息季效應與轉倉。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">🔭 分析與策略（第5-6章）</div><div class="step-desc">現貨與夜盤連動、三大法人期貨未平倉與選擇權籌碼，並整理順勢、突破、區間等常見交易策略。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">🛡️ 風控與避險（第7-8章）</div><div class="step-desc">用「每點價值 × 停損點數」算出口數，控制跳空風險；學會用期貨替股票部位避險。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">🧠 心理與系統（第9-10章）</div><div class="step-desc">凹單、過度槓桿、地下期貨等陷阱，最後整合成一份可執行的交易計畫與例行流程。</div></div></div>
+</div>
+<div class="section-title">如何使用本課程</div>
+<div class="card"><div class="card-body"><ul class="checklist">
+  <li><span class="check-icon">✅</span>第3章（保證金）與第7章（口數控管）是本課最重要的兩章，時間有限時優先精讀。</li>
+  <li><span class="check-icon">✅</span>期貨的槓桿讓錯誤代價很高，建議先從微台或模擬交易開始練習，而不是直接交易大台。</li>
+  <li><span class="check-icon">✅</span>做完每章測驗，60 分以上才算過關；答錯的題目回頭重讀對應段落。</li>
+  <li><span class="check-icon">✅</span>搭配看盤軟體對照實際的台指期與加權指數走勢，理解價差與夜盤的變化。</li>
+  <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+</ul>
+</div></div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 開始前的提醒</div>
+  <p>本課程為個人學習用的期貨交易知識整理，不構成任何交易建議。期貨為高槓桿商品，虧損可能超過原始投入的保證金。文中的指數點位、保證金金額僅為說明用的假設數字，實際契約規格、保證金、稅費與交易時間會由臺灣期貨交易所（期交所）與期貨商調整，請以最新公告為準。</p>
+</div>
+
+</div>
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📜 第一章</div>
+  <h1>期貨的本質<br>你買賣的不是股票，是一份「未來的約定」</h1>
+  <p class="desc">期貨是約定在未來特定日期，以現在談好的價格買賣某個標的的標準化契約。理解它和股票的根本差異，是避開大多數新手錯誤的第一步。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">期貨 vs 股票：根本差異</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>面向</th><th>股票（現股）</th><th>期貨</th></tr></thead>
+<tbody>
+<tr><td>你持有的是</td><td>公司的部分所有權</td><td>一份標準化契約（權利義務）</td></tr>
+<tr><td>資金需求</td><td>全額付款（或融資）</td><td>只需繳交保證金，天生帶槓桿</td></tr>
+<tr><td>多空</td><td>主要做多，放空需融券或借券</td><td>做多、做空一樣方便</td></tr>
+<tr><td>到期</td><td>沒有到期日，可無限期持有</td><td>有到期日，到期須結算或轉倉</td></tr>
+<tr><td>股利</td><td>可領股利</td><td>不領股利，股利因素反映在價差中</td></tr>
+<tr><td>每日結算</td><td>不需要</td><td>每天依結算價計算盈虧（逐日洗價）</td></tr>
+<tr><td>最大虧損</td><td>現股最多虧到歸零</td><td>理論上可超過投入的保證金</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 一句話理解</div>
+  <p>買股票像是「買下一間店的股份」；買期貨像是「簽一份約，約定未來用某個價格買進」。價格上漲，做多的人賺價差；價格下跌，做空的人賺價差。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">期貨市場的三種參與者</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">☂️</div><div class="card-title">避險者</div><div class="card-body">持有現貨部位、想鎖定價格或降低波動的人，例如持有大量台股的法人用台指期空單保護持股。</div></div>
+  <div class="card"><div class="card-icon">🎲</div><div class="card-title">投機者</div><div class="card-body">承擔價格風險、追求價差利潤的交易者。多數散戶屬於這一類，也提供了市場流動性。</div></div>
+  <div class="card"><div class="card-icon">⚖️</div><div class="card-title">套利者</div><div class="card-body">利用期貨與現貨、不同月份合約間的價格偏離賺取相對低風險的利潤，讓期貨價格不會長期偏離合理值。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">零和遊戲的真相</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">在不計交易成本的情況下，期貨市場是零和遊戲：多方賺的錢等於空方虧的錢。扣掉手續費與期交稅後，對全體參與者而言其實是「負和」。</p>
+<div class="box box-danger">
+  <div class="box-title">🚫 這代表什麼</div>
+  <p>你的對手包括資金雄厚、資訊更快的法人與專業交易者。沒有明確優勢與嚴格風控的交易，長期結果通常是被成本和錯誤慢慢侵蝕。期貨不是「比較快賺錢的股票」，而是一個對紀律要求更高的戰場。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">逐日洗價：每天都在結算</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">期貨每天收盤後，期貨商會依當日結算價計算你的未實現損益，直接反映在帳戶「權益數」中。賺的錢當天就進入權益數，虧的錢也當天扣掉；若權益數低於維持保證金，就會被要求補錢（見第三章）。</p>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 常見誤解</div>
+  <p>「還沒平倉就不算虧」在期貨是錯的。股票帳面虧損可以放著不管，期貨帳面虧損會即時吃掉你的保證金，嚴重時期貨商會代為平倉，讓帳面虧損直接變成實際虧損。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📜 第一章測驗</span><span class="quiz-title">期貨本質觀念</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 期貨與現股最根本的差異之一是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">期貨一定比較便宜</button>
+      <button class="quiz-opt" data-correct="1">期貨是有到期日、採保證金交易的標準化契約</button>
+      <button class="quiz-opt" data-correct="0">期貨可以領比較多股利</button>
+      <button class="quiz-opt" data-correct="0">期貨不能做空</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於期貨的「逐日洗價」，下列何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只有平倉時才計算盈虧</button>
+      <button class="quiz-opt" data-correct="1">每天依結算價計算損益並反映在權益數，虧損可能觸發追繳</button>
+      <button class="quiz-opt" data-correct="0">只有到期日才會結算</button>
+      <button class="quiz-opt" data-correct="0">逐日洗價只適用於股票</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：商品與規格 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📋 第二章</div>
+  <h1>台灣期貨商品與規格<br>同一個指數，三種不同的「尺寸」</h1>
+  <p class="desc">在台灣最常交易的期貨是以臺灣加權股價指數為標的的台指期。它有大台、小台、微台三種規格，差別在於每一點的價值。選對規格，是控制風險的第一步。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">指數期貨三兄弟</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>商品</th><th>俗稱</th><th>每點價值</th><th>每跳（1點）損益</th><th>適合對象</th></tr></thead>
+<tbody>
+<tr><td>臺股期貨（TX）</td><td>大台</td><td>新台幣 200 元</td><td>200 元</td><td>資金較大、有經驗的交易者與法人</td></tr>
+<tr><td>小型臺指期貨（MTX）</td><td>小台</td><td>新台幣 50 元</td><td>50 元</td><td>一般散戶主力商品</td></tr>
+<tr><td>微型臺指期貨（TMF）</td><td>微台</td><td>新台幣 10 元</td><td>10 元</td><td>新手練習、精細調整口數</td></tr>
+</tbody>
+</table>
+</div>
+<div class="formula">契約價值 = 期貨指數點數 × 每點價值
+例（假設指數 20,000 點）：大台 400 萬元｜小台 100 萬元｜微台 20 萬元</div>
+<div class="box box-success">
+  <div class="box-title">✅ 重點結論</div>
+  <p>1 口大台 = 4 口小台 = 20 口微台（曝險相當）。資金不大或還在練習時，用微台可以把每口風險縮小到大台的 1/20，讓你能照正確的風控比例操作，而不是被迫「一口就太大」。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">其他常見期貨商品</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🏢 個股期貨</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">以個別上市櫃股票為標的，一般契約單位為 2,000 股（另有 100 股的小型個股期貨）。可用較少資金做多或做空個股，也能在除權息、股東會期間代替融券放空。但部分個股期貨流動性差、買賣價差大，交易前務必確認成交量與未平倉量。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>💻 類股期貨</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">例如電子期、金融期等，以類股指數為標的。適合看好或看壞特定產業、或為類股部位避險。流動性通常不如台指期。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🌎 海外指數與商品期貨</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">期交所也有以美股指數、黃金、匯率等為標的的商品，另外也可透過期貨商複委託交易海外期貨。這些商品的交易時間、規格與風險特性差異很大，交易前要個別研究。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📐 選擇權（台指選）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">以台指為標的的選擇權，買方付權利金、賣方收權利金並繳保證金。它和期貨常一起出現在籌碼分析中（見第五章），但交易邏輯複雜很多，建議另外系統性學習後再操作。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易時間與合約月份</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🌞</div><div class="card-title">一般交易時段</div><div class="card-body">8:45–13:45（比現股早 15 分鐘開盤、晚 15 分鐘收盤）。最後結算日的到期合約於 13:30 收盤。</div></div>
+  <div class="card"><div class="card-icon">🌙</div><div class="card-title">盤後交易時段（夜盤）</div><div class="card-body">15:00–次日 5:00。可因應美股與國際消息即時調整部位，但夜盤成交量較小，價格波動可能較劇烈。</div></div>
+  <div class="card"><div class="card-icon">📅</div><div class="card-title">合約月份</div><div class="card-body">同時掛牌多個月份（近月、次月及季月等）。一般交易最活躍的是近月合約；台指期另有週選擇權等短天期商品。</div></div>
+  <div class="card"><div class="card-icon">🏁</div><div class="card-title">最後交易日</div><div class="card-body">台指期為每個月的第三個週三。到期未平倉的部位會以最後結算價現金結算。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易成本</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>費率或金額</th><th>說明</th></tr></thead>
+<tbody>
+<tr><td>期貨交易稅</td><td>股價類期貨：契約價值的十萬分之二</td><td>買賣各收一次</td></tr>
+<tr><td>期貨商手續費</td><td>依期貨商與交易量議價</td><td>每口單邊計收，大台、小台、微台不同</td></tr>
+<tr><td>滑價</td><td>非固定</td><td>市價單或流動性差時，成交價與預期價的差距</td></tr>
+</tbody>
+</table>
+</div>
+<div class="formula">期交稅（單邊）= 契約價值 × 0.00002
+例（指數 20,000 點）：大台約 80 元｜小台約 20 元｜微台約 4 元</div>
+<div class="box box-info">
+  <div class="box-title">💡 稅務補充</div>
+  <p>目前證券期貨交易所得稅為停徵狀態，個人期貨交易獲利一般不需申報所得稅，但稅制可能調整，請以財政部最新規定為準。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📋 第二章測驗</span><span class="quiz-title">商品規格與交易規則</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 小台（小型臺指期貨）每一點的價值是多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">10 元</button>
+      <button class="quiz-opt" data-correct="1">50 元</button>
+      <button class="quiz-opt" data-correct="0">200 元</button>
+      <button class="quiz-opt" data-correct="0">1,000 元</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 台指期的最後交易日（結算日）是哪一天？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">每月最後一個營業日</button>
+      <button class="quiz-opt" data-correct="0">每月第一個週五</button>
+      <button class="quiz-opt" data-correct="1">每月第三個週三</button>
+      <button class="quiz-opt" data-correct="0">每季最後一天</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：保證金與槓桿 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚖️ 第三章</div>
+  <h1>保證金與槓桿<br>最關鍵、也最多人搞錯的一章</h1>
+  <p class="desc">期貨用少量保證金控制大額契約，這讓獲利與虧損同步放大。這一章把原始保證金、維持保證金、權益數、風險指標、追繳與代沖銷（砍倉）的機制一次講清楚。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">保證金的三個層級</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🎟️</div><div class="card-title">原始保證金</div><div class="card-body">新建立一口部位時，帳戶至少要有的金額。可以想成「入場券」。</div></div>
+  <div class="card"><div class="card-icon">🧯</div><div class="card-title">維持保證金</div><div class="card-body">持有部位期間，權益數必須維持的最低水位，通常約為原始保證金的七成多。</div></div>
+  <div class="card"><div class="card-icon">🏛️</div><div class="card-title">結算保證金</div><div class="card-body">期貨商向結算機構繳交的保證金，一般交易人較少直接接觸。</div></div>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 保證金會變動</div>
+  <p>期交所會依市場波動度調整保證金，行情劇烈時可能大幅調高。原本夠用的資金，可能在保證金調升後突然不夠。務必定期確認期交所公告與期貨商的通知。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">槓桿倍數怎麼算</div>
+<div class="formula">槓桿倍數 = 契約價值 ÷ 原始保證金
+例（假設）：小台契約價值 100 萬、原始保證金 8 萬 → 約 12.5 倍</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>指數變動</th><th>對小台 1 口的損益</th><th>相對於 8 萬保證金</th></tr></thead>
+<tbody>
+<tr><td>+1%（約 200 點）</td><td>+10,000 元</td><td>+12.5%</td></tr>
+<tr><td>−2%（約 400 點）</td><td>−20,000 元</td><td>−25%</td></tr>
+<tr><td>−5%（約 1,000 點）</td><td>−50,000 元</td><td>−62.5%</td></tr>
+<tr><td>−8%（約 1,600 點）</td><td>−80,000 元</td><td>保證金幾乎全數虧光</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 真正的槓桿看的是「帳戶總資金」</div>
+  <p>如果你帳戶有 100 萬，只做 1 口小台（契約價值 100 萬），實際槓桿只有約 1 倍；如果帳戶只放 8 萬剛好夠原始保證金，實際槓桿就是 12.5 倍。風險大小取決於你用多少資金「撐」這個部位，而不是保證金規定多少。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">權益數、風險指標與追繳</div>
+<div class="formula">權益數 = 帳戶現金餘額 + 未平倉部位的浮動損益
+風險指標 ≈ 權益數 ÷ 未平倉部位所需原始保證金 × 100%</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">權益數高於原始保證金</div><div class="step-desc">一切正常，可以持有或新增部位（依可用保證金而定）。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">權益數低於維持保證金 → 追繳</div><div class="step-desc">期貨商於盤後發出追繳通知，你須在期限內補足至原始保證金水準，或自行減少部位。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">未在期限內補足</div><div class="step-desc">期貨商可依規定代為沖銷部位。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">盤中風險指標跌破 25% → 代為沖銷</div><div class="step-desc">行情急殺時，期貨商會在盤中直接以市價平倉你的部位（俗稱砍倉、斷頭），不會等你補錢。</div></div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 超額損失（倒債）</div>
+  <p>若行情跳空或連續劇烈波動，砍倉後的虧損可能超過帳戶內的保證金，帳戶變成負值，你仍需補足這筆欠款。這是期貨與現股最大的不同：虧損不以投入的錢為上限。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">保證金管理原則</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>帳戶資金遠高於原始保證金，建議以「總資金」而非「保證金」計算風險。</li>
+  <li><span class="check-icon">✅</span>不要讓持倉把可用保證金用到接近上限，保留應付保證金調升與行情波動的緩衝。</li>
+  <li><span class="check-icon">✅</span>在自己的停損點出場，不要讓期貨商的砍倉機制替你停損。</li>
+  <li><span class="check-icon">✅</span>重大事件前（選舉、央行決議、重要財報、長假）考慮降低口數。</li>
+</ul>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⚖️ 第三章測驗</span><span class="quiz-title">保證金與槓桿</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 帳戶權益數跌破維持保證金時，通常會發生什麼事？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">什麼事都不會發生</button>
+      <button class="quiz-opt" data-correct="1">期貨商發出追繳通知，須補足至原始保證金或減少部位</button>
+      <button class="quiz-opt" data-correct="0">期交所自動退還保證金</button>
+      <button class="quiz-opt" data-correct="0">部位自動轉到下個月</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 帳戶有 100 萬元，只持有 1 口契約價值 100 萬元的小台，實際槓桿約為多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">約 1 倍</button>
+      <button class="quiz-opt" data-correct="0">約 5 倍</button>
+      <button class="quiz-opt" data-correct="0">約 12.5 倍</button>
+      <button class="quiz-opt" data-correct="0">約 50 倍</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：價差與結算 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔄 第四章</div>
+  <h1>價差、結算與轉倉<br>期貨價格為什麼和現貨不一樣</h1>
+  <p class="desc">台指期和加權指數大多數時間並不相等，兩者的差距叫做「價差」或「基差」。懂得價差的成因，才能正確解讀盤勢、避開除息季的陷阱，並處理到期轉倉。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">正價差與逆價差</div>
+<div class="formula">價差 = 期貨價格 − 現貨指數</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">➕</div><div class="card-title">正價差（期貨 > 現貨）</div><div class="card-body">期貨價格高於現貨。理論上反映資金成本（持有現貨的利息），也常被解讀為市場情緒偏多。</div></div>
+  <div class="card"><div class="card-icon">➖</div><div class="card-title">逆價差（期貨 < 現貨）</div><div class="card-body">期貨價格低於現貨。常見原因是預期的現金股利（除息會讓指數下跌），也可能反映避險賣壓或悲觀情緒。</div></div>
+</div>
+<div class="formula">期貨理論價格 ≈ 現貨指數 + 持有成本（利息）− 到期前預期股利</div>
+
+</div>
+<div class="section">
+  <div class="section-title">除息季的逆價差</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">台股每年約 6 到 9 月是除權息旺季，大量權值股除息會讓加權指數「機械性」下跌（指數計算未還原股利）。期貨價格會提前反映這些預期股利，因此夏季月份的台指期常出現明顯逆價差。</p>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 別被表面數字誤導</div>
+  <p>除息季看到期貨比現貨低一兩百點，不一定代表市場看空，可能只是股利因素。判斷情緒時，要把預期股利造成的「合理逆價差」扣掉再解讀。</p>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 對不同部位的影響</div>
+  <p>逆價差時做多期貨，到期時價差收斂，理論上有利；做空期貨則需承擔收斂的不利。但這只是理論，價差收斂之前實際走勢仍由市場決定。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">結算日與最後結算價</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>台指期規則（依期交所規定）</th></tr></thead>
+<tbody>
+<tr><td>最後交易日</td><td>每月第三個週三</td></tr>
+<tr><td>到期合約收盤</td><td>13:30</td></tr>
+<tr><td>最後結算價</td><td>以最後交易日現貨收盤前 30 分鐘（13:00–13:30）加權指數的簡單算術平均價計算</td></tr>
+<tr><td>結算方式</td><td>現金結算，不交割實物</td></tr>
+</tbody>
+</table>
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">因為最後結算價取決於現貨收盤前的平均價，結算日當天現貨尾盤有時會出現大戶拉抬或打壓的「結算行情」，選擇權的大量未平倉也可能讓指數在結算前被吸往特定價位。</p>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 結算日注意事項</div>
+  <p>到期合約會在結算日消失，若你不想被強制結算，要在到期前自行平倉或轉倉。結算前幾天價格波動可能加大，且近月合約流動性會逐漸轉移到次月。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">轉倉（Rollover）</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">何時轉倉</div><div class="step-desc">想持有部位跨越到期日時，通常在結算日前幾天、次月合約成交量已明顯放大時進行。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">怎麼轉倉</div><div class="step-desc">平倉近月合約，同時在次月合約建立相同方向與口數的部位。可分開下單，或使用期貨商提供的價差單功能。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">轉倉成本</div><div class="step-desc">兩次手續費與期交稅，加上近月與次月的價差（轉倉價差）。長期持有部位時，這些成本會累積。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">注意除息</div><div class="step-desc">若次月合約包含除息季，轉倉價差可能特別大，這是股利因素的反映，不是額外的獲利或虧損。</div></div></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔄 第四章測驗</span><span class="quiz-title">價差、結算與轉倉</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 台指期在每年 6-9 月經常出現逆價差，最主要的原因是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">期交所規定夏季必須逆價差</button>
+      <button class="quiz-opt" data-correct="1">權值股集中除息，期貨提前反映預期股利</button>
+      <button class="quiz-opt" data-correct="0">夏季成交量比較大</button>
+      <button class="quiz-opt" data-correct="0">外資夏天一定放空</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 台指期的最後結算價是如何決定的？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">結算日當天的開盤價</button>
+      <button class="quiz-opt" data-correct="0">期貨結算日的最高價</button>
+      <button class="quiz-opt" data-correct="1">最後交易日現貨收盤前 30 分鐘加權指數的平均價</button>
+      <button class="quiz-opt" data-correct="0">前一天的收盤價</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：盤勢分析 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔭 第五章</div>
+  <h1>盤勢分析<br>現貨、國際盤與期權籌碼的三層拼圖</h1>
+  <p class="desc">台指期的走勢主要跟著現貨，而現貨又深受國際盤與權值股影響。台灣期交所每天公布法人期貨與選擇權部位，讓散戶也能觀察「大資金怎麼押注」。這一章整理最實用的觀察框架。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">第一層：現貨與權值股</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🏗️</div><div class="card-title">權值股主導</div><div class="card-body">加權指數以市值加權，台積電等權值股的漲跌對指數影響巨大。交易台指期時要持續觀察前幾大權值股的走勢。</div></div>
+  <div class="card"><div class="card-icon">📊</div><div class="card-title">現貨成交值</div><div class="card-body">上漲放量、下跌縮量代表多方健康；高檔爆量不漲要留意。比較基準是近期平均，而不是絕對數字。</div></div>
+  <div class="card"><div class="card-icon">🧭</div><div class="card-title">趨勢與均線</div><div class="card-body">期貨同樣適用趨勢高低點、月線、季線等判讀方式（可參考波段課程第二、三章），但日內交易者更常看 5 分K、15 分K 與當日高低點。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">第二層：國際盤與夜盤</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🌙 夜盤的價格發現</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">夜盤時段涵蓋美股交易時間，台指期夜盤會即時反映美股、費半的漲跌。隔天早盤開盤價常以夜盤收盤價為參考。但夜盤成交量較小，偶爾會出現過度反應，早盤再修正。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🇺🇸 美股與費半</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">台股與費城半導體指數、那斯達克連動度高。夜盤交易者會同時觀察美股期貨、美債殖利率與美元指數。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>💱 匯率與外資</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">新台幣急貶常伴隨外資匯出、現貨賣壓；匯率可作為資金流向的輔助指標，但不宜單獨作為進出場依據。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📰 重大事件</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">美國聯準會利率決議、就業與通膨數據、重要科技公司財報，常在夜盤造成劇烈波動。事件前後要特別留意口數與停損設定。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">第三層：期貨與選擇權籌碼</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>指標</th><th>資料來源</th><th>常見解讀</th><th>限制</th></tr></thead>
+<tbody>
+<tr><td>外資台指期未平倉淨口數</td><td>期交所每日公布三大法人資料</td><td>淨多單增加偏多，淨空單增加偏空</td><td>外資可能用期貨避險現貨部位，需搭配現貨買賣超</td></tr>
+<tr><td>十大交易人未沖銷部位</td><td>期交所每日公布大額交易人資料</td><td>觀察大額資金多空方向與集中度</td><td>包含多種身分，資料較粗略</td></tr>
+<tr><td>選擇權 Put/Call 未平倉比</td><td>期交所每日公布</td><td>常被當作情緒或支撐壓力的參考</td><td>不同解讀派別結論可能相反，需謹慎</td></tr>
+<tr><td>選擇權最大未平倉履約價</td><td>期交所每日公布</td><td>大量賣出買權的價位常被視為壓力，賣出賣權的價位視為支撐</td><td>會隨行情移動，不是固定的牆</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 籌碼的正確用法</div>
+  <p>籌碼資料都是盤後公布、描述「昨天以前」的狀態，適合用來判斷偏多、偏空的背景環境，不適合當成精準的進場訊號。追蹤「連續多日的變化方向」比看單日數字有意義。</p>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 散戶指標的反向思考</div>
+  <p>有些人會用「小台散戶多空比」作為反向指標：散戶越偏多，後市越可能偏弱。這類指標只是一種觀察角度，並不是可以單獨使用的交易訊號。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔭 第五章測驗</span><span class="quiz-title">盤勢分析</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 外資台指期淨空單大增時，較嚴謹的解讀方式是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">一定代表大盤要崩盤，立刻重押空單</button>
+      <button class="quiz-opt" data-correct="1">可能偏空，但也可能是替現貨部位避險，需搭配現貨買賣超判斷</button>
+      <button class="quiz-opt" data-correct="0">完全沒有參考價值</button>
+      <button class="quiz-opt" data-correct="0">代表外資一定在大買現貨</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於台指期夜盤，下列何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">夜盤不受國際市場影響</button>
+      <button class="quiz-opt" data-correct="1">夜盤時段反映美股等國際行情，但成交量較小、可能過度反應</button>
+      <button class="quiz-opt" data-correct="0">夜盤成交量一定比日盤大</button>
+      <button class="quiz-opt" data-correct="0">夜盤的價格隔天會被取消</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：交易策略 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎯 第六章</div>
+  <h1>交易策略<br>先選好時間框架，再選打法</h1>
+  <p class="desc">期貨交易的策略很多，但核心都離不開「趨勢跟隨」與「區間反轉」兩大類。這一章整理散戶最常用的幾種打法，並比較日內交易與波段持倉的差異。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實戰</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">日內交易 vs 波段持倉</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>面向</th><th>日內交易（當沖）</th><th>波段持倉（留倉）</th></tr></thead>
+<tbody>
+<tr><td>持有時間</td><td>數分鐘到數小時，收盤前平倉</td><td>數天到數週</td></tr>
+<tr><td>主要看的K線</td><td>1 分、5 分、15 分K</td><td>60 分K、日K</td></tr>
+<tr><td>隔夜跳空風險</td><td>無（若不留夜盤）</td><td>有，需承受夜盤與隔日跳空</td></tr>
+<tr><td>交易成本占比</td><td>高，頻繁交易成本累積快</td><td>相對低</td></tr>
+<tr><td>心理與時間需求</td><td>需全程專注盯盤</td><td>可盤後規劃，但要能承受持倉波動</td></tr>
+<tr><td>停損點數</td><td>較小</td><td>較大，口數需相應減少</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 選擇原則</div>
+  <p>選擇你「生活作息做得到」的時間框架。上班族若無法盯盤，硬做日內交易只會變成盤中偷看手機的衝動交易；波段持倉搭配預先設定的停損單，通常更適合。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">四種常見策略</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 順勢交易：均線或趨勢線方向</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">只做和主要趨勢同方向的單。例如日K在月線之上、均線上揚時只找多單，回檔到支撐止跌時進場；跌破前低出場。優點是順著大方向，缺點是盤整期容易被反覆停損。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 突破交易：開盤區間或整理區突破</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">例如觀察開盤後前 15 或 30 分鐘的高低點，向上突破做多、向下跌破做空，停損設在區間另一側或中間。也可用於日K整理區突破。缺點是假突破頻繁，需要嚴格停損與過濾條件。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 區間交易：高出低進</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">盤勢明顯處於區間震盪時，在區間上緣附近找空單、下緣附近找多單。一旦區間被有效突破，要立刻認錯出場。這類策略在趨勢行情中虧損最大。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 跳空缺口策略</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">夜盤或國際盤造成早盤大幅跳空時，觀察開盤後是「缺口延續」還是「回補缺口」。這類策略依賴經驗與統計，建議先大量觀察、記錄再實際操作。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">下單方式</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🎯</div><div class="card-title">限價單</div><div class="card-body">指定價格成交，可控制成交價，但可能不成交。</div></div>
+  <div class="card"><div class="card-icon">⚡</div><div class="card-title">市價單 / 一定範圍市價單</div><div class="card-body">以當時市場價格快速成交，保證速度但可能有滑價。期交所的一定範圍市價單會限制成交價範圍，降低極端滑價。</div></div>
+  <div class="card"><div class="card-icon">🛑</div><div class="card-title">停損單 / 觸價單</div><div class="card-body">價格觸及設定價位後自動送出委託，是執行停損最重要的工具。注意觸發後仍可能因跳空或流動性不足而滑價。</div></div>
+  <div class="card"><div class="card-icon">⏳</div><div class="card-title">委託條件（ROD / IOC / FOK）</div><div class="card-body">當日有效、立即成交否則取消、全部成交否則取消。依策略需求選擇。</div></div>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 進場的同時就掛停損</div>
+  <p>最好的習慣是建立部位後立刻掛上停損單（或使用期貨商的智慧單、OCO 功能），而不是「等一下再掛」。期貨行情快速，猶豫幾分鐘可能就多虧數十點。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">策略的驗證</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>把規則寫清楚到「別人照著做也會做出一樣決策」的程度。</li>
+  <li><span class="check-icon">✅</span>先用歷史資料回測或至少人工回顧 50 次以上的歷史情境。</li>
+  <li><span class="check-icon">✅</span>回測務必計入手續費、期交稅與滑價，日內策略尤其關鍵。</li>
+  <li><span class="check-icon">✅</span>以微台或模擬交易小規模實測，記錄 20-30 筆後再評估是否放大。</li>
+</ul>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎯 第六章測驗</span><span class="quiz-title">交易策略</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 上班族無法盤中盯盤，較合理的做法是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">硬做 1 分K當沖，用手機偷看</button>
+      <button class="quiz-opt" data-correct="1">選擇較長時間框架的波段持倉，並預先設定停損單</button>
+      <button class="quiz-opt" data-correct="0">不設停損，收盤再看</button>
+      <button class="quiz-opt" data-correct="0">用最大口數以少次數取勝</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 區間交易策略在什麼情況下虧損最大？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">盤勢持續在區間內震盪</button>
+      <button class="quiz-opt" data-correct="1">區間被有效突破、轉為單邊趨勢時</button>
+      <button class="quiz-opt" data-correct="0">成交量很小時</button>
+      <button class="quiz-opt" data-correct="0">交易成本很低時</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：風險與口數控管 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🛡️ 第七章</div>
+  <h1>風險與口數控管<br>用「點數 × 每點價值」算出你該做幾口</h1>
+  <p class="desc">期貨的損益計算非常直接：點數乘上每點價值。這讓部位控管可以做得很精確。這一章教你把每筆虧損控制在總資金的固定比例，並處理期貨特有的跳空與流動性風險。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實戰</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">損益計算</div>
+<div class="formula">損益 = (出場點數 − 進場點數) × 每點價值 × 口數 × 方向（多 +1 / 空 −1）
+       − 手續費 − 期交稅</div>
+
+</div>
+<div class="section">
+  <div class="section-title">固定風險法算口數</div>
+<div class="formula">可承受虧損 = 總資金 × 單筆風險%
+每口風險 = 停損點數 × 每點價值
+可交易口數 = 可承受虧損 ÷ 每口風險（無條件捨去）</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>大台</th><th>小台</th><th>微台</th></tr></thead>
+<tbody>
+<tr><td>總資金</td><td>100 萬</td><td>100 萬</td><td>100 萬</td></tr>
+<tr><td>單筆風險 1%</td><td>10,000 元</td><td>10,000 元</td><td>10,000 元</td></tr>
+<tr><td>停損 50 點的每口風險</td><td>10,000 元</td><td>2,500 元</td><td>500 元</td></tr>
+<tr><td>可交易口數</td><td>1 口</td><td>4 口</td><td>20 口</td></tr>
+<tr><td>停損改為 120 點時</td><td>0 口（不可做）</td><td>1 口</td><td>16 口</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 關鍵洞察</div>
+  <p>停損點數由盤勢與策略決定（放在「判斷錯誤」的位置），口數再由停損點數反推。當停損必須放得比較遠，就應該減少口數或改用更小的規格，而不是把停損硬縮短來「塞下」想做的口數。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">用波動度設定停損點數</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">台指期不同時期的波動度差異很大。可以用 ATR（平均真實波幅）衡量「平常一段時間會晃多少點」，停損設在 1.5～3 倍 ATR 之外，避免被正常波動掃出場。波動放大時，停損點數變大，口數自然要減少。</p>
+<div class="formula">停損點數 ≈ N × ATR（N 常見 1.5～3）
+口數 = 總資金 × 風險% ÷ (停損點數 × 每點價值)</div>
+
+</div>
+<div class="section">
+  <div class="section-title">期貨特有的風險</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🕳️</div><div class="card-title">跳空風險</div><div class="card-body">重大消息在收盤或夜盤後發生，早盤可能直接跳過你的停損價。留倉部位的實際虧損可能遠大於計畫。</div></div>
+  <div class="card"><div class="card-icon">💧</div><div class="card-title">流動性風險</div><div class="card-body">遠月合約、夜盤清淡時段、冷門個股期貨的買賣價差大，停損單可能嚴重滑價。</div></div>
+  <div class="card"><div class="card-icon">📈</div><div class="card-title">保證金調升</div><div class="card-body">波動加劇時期交所可能調高保證金，造成可用資金瞬間不足。</div></div>
+  <div class="card"><div class="card-icon">⏰</div><div class="card-title">時間與作息</div><div class="card-body">夜盤到凌晨 5 點，留倉者睡覺時部位仍在波動。需要事先設好停損單，並接受可能被夜盤洗出場。</div></div>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 風控上限建議</div>
+  <p>除了單筆 1-2% 的風險，也建議設定「單日最大虧損」（例如 3%）與「單月最大虧損」（例如 8-10%），觸及就停止交易、回頭檢討。留倉部位還要評估「若跳空 3-5%」時帳戶能否承受。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">期望值與R倍數</div>
+<div class="formula">1R = 停損點數 × 每點價值 × 口數（每筆預設風險）
+期望值 = 勝率 × 平均獲利(R) − (1 − 勝率) × 平均虧損(R) − 平均成本(R)</div>
+<div class="card"><div class="card-body">舉例：勝率 45%、平均獲利 2R、平均虧損 1R、每筆成本約 0.1R，期望值 = 0.9 − 0.55 − 0.1 = +0.25R。日內交易次數多，成本對期望值的侵蝕更明顯，所以要把成本換算成 R 一起算。</div></div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🛡️ 第七章測驗</span><span class="quiz-title">口數計算與風控</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 總資金 50 萬、單筆風險 1%、停損 50 點，交易小台（每點 50 元）最多可做幾口？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">1 口</button>
+      <button class="quiz-opt" data-correct="1">2 口</button>
+      <button class="quiz-opt" data-correct="0">4 口</button>
+      <button class="quiz-opt" data-correct="0">10 口</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 當策略要求的停損點數必須放大時，正確的調整方式是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">硬把停損縮小以維持原本口數</button>
+      <button class="quiz-opt" data-correct="1">減少口數或改用較小規格，維持單筆風險不變</button>
+      <button class="quiz-opt" data-correct="0">增加口數以更快回本</button>
+      <button class="quiz-opt" data-correct="0">取消停損</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：避險應用 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">☂️ 第八章</div>
+  <h1>避險應用<br>期貨不只是投機工具，也是保險</h1>
+  <p class="desc">期貨最初的設計目的就是避險。持有台股部位的人，可以在不賣出股票的情況下，用台指期或小台空單降低市場下跌的衝擊。這一章教你計算避險口數，並了解避險的代價與限制。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">什麼時候需要避險</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">📅</div><div class="card-title">重大事件前</div><div class="card-body">選舉、央行決議、地緣政治緊張、長假前，想保留股票但擔心短期大跌。</div></div>
+  <div class="card"><div class="card-icon">🏦</div><div class="card-title">不想賣股票的理由</div><div class="card-body">長期看好持股、不想觸發交易成本、或持股有其他用途（例如參與股東會、領股利）。</div></div>
+  <div class="card"><div class="card-icon">📉</div><div class="card-title">大盤轉弱但個股仍強</div><div class="card-body">判斷系統性風險升高，但持股的個別題材仍有潛力，想保留個股超額報酬、對沖大盤風險。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">避險口數計算</div>
+<div class="formula">避險口數 = 持股市值 × Beta ÷ 一口期貨契約價值</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>數值（假設）</th></tr></thead>
+<tbody>
+<tr><td>股票組合市值</td><td>300 萬元</td></tr>
+<tr><td>組合 Beta（相對大盤的敏感度）</td><td>1.2</td></tr>
+<tr><td>需要避險的曝險</td><td>300 萬 × 1.2 = 360 萬</td></tr>
+<tr><td>小台契約價值（指數 20,000 點）</td><td>20,000 × 50 = 100 萬</td></tr>
+<tr><td>避險口數</td><td>360 萬 ÷ 100 萬 ≈ 3.6 口 → 約 3-4 口小台（或用微台補足零頭）</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 Beta 是什麼</div>
+  <p>Beta 衡量股票相對大盤的波動程度。Beta 1.2 代表大盤漲跌 1% 時，該股平均漲跌約 1.2%。組合 Beta 可用各持股 Beta 依市值加權平均估算；Beta 是歷史統計值，未來可能改變。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">避險的效果與代價</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>情境</th><th>股票部位</th><th>期貨空單</th><th>合計</th></tr></thead>
+<tbody>
+<tr><td>大盤下跌 5%</td><td>約 −6%（−18 萬）</td><td>約 +18 萬</td><td>接近打平</td></tr>
+<tr><td>大盤上漲 5%</td><td>約 +6%（+18 萬）</td><td>約 −18 萬</td><td>接近打平，錯過漲幅</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 避險不是免費的</div>
+  <p>避險在保護下跌的同時，也放棄了上漲的收益。此外還有交易成本、轉倉成本、逆價差或正價差變化，以及「基差風險」：你的持股和大盤走勢不會完全一致，避險後仍可能出現虧損。</p>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 避險部位同樣需要保證金</div>
+  <p>如果大盤大漲，期貨空單會虧損並可能被追繳，但股票獲利並不會自動補進期貨帳戶。要預留足夠的期貨帳戶資金，避免避險部位被砍倉、在最糟時機失去保護。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">避險的其他工具</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📐 買進賣權（Put）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">付出權利金，換取下跌時的保護，上漲時損失最多只有權利金，但權利金會隨時間流逝。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>💻 類股期貨</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">持股集中在電子或金融時，用對應的類股期貨避險，可降低基差風險。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🏢 個股期貨</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">針對單一重壓持股避險，契約單位為 2,000 股（小型為 100 股），可精準對沖特定個股。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>💵 直接減碼</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">最單純的避險就是降低持股、提高現金。如果避險操作讓你感到複雜或不安，減碼往往是更好的選擇。</p></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">☂️ 第八章測驗</span><span class="quiz-title">避險應用</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 持股市值 200 萬、Beta 1.0，指數 20,000 點，用小台避險約需幾口？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">1 口</button>
+      <button class="quiz-opt" data-correct="1">2 口</button>
+      <button class="quiz-opt" data-correct="0">5 口</button>
+      <button class="quiz-opt" data-correct="0">10 口</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 用期貨空單為股票部位避險，下列何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">避險後完全沒有任何風險</button>
+      <button class="quiz-opt" data-correct="1">保護下跌的同時也放棄上漲收益，且需留意保證金與基差風險</button>
+      <button class="quiz-opt" data-correct="0">避險不需要保證金</button>
+      <button class="quiz-opt" data-correct="0">只有下跌時才需要付出成本</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：交易心理與陷阱 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧠 第九章</div>
+  <h1>交易心理與常見陷阱<br>槓桿會放大你的每一個壞習慣</h1>
+  <p class="desc">在股票市場可以慢慢犯的錯，在期貨市場會被槓桿加速。這一章整理期貨交易者最常見的心理陷阱，以及台灣常見的非法期貨與詐騙手法。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">五大致命習慣</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 凹單：不停損、等它回來</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">虧損時不停損，期待行情反轉。在股票可能「套牢」，在期貨則會一路被追繳、最後被砍倉，甚至變成超額損失。凹單成功幾次，會強化這個習慣，直到一次就把帳戶打穿。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 逆勢攤平</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">虧損的部位繼續加碼，讓平均成本變好看，同時讓風險倍數放大。期貨的加碼只能加在已經獲利、趨勢確認的部位。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 過度槓桿</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">因為保證金只要幾萬元，就把帳戶資金用到滿。實際槓桿太高時，正常的波動就可能讓你被追繳或砍倉，連證明判斷正確的機會都沒有。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 過度交易與報復性交易</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">期貨交易方便、日夜盤時間長，很容易變成頻繁進出。虧損後想馬上賺回來而加大口數，是帳戶快速歸零的典型路徑。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑤ 移動停損（往不利方向）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">價格快碰到停損時把停損往後移，「再給它一點空間」。這等於沒有停損。停損只能往有利方向調整。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">紀律工具</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>進場同時掛停損單，讓系統替你執行，而不是靠當下意志力。</li>
+  <li><span class="check-icon">✅</span>設定單日虧損上限，觸及就關掉交易軟體，當天不再下單。</li>
+  <li><span class="check-icon">✅</span>連續停損 3 次後強制休息，回頭檢查是規則問題還是執行問題。</li>
+  <li><span class="check-icon">✅</span>把最大口數寫在紙上貼在螢幕旁，任何情況都不超過。</li>
+  <li><span class="check-icon">✅</span>每週固定檢討交易日誌，把「違反規則的交易」單獨統計損益。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">地下期貨與投資詐騙</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🕶️</div><div class="card-title">地下期貨（對賭）</div><div class="card-body">未經許可的業者以低保證金、低手續費吸引客戶，實際上是和你對賭，不進入期交所市場。獲利時可能拒絕出金或捲款潛逃，而且參與本身也有法律風險。</div></div>
+  <div class="card"><div class="card-icon">📱</div><div class="card-title">代操與老師群</div><div class="card-body">聲稱穩定月獲利、要求交出帳號密碼代操或匯款到個人帳戶。合法的全權委託有嚴格規範，任何保證獲利都是警訊。</div></div>
+  <div class="card"><div class="card-icon">🌐</div><div class="card-title">假海外平台</div><div class="card-body">以高槓桿海外期貨、差價合約（CFD）或虛擬貨幣合約為號召，App 看起來很專業，最後以各種名義要求繳費而無法出金。</div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 辨識原則</div>
+  <p>在台灣合法交易期貨，只能透過金管會許可的期貨商開戶，資金存入期貨商的客戶保證金專戶。可在期交所或金管會網站查詢合法業者；疑似詐騙可撥打 165 反詐騙諮詢專線查證。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧠 第九章測驗</span><span class="quiz-title">心理與陷阱</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 期貨交易中「凹單」最嚴重的後果是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只是暫時套牢，放著就會回來</button>
+      <button class="quiz-opt" data-correct="1">可能一路被追繳、最終被砍倉，甚至產生超額損失</button>
+      <button class="quiz-opt" data-correct="0">可以領到額外利息</button>
+      <button class="quiz-opt" data-correct="0">期交所會補償虧損</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 有業者提供「保證金只要一般一半、手續費超低、不用開戶」的期貨交易，最可能是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">期交所的優惠方案</button>
+      <button class="quiz-opt" data-correct="0">合法的新型期貨商品</button>
+      <button class="quiz-opt" data-correct="1">地下期貨對賭，有無法出金與法律風險</button>
+      <button class="quiz-opt" data-correct="0">政府補助計畫</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：交易計畫與總複習 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第十章</div>
+  <h1>交易計畫與總複習<br>把知識組裝成一套可執行的流程</h1>
+  <p class="desc">恭喜走到最後一章！期貨交易系統要回答：交易什麼規格、在什麼時間框架、用什麼策略、每筆冒多少風險、何時停止交易。這一章幫你把它寫下來，並完成總複習。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">期貨交易計畫模板</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>要回答的問題</th><th>對應章節</th></tr></thead>
+<tbody>
+<tr><td>商品與規格</td><td>交易大台、小台還是微台？為什麼？</td><td>第2章</td></tr>
+<tr><td>資金配置</td><td>期貨帳戶放多少錢？實際槓桿上限幾倍？</td><td>第3章</td></tr>
+<tr><td>時間框架</td><td>日內、夜盤還是波段留倉？</td><td>第6章</td></tr>
+<tr><td>進場規則</td><td>什麼條件下做多、做空？</td><td>第5-6章</td></tr>
+<tr><td>出場規則</td><td>停損點數怎麼定？如何停利、移動停利？</td><td>第6-7章</td></tr>
+<tr><td>口數與風控</td><td>單筆風險、單日與單月虧損上限？</td><td>第7章</td></tr>
+<tr><td>事件與結算</td><td>結算日、重大事件前怎麼處理部位？</td><td>第4、7章</td></tr>
+<tr><td>心理紀律</td><td>何時強制休息？違規如何處理？</td><td>第9章</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">每日例行流程</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">盤前（7:30-8:45）</div><div class="step-desc">看夜盤收盤、美股與費半、匯率；確認今日重要事件；檢查帳戶權益數與風險指標。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">日盤（8:45-13:45）</div><div class="step-desc">只執行計畫內的交易，進場即掛停損；觸及單日虧損上限就停止。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">盤後（14:00 後）</div><div class="step-desc">查看三大法人期貨未平倉、選擇權籌碼；寫交易日誌；決定是否留倉與夜盤策略。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">夜盤（15:00-5:00）</div><div class="step-desc">若留倉，事先設好停損單；不熬夜盯盤做衝動交易。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">週末復盤</div><div class="step-desc">統計本週 R 值與違規交易；確認下週結算日、央行與重要數據公布時間。</div></div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易日誌要記什麼</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>日期、商品與月份、方向、口數、進出場點數與時間。</li>
+  <li><span class="check-icon">✅</span>使用的策略類型、進場理由、當時的盤勢背景（趨勢、價差、籌碼）。</li>
+  <li><span class="check-icon">✅</span>停損點數、1R 金額、實際結果（R 值）、手續費與期交稅。</li>
+  <li><span class="check-icon">✅</span>是否遵守規則？若沒有，當時的情緒與原因。</li>
+  <li><span class="check-icon">✅</span>每累積 20-30 筆，統計勝率、平均獲利與虧損、期望值，依數據調整策略。</li>
+</ul>
+<div class="box box-info">
+  <div class="box-title">💡 建議行動</div>
+  <p>先用一頁紙寫下交易計畫模板的八個答案，接著用微台或模擬交易照計畫執行一個月，完整記錄日誌。一個月後依數據修正規則，確認能穩定遵守後再考慮提高規格或口數。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+<div class="quiz-card" style="margin-top:0;">
+  <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">台灣期貨交易總複習</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 1 口大台的曝險，約等於幾口微台？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">4 口</button>
+      <button class="quiz-opt" data-correct="0">10 口</button>
+      <button class="quiz-opt" data-correct="1">20 口</button>
+      <button class="quiz-opt" data-correct="0">50 口</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 盤中風險指標跌破多少時，期貨商會代為沖銷（砍倉）？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">100%</button>
+      <button class="quiz-opt" data-correct="0">75%</button>
+      <button class="quiz-opt" data-correct="0">50%</button>
+      <button class="quiz-opt" data-correct="1">25%</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 台指期在除息季出現逆價差，較正確的理解是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">一定代表市場極度悲觀</button>
+      <button class="quiz-opt" data-correct="1">主要反映預期現金股利，解讀情緒前應先扣除股利因素</button>
+      <button class="quiz-opt" data-correct="0">代表期貨價格計算錯誤</button>
+      <button class="quiz-opt" data-correct="0">代表隔天必定大漲</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q4. 總資金 100 萬、單筆風險 1%、停損 100 點，交易小台最多幾口？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">1 口</button>
+      <button class="quiz-opt" data-correct="1">2 口</button>
+      <button class="quiz-opt" data-correct="0">4 口</button>
+      <button class="quiz-opt" data-correct="0">5 口</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q5. 下列哪一個是期貨交易的正確習慣？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">虧損時把停損往後移</button>
+      <button class="quiz-opt" data-correct="0">在虧損部位上攤平</button>
+      <button class="quiz-opt" data-correct="1">進場同時掛好停損單，並設定單日虧損上限</button>
+      <button class="quiz-opt" data-correct="0">把可用保證金用到最滿以提高報酬</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+</div>
+<div class="disclaimer">
+  ⚠️ 免責聲明：本課程內容為個人學習用的期貨交易知識整理，不構成對任何期貨、選擇權或金融商品的交易建議，亦不保證任何報酬。期貨為高槓桿商品，虧損可能超過原始投入的保證金。文中指數點位、保證金、Beta 等數字均為說明用的假設值，過去的統計與型態不代表未來表現。契約規格、保證金、稅費、交易時間與風險控管規定可能隨時調整，請以臺灣期貨交易所、金管會及往來期貨商之最新公告為準。
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>

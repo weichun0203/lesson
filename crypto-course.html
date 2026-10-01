@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加密貨幣 Domain Know-how｜區塊鏈、保管、DeFi、風控與安全</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🪙 加密貨幣課</div>
+    <div class="sidebar-title">加密貨幣 Know-how<br>區塊鏈・保管・DeFi・風控・安全</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'學習地圖與使用說明', icon:'🗺️', time:'5 分鐘', level:'總覽', content: renderCh0 },
+  { id:1, title:'區塊鏈與比特幣基礎', subtitle:'帳本、共識機制、減半', icon:'⛓️', time:'20 分鐘', level:'基礎', content: renderCh1 },
+  { id:2, title:'主要資產類別', subtitle:'BTC、ETH、公鏈、穩定幣、迷因幣', icon:'🪙', time:'20 分鐘', level:'基礎', content: renderCh2 },
+  { id:3, title:'錢包與資產保管', subtitle:'私鑰、助記詞、冷熱錢包', icon:'🔐', time:'22 分鐘', level:'核心', content: renderCh3 },
+  { id:4, title:'交易所與交易實務', subtitle:'CEX、DEX、出入金、手續費', icon:'🏦', time:'20 分鐘', level:'核心', content: renderCh4 },
+  { id:5, title:'DeFi 與鏈上生態', subtitle:'AMM、無常損失、借貸、質押', icon:'🧬', time:'25 分鐘', level:'進階', content: renderCh5 },
+  { id:6, title:'估值與分析方法', subtitle:'代幣經濟學、鏈上數據、週期', icon:'🔭', time:'22 分鐘', level:'進階', content: renderCh6 },
+  { id:7, title:'衍生品與槓桿', subtitle:'永續合約、資金費率、強平', icon:'⚡', time:'20 分鐘', level:'進階', content: renderCh7 },
+  { id:8, title:'資金與風險管理', subtitle:'配置、定期定額、再平衡', icon:'🛡️', time:'18 分鐘', level:'實戰', content: renderCh8 },
+  { id:9, title:'資安與詐騙防範', subtitle:'釣魚、授權攻擊、殺豬盤', icon:'🚨', time:'20 分鐘', level:'實戰', content: renderCh9 },
+  { id:10, title:'法規、稅務與總複習', subtitle:'台灣監管現況與檢查表', icon:'📝', time:'15 分鐘', level:'總複習', content: renderCh10 }
+];
+
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('crypto_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('crypto_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+
+// ============================================================
+// CHAPTER 0
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>加密貨幣 Domain Know-how<br>先學會保管與防詐，再談投資報酬</h1>
+  <p class="desc">這套課程整理參與加密貨幣市場需要的領域知識：區塊鏈與比特幣的運作原理、主要資產類別與穩定幣、錢包與私鑰保管、交易所與鏈上操作、DeFi 生態、估值分析方法、永續合約與槓桿風險，以及資金管理、資安防詐與台灣監管現況。目標是讓你能看懂這個市場、保護好自己的資產，而不是追逐下一個百倍幣。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 3.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>適合想系統化了解加密貨幣的投資人</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-num">21M</div><div class="stat-label">比特幣供給上限（2,100 萬枚）</div></div>
+<div class="stat-card"><div class="stat-num">12/24</div><div class="stat-label">個字的助記詞＝你的資產</div></div>
+<div class="stat-card"><div class="stat-num">24/7</div><div class="stat-label">全年無休的市場</div></div>
+<div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">⛓️ 基礎原理（第1-2章）</div><div class="step-desc">區塊鏈如何記帳、共識機制、比特幣減半，以及以太坊、公鏈、穩定幣等主要資產類別。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">🔐 保管與交易（第3-4章）</div><div class="step-desc">私鑰與助記詞、冷熱錢包、託管風險，以及中心化與去中心化交易所的操作實務。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">🧬 生態與分析（第5-6章）</div><div class="step-desc">DeFi 的運作與風險、代幣經濟學、鏈上數據與市場週期。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">⚡ 槓桿與風控（第7-8章）</div><div class="step-desc">永續合約、資金費率、強制平倉機制，以及資產配置與風險管理。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">🚨 安全與合規（第9-10章）</div><div class="step-desc">常見詐騙與資安攻擊、台灣法規與稅務現況，最後整合成一份檢查表。</div></div></div>
+</div>
+<div class="section-title">如何使用本課程</div>
+<div class="card"><div class="card-body"><ul class="checklist">
+  <li><span class="check-icon">✅</span>第3章（錢包與保管）和第9章（資安與詐騙）是最重要的兩章：在加密貨幣市場，資產被盜或被騙通常無法追回。</li>
+  <li><span class="check-icon">✅</span>學完第3章後，可以用極小金額實際操作一次「從交易所提幣到自己的錢包」，熟悉流程與風險。</li>
+  <li><span class="check-icon">✅</span>任何要你輸入助記詞、私鑰的網站或人，都是詐騙。這條規則請先記住。</li>
+  <li><span class="check-icon">✅</span>做完每章測驗，60 分以上才算過關；答錯的題目回頭重讀對應段落。</li>
+  <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+</ul>
+</div></div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 開始前的提醒</div>
+  <p>本課程為個人學習用的知識整理，不構成任何投資建議，也不推薦任何幣種或平台。加密資產價格波動極大，可能在短時間內大幅下跌甚至歸零；交易所倒閉、駭客攻擊與詐騙都可能造成無法追回的損失。課程中的市場資訊依 2026 年中以前的資料整理，法規與市場變化很快，請以主管機關與官方最新資訊為準。</p>
+</div>
+
+</div>
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⛓️ 第一章</div>
+  <h1>區塊鏈與比特幣基礎<br>一本所有人共同維護、無法竄改的帳本</h1>
+  <p class="desc">比特幣在 2009 年誕生，第一次讓陌生人之間不需要銀行等中介，就能可靠地轉移數位價值。它背後的技術就是區塊鏈。這一章用最少的技術細節，說明區塊鏈怎麼運作、為什麼難以竄改，以及比特幣的供給規則。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">區塊鏈的四個核心概念</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">📒</div><div class="card-title">分散式帳本</div><div class="card-body">交易紀錄不是存在單一銀行的伺服器，而是由全世界許多節點各自保存一份相同的帳本。</div></div>
+  <div class="card"><div class="card-icon">🔗</div><div class="card-title">區塊與鏈</div><div class="card-body">交易被打包成「區塊」，每個區塊都包含前一個區塊的雜湊值，像鏈條一樣串起來。</div></div>
+  <div class="card"><div class="card-icon">#️⃣</div><div class="card-title">雜湊（Hash）</div><div class="card-body">把任意資料轉成固定長度的指紋。資料改一個字，指紋就完全不同，所以竄改舊區塊會被立刻發現。</div></div>
+  <div class="card"><div class="card-icon">🗳️</div><div class="card-title">共識機制</div><div class="card-body">決定「誰有權寫下一個區塊」的規則，讓互不信任的節點對帳本內容達成一致。</div></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 一句話理解</div>
+  <p>傳統金融是「相信銀行的帳本」；區塊鏈是「相信數學與大多數參與者的共識」。這帶來不需要中介的好處，也意味著出錯時沒有客服可以幫你撤銷交易。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">兩大共識機制</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>面向</th><th>工作量證明（PoW）</th><th>權益證明（PoS）</th></tr></thead>
+<tbody>
+<tr><td>代表</td><td>比特幣</td><td>以太坊（2022 年完成合併轉為 PoS）等</td></tr>
+<tr><td>誰來記帳</td><td>礦工以算力競爭解題</td><td>驗證者質押代幣取得記帳權</td></tr>
+<tr><td>安全來源</td><td>攻擊需要掌握大量算力與電力</td><td>攻擊需要持有並押上大量代幣，作惡會被罰沒</td></tr>
+<tr><td>能源消耗</td><td>高</td><td>低</td></tr>
+<tr><td>常見批評</td><td>耗能、礦業集中</td><td>代幣持有集中、可能有中心化疑慮</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">比特幣的供給規則</div>
+<div class="formula">總量上限：2,100 萬枚
+減半：約每 210,000 個區塊（約 4 年）挖礦獎勵減半
+2024 年 4 月減半後，每區塊獎勵為 3.125 BTC；下一次減半預計約在 2028 年</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">比特幣的發行速度寫在程式規則中，不能由任何單一機構隨意增發。這種「可預測、有上限」的供給，是支持者把它比喻為「數位黃金」的主要原因。不過，價格仍由需求決定，固定供給不等於價格一定上漲。</p>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 不可逆的交易</div>
+  <p>區塊鏈上的轉帳一旦被確認，幾乎無法撤銷。轉錯地址、轉錯網路、被騙轉出，通常都追不回來。這是學習加密貨幣最先要建立的觀念。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">區塊鏈的取捨：不可能三角</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">區塊鏈常被描述為很難同時達到「去中心化、安全性、可擴展性（速度與低手續費）」三者。比特幣偏重前兩者，因此每秒能處理的交易數有限；許多新公鏈追求速度與低費用，可能在去中心化程度上有所取捨。理解這個取捨，有助於判斷不同區塊鏈的定位。</p>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⛓️ 第一章測驗</span><span class="quiz-title">區塊鏈基礎</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 為什麼區塊鏈上的舊紀錄很難被竄改？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為有銀行在監督</button>
+      <button class="quiz-opt" data-correct="1">因為每個區塊包含前一區塊的雜湊值，改動會被立刻發現，且需改寫大多數節點的帳本</button>
+      <button class="quiz-opt" data-correct="0">因為資料都存在一台超級電腦裡</button>
+      <button class="quiz-opt" data-correct="0">因為法律禁止竄改</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於比特幣減半，下列何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">每年發行量增加一倍</button>
+      <button class="quiz-opt" data-correct="1">約每四年挖礦獎勵減半，總量上限為 2,100 萬枚</button>
+      <button class="quiz-opt" data-correct="0">由央行決定何時減半</button>
+      <button class="quiz-opt" data-correct="0">減半後價格一定上漲</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：主要資產類別 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🪙 第二章</div>
+  <h1>主要資產類別<br>不是所有「幣」都是同一種東西</h1>
+  <p class="desc">加密市場有上萬種代幣，但大多數可以歸入幾種類型。分清楚資產類別，才能理解它們的價值來源與風險差異。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">資產類別總覽</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>類別</th><th>代表例子</th><th>價值主張</th><th>主要風險</th></tr></thead>
+<tbody>
+<tr><td>比特幣</td><td>BTC</td><td>稀缺、去中心化的價值儲存</td><td>價格波動大、監管與技術風險</td></tr>
+<tr><td>智能合約公鏈（L1）</td><td>ETH、SOL 等</td><td>可在鏈上執行程式，承載 DeFi、NFT 等應用</td><td>公鏈競爭、技術漏洞、生態萎縮</td></tr>
+<tr><td>擴容方案（L2）</td><td>建立在以太坊上的各種 Rollup</td><td>降低手續費、提升速度</td><td>依賴主鏈、跨鏈橋與排序器的中心化風險</td></tr>
+<tr><td>穩定幣</td><td>USDT、USDC 等</td><td>與法幣（通常是美元）掛鉤，作為交易媒介</td><td>發行商準備金、脫鉤、監管風險</td></tr>
+<tr><td>應用與治理代幣</td><td>DeFi 協議代幣等</td><td>治理權、協議收益或使用權</td><td>代幣價值與協議收入關聯薄弱、解鎖拋壓</td></tr>
+<tr><td>迷因幣</td><td>以社群、梗圖為主的代幣</td><td>幾乎純粹由注意力與投機驅動</td><td>極高波動、拉地毯、流動性消失</td></tr>
+<tr><td>平台幣</td><td>交易所發行的代幣</td><td>手續費折扣等權益</td><td>與發行平台的命運高度綁定</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">以太坊與智能合約</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">以太坊讓開發者在區塊鏈上部署「智能合約」：自動執行的程式。這讓去中心化交易所、借貸、穩定幣、NFT 等應用成為可能。使用以太坊網路需要支付 Gas 費（以 ETH 計價），網路越擁擠，費用越高。</p>
+<div class="box box-info">
+  <div class="box-title">💡 公鏈的比較角度</div>
+  <p>評估一條公鏈可以看：去中心化程度（驗證者數量與分布）、安全歷史（是否曾當機或被攻擊）、生態規模（開發者、應用、鏈上資金）、手續費與速度。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">穩定幣：加密世界的「現金」</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">💵</div><div class="card-title">法幣抵押型</div><div class="card-body">由發行公司持有美元、短期美債等準備金。風險在於準備金是否充足、透明，以及發行商與銀行的風險。</div></div>
+  <div class="card"><div class="card-icon">🔒</div><div class="card-title">加密資產超額抵押型</div><div class="card-body">以超過發行價值的加密資產作為抵押，透過智能合約維持掛鉤。抵押品暴跌時可能觸發大量清算。</div></div>
+  <div class="card"><div class="card-icon">🧮</div><div class="card-title">演算法型</div><div class="card-body">主要靠演算法與套利機制維持價格，沒有足額抵押。2022 年 UST 崩盤後，這類設計被視為高風險。</div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 穩定幣不等於零風險</div>
+  <p>穩定幣「穩定」的是價格目標，不是保證。2022 年 UST 在數天內脫鉤崩盤，連帶引發市場連鎖崩跌；法幣抵押型穩定幣也曾在銀行危機時短暫脫鉤。持有穩定幣時，要了解它的抵押方式與發行商。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">判斷「這是哪一種幣」的五個問題</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>這個代幣的用途是什麼？不持有它，還能使用這個協議嗎？</li>
+  <li><span class="check-icon">✅</span>價值來源是使用需求、協議收入，還是純粹的社群熱度？</li>
+  <li><span class="check-icon">✅</span>代幣分配：團隊與早期投資人占多少？何時解鎖？</li>
+  <li><span class="check-icon">✅</span>項目是否已上線運作、有真實使用者，還是只有白皮書與路線圖？</li>
+  <li><span class="check-icon">✅</span>流動性如何？能在主流交易所以合理價差買賣嗎？</li>
+</ul>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🪙 第二章測驗</span><span class="quiz-title">資產類別</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 2022 年 UST 崩盤事件，主要反映哪一類穩定幣的風險？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">法幣抵押型</button>
+      <button class="quiz-opt" data-correct="0">加密資產超額抵押型</button>
+      <button class="quiz-opt" data-correct="1">演算法型</button>
+      <button class="quiz-opt" data-correct="0">黃金抵押型</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 使用以太坊網路執行交易或智能合約時，需要支付什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">年費</button>
+      <button class="quiz-opt" data-correct="1">Gas 費</button>
+      <button class="quiz-opt" data-correct="0">證交稅</button>
+      <button class="quiz-opt" data-correct="0">股息</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：錢包與資產保管 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔐 第三章</div>
+  <h1>錢包與資產保管<br>誰掌握私鑰，誰就擁有資產</h1>
+  <p class="desc">加密資產其實一直都在區塊鏈上，錢包保存的是「控制這些資產的鑰匙」。私鑰與助記詞一旦外洩或遺失，資產就可能永遠失去。這是整套課程最重要的一章之一。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">地址、私鑰與助記詞</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>名稱</th><th>比喻</th><th>可以公開嗎？</th></tr></thead>
+<tbody>
+<tr><td>錢包地址（公鑰衍生）</td><td>銀行帳號，別人轉帳給你用</td><td>可以</td></tr>
+<tr><td>私鑰</td><td>帳戶的印章與密碼，能動用所有資產</td><td>絕對不行</td></tr>
+<tr><td>助記詞（12 或 24 個英文單字）</td><td>可以還原所有私鑰的「萬能鑰匙」</td><td>絕對不行</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 最重要的一條規則</div>
+  <p>任何人、任何網站、任何「客服」、任何「官方」要你提供助記詞或私鑰，100% 是詐騙。正規錢包與交易所永遠不會向你索取助記詞。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">託管 vs 自託管</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>方式</th><th>說明</th><th>優點</th><th>風險</th></tr></thead>
+<tbody>
+<tr><td>託管（交易所）</td><td>資產放在交易所帳戶，交易所控制私鑰</td><td>操作簡單、可找回密碼、方便交易</td><td>交易所倒閉、挪用客戶資產、被駭、凍結帳戶</td></tr>
+<tr><td>自託管（個人錢包）</td><td>自己保管私鑰與助記詞</td><td>資產完全由自己控制</td><td>遺失助記詞即永久失去、自己操作失誤無法挽回</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ FTX 的教訓</div>
+  <p>2022 年大型交易所 FTX 倒閉，客戶資產被挪用，大量用戶無法提領。加密圈常說「Not your keys, not your coins」（不是你的私鑰，就不是你的幣）。長期大額持有時，應考慮自託管或分散保管。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">錢包類型</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🔥</div><div class="card-title">熱錢包</div><div class="card-body">連網的手機 App、瀏覽器擴充錢包。方便日常使用與 DeFi 操作，但較容易受到惡意軟體、釣魚攻擊。</div></div>
+  <div class="card"><div class="card-icon">🧊</div><div class="card-title">冷錢包（硬體錢包）</div><div class="card-body">私鑰保存在離線裝置中，交易需在裝置上實體確認。安全性較高，適合長期大額保管。</div></div>
+  <div class="card"><div class="card-icon">👥</div><div class="card-title">多簽錢包</div><div class="card-body">需要多把私鑰中的幾把共同簽署才能轉帳（例如 3 把中的 2 把），適合大額或團隊資產。</div></div>
+  <div class="card"><div class="card-icon">🏦</div><div class="card-title">交易所帳戶</div><div class="card-body">嚴格來說不是錢包，而是交易所欠你的資產。適合交易用途，不適合長期大額存放。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">助記詞保管守則</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>抄寫在紙上或刻在金屬板上，存放在安全、防火防水的地方，可考慮分處備份。</li>
+  <li><span class="check-icon">✅</span>不要拍照、不要截圖、不要存在雲端硬碟、記事本 App、Email 或通訊軟體。</li>
+  <li><span class="check-icon">✅</span>只從官方網站或官方授權通路購買硬體錢包，拆封前檢查是否被動過手腳。</li>
+  <li><span class="check-icon">✅</span>新裝置建立錢包時，助記詞應由裝置自己產生，而不是使用別人預先提供的助記詞。</li>
+  <li><span class="check-icon">✅</span>規劃繼承：讓信任的家人知道資產存在與取得方式，但不要讓助記詞輕易被取得。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">轉帳的實務細節</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🌐 選對網路</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">同一種幣（例如 USDT）可能存在於多條區塊鏈上。提幣時選擇的網路必須與收款地址支援的網路一致，否則資產可能遺失或需要高額費用救回。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🧪 先小額測試</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">第一次轉帳到新地址時，先轉一筆小金額確認到帳，再轉剩下的金額。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🔍 核對完整地址</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">不要只看開頭和結尾幾碼（見第九章「地址投毒」）。最好從可信來源複製並逐段核對。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🏷️ Memo／Tag</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">部分幣種轉入交易所時需要填寫 Memo 或 Tag，漏填可能導致資產無法自動入帳。</p></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔐 第三章測驗</span><span class="quiz-title">錢包與保管</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 自稱交易所客服的人要求你提供助記詞以「協助解凍帳戶」，應該怎麼做？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">提供前 6 個字就好</button>
+      <button class="quiz-opt" data-correct="0">拍照傳給對方比較快</button>
+      <button class="quiz-opt" data-correct="1">拒絕，這一定是詐騙</button>
+      <button class="quiz-opt" data-correct="0">先轉一點幣給對方確認</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 關於助記詞的保管，下列何者較安全？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">存在雲端相簿</button>
+      <button class="quiz-opt" data-correct="1">抄寫在紙上或金屬板上，離線存放於安全處</button>
+      <button class="quiz-opt" data-correct="0">傳到自己的通訊軟體備份</button>
+      <button class="quiz-opt" data-correct="0">寫在手機記事本</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：交易所與交易實務 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🏦 第四章</div>
+  <h1>交易所與交易實務<br>從法幣入金到鏈上操作</h1>
+  <p class="desc">大多數人進入加密市場的第一步是交易所。這一章比較中心化交易所與去中心化交易所的差異，並整理出入金、下單、手續費與挑選平台的實務重點。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">CEX vs DEX</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>面向</th><th>中心化交易所（CEX）</th><th>去中心化交易所（DEX）</th></tr></thead>
+<tbody>
+<tr><td>運作方式</td><td>公司營運，撮合訂單簿</td><td>智能合約與流動性池自動成交</td></tr>
+<tr><td>資產保管</td><td>交易所託管</td><td>使用者自己的錢包</td></tr>
+<tr><td>身分驗證</td><td>需 KYC</td><td>通常不需要</td></tr>
+<tr><td>法幣出入金</td><td>支援</td><td>通常不支援</td></tr>
+<tr><td>可交易幣種</td><td>經平台審核上架</td><td>任何人都能建立交易對，包含大量詐騙代幣</td></tr>
+<tr><td>主要風險</td><td>平台倒閉、挪用、被駭、帳戶凍結</td><td>智能合約漏洞、假代幣、滑價、操作失誤</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易成本</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">💱</div><div class="card-title">交易手續費</div><div class="card-body">CEX 常分為掛單（Maker）與吃單（Taker）費率，掛單提供流動性通常較便宜。</div></div>
+  <div class="card"><div class="card-icon">📤</div><div class="card-title">提幣費</div><div class="card-body">提領到外部錢包時，依幣種與網路收取。不同網路費用差異很大。</div></div>
+  <div class="card"><div class="card-icon">⛽</div><div class="card-title">Gas 費</div><div class="card-body">在鏈上操作（DEX 交易、DeFi）時支付給網路驗證者的費用，網路擁擠時會飆高。</div></div>
+  <div class="card"><div class="card-icon">📉</div><div class="card-title">滑價</div><div class="card-body">成交價與預期價格的差距。流動性低的代幣或大額交易滑價明顯，DEX 可設定滑價容忍度。</div></div>
+  <div class="card"><div class="card-icon">💵</div><div class="card-title">出入金與匯差</div><div class="card-body">法幣入金、出金的手續費，以及買賣穩定幣時的價差。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">台灣使用者的實務</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">在台灣，提供虛擬資產服務的業者須依洗錢防制規定向主管機關完成登記，才能合法對台灣用戶提供服務。選擇平台時，可查詢金管會公布的已完成登記業者名單，未登記的境外業者在台招攬可能違法，出問題時也較難求償。</p>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 出入金常見問題</div>
+  <p>部分銀行對加密貨幣相關入金較謹慎；經由個人對個人（P2P／OTC）交易購買，可能收到詐騙或洗錢的贓款，導致自己的銀行帳戶被列為警示帳戶。盡量使用合法平台的官方出入金管道。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">挑選交易所的檢查清單</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>是否在主管機關完成登記或取得當地執照？</li>
+  <li><span class="check-icon">✅</span>是否定期公布儲備證明（Proof of Reserves），客戶資產與公司資產是否分離？</li>
+  <li><span class="check-icon">✅</span>安全紀錄：是否曾被駭、如何處理用戶損失？</li>
+  <li><span class="check-icon">✅</span>流動性與幣種：主要交易對成交量是否足夠？</li>
+  <li><span class="check-icon">✅</span>帳戶安全功能：雙重驗證（2FA）、提幣白名單、防釣魚碼、登入通知。</li>
+  <li><span class="check-icon">✅</span>不要把所有資產集中在單一平台，只放交易需要的部分。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">DEX 操作要點</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🔎 確認代幣合約地址</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">任何人都能發行同名代幣。在 DEX 交易前，從官方網站或可信資料站確認代幣的合約地址，不要只看名稱與圖示。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⚙️ 滑價設定</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">滑價容忍度設太高，可能被「三明治攻擊」等交易機器人吃掉價差；設太低則可能交易失敗。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🧾 交易前看清簽署內容</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">錢包跳出的每一個簽署請求都要看懂再確認，尤其是「授權（Approve）」類型（見第九章）。</p></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🏦 第四章測驗</span><span class="quiz-title">交易所實務</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 在 DEX 交易某個代幣前，最重要的確認步驟是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">確認代幣名稱和圖示正確</button>
+      <button class="quiz-opt" data-correct="1">確認代幣的合約地址來自官方或可信來源</button>
+      <button class="quiz-opt" data-correct="0">確認價格是否夠便宜</button>
+      <button class="quiz-opt" data-correct="0">確認社群人數</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 透過不明 P2P 管道購買加密貨幣的主要風險之一是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">手續費一定比較高</button>
+      <button class="quiz-opt" data-correct="1">可能收到詐騙贓款，導致銀行帳戶被列為警示帳戶</button>
+      <button class="quiz-opt" data-correct="0">無法收到加密貨幣是唯一風險</button>
+      <button class="quiz-opt" data-correct="0">沒有任何風險</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：DeFi 與鏈上生態 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧬 第五章</div>
+  <h1>DeFi 與鏈上生態<br>沒有銀行的金融服務，也沒有銀行的保護</h1>
+  <p class="desc">去中心化金融（DeFi）用智能合約提供交易、借貸、收益等金融服務，任何人只要有錢包就能使用。它帶來創新，也帶來智能合約漏洞、清算與詐騙等獨特風險。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>25 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">自動做市商（AMM）</div>
+<div class="formula">常見恆定乘積公式：x × y = k
+x、y 為池中兩種資產數量，k 在交易前後維持不變（扣除手續費）</div>
+
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">傳統交易所靠買賣雙方掛單；AMM 則由「流動性提供者（LP）」把兩種資產存入資金池，交易者直接與池子交易，價格依池中資產比例自動調整。LP 可以賺取交易手續費。</p>
+<div class="section">
+  <div class="section-title">無常損失（Impermanent Loss）</div>
+<div class="formula">無常損失 = 2√r ÷ (1 + r) − 1（r 為兩資產相對價格變動倍數）
+價格變 2 倍 → 約 −5.7%｜變 4 倍 → 約 −20%</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 什麼是無常損失</div>
+  <p>提供流動性後，若兩種資產的相對價格大幅變動，你取回的資產價值會低於「單純持有不動」的價值。這段差距就是無常損失。只有在手續費收入大於無常損失時，提供流動性才划算；價格回到原點時損失才會消失，因此稱為「無常」。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">DeFi 主要應用</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🏦</div><div class="card-title">借貸協議</div><div class="card-body">存入資產賺利息，或以加密資產抵押借款。抵押品價值跌破門檻時會被自動清算。</div></div>
+  <div class="card"><div class="card-icon">🥩</div><div class="card-title">質押（Staking）</div><div class="card-body">在 PoS 鏈上質押代幣參與驗證，獲得獎勵。有解除質押等待期與罰沒風險。</div></div>
+  <div class="card"><div class="card-icon">💧</div><div class="card-title">流動性質押</div><div class="card-body">質押後取得可交易的憑證代幣，保有流動性，但多了一層合約與脫鉤風險。</div></div>
+  <div class="card"><div class="card-icon">🌉</div><div class="card-title">跨鏈橋</div><div class="card-body">把資產從一條鏈轉移到另一條鏈。跨鏈橋是歷史上被駭金額最大的類別之一。</div></div>
+  <div class="card"><div class="card-icon">🖼️</div><div class="card-title">NFT</div><div class="card-body">不可替代代幣，用於數位收藏、遊戲道具、會員憑證等，流動性與價格波動風險極高。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">高收益從哪裡來？</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">真實收益</div><div class="step-desc">來自交易手續費、借款利息等實際業務收入，通常較穩定但不會極高。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">代幣補貼</div><div class="step-desc">協議發行自己的代幣作為獎勵吸引資金，年化看起來很高，但代幣價格常隨之下跌。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">槓桿與循環</div><div class="step-desc">借款再存入、再借款放大收益，同時放大清算風險。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">龐氏結構</div><div class="step-desc">用新進資金支付舊用戶的收益，一旦資金流入停止就崩盤。</div></div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 看到高年化先問來源</div>
+  <p>如果你說不清楚高收益是從哪裡來，那你很可能就是收益的來源。年化收益越高，越要懷疑背後的風險：合約漏洞、代幣通膨、治理攻擊、團隊捲款。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">DeFi 風險清單</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>智能合約漏洞：是否經過審計？審計不代表沒有風險。</li>
+  <li><span class="check-icon">✅</span>預言機風險：價格資料被操縱，可能導致錯誤清算。</li>
+  <li><span class="check-icon">✅</span>管理員權限：團隊是否能升級合約、凍結或轉移資金？</li>
+  <li><span class="check-icon">✅</span>清算風險：抵押率是否保留足夠緩衝？</li>
+  <li><span class="check-icon">✅</span>穩定幣與憑證代幣脫鉤風險。</li>
+  <li><span class="check-icon">✅</span>監管風險：部分服務在不同司法管轄區可能受到限制。</li>
+</ul>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧬 第五章測驗</span><span class="quiz-title">DeFi</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 提供流動性後，兩種資產相對價格大幅變動造成的價值落差，稱為什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">滑價</button>
+      <button class="quiz-opt" data-correct="1">無常損失</button>
+      <button class="quiz-opt" data-correct="0">資金費率</button>
+      <button class="quiz-opt" data-correct="0">Gas 費</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 某 DeFi 協議宣稱年化收益 500%，你最先該問的問題是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">要怎麼借錢加碼</button>
+      <button class="quiz-opt" data-correct="1">收益從哪裡來？是真實收入、代幣補貼還是新資金</button>
+      <button class="quiz-opt" data-correct="0">為什麼不是 1000%</button>
+      <button class="quiz-opt" data-correct="0">社群人數有多少</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：估值與分析方法 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔭 第六章</div>
+  <h1>估值與分析方法<br>沒有財報的資產，要怎麼分析</h1>
+  <p class="desc">多數加密資產沒有傳統意義的現金流，估值更加困難。這一章整理常用的分析框架：代幣經濟學、市值與完全稀釋估值、鏈上數據、宏觀環境與市場週期。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">代幣經濟學（Tokenomics）</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>要看什麼</th><th>警訊</th></tr></thead>
+<tbody>
+<tr><td>供給</td><td>總量上限、目前流通量、發行速度</td><td>無上限且高通膨</td></tr>
+<tr><td>分配</td><td>團隊、投資人、社群、金庫各占多少</td><td>團隊與早期投資人占比過高</td></tr>
+<tr><td>解鎖時程</td><td>鎖倉代幣何時釋出</td><td>短期內大量解鎖，可能造成拋壓</td></tr>
+<tr><td>用途與需求</td><td>代幣在協議中有什麼必要用途</td><td>只有「治理」而無實際需求</td></tr>
+<tr><td>價值捕獲</td><td>協議收入是否回饋代幣（回購、銷毀、分潤）</td><td>協議賺錢但與代幣無關</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">市值與完全稀釋估值</div>
+<div class="formula">流通市值 = 價格 × 流通供給量
+完全稀釋估值（FDV）= 價格 × 最大（或總）供給量</div>
+
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">若流通量只占總量的 10-20%，流通市值看起來很小，但 FDV 可能非常大，代表未來大量代幣釋出時需要更多買盤承接。「低流通、高 FDV」是許多新代幣上市後持續下跌的原因之一。</p>
+<div class="section">
+  <div class="section-title">鏈上數據</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">👥</div><div class="card-title">活躍地址與交易數</div><div class="card-body">反映網路使用程度，但可能被機器人與刷量扭曲。</div></div>
+  <div class="card"><div class="card-icon">🏦</div><div class="card-title">交易所流入流出</div><div class="card-body">大量幣流入交易所可能代表賣壓；流出到個人錢包可能代表長期持有意願。</div></div>
+  <div class="card"><div class="card-icon">💰</div><div class="card-title">協議收入與 TVL</div><div class="card-body">DeFi 協議的手續費收入與鎖倉總值（TVL），衡量實際使用規模。</div></div>
+  <div class="card"><div class="card-icon">🐋</div><div class="card-title">大戶持幣分布</div><div class="card-body">觀察前幾大地址持有比例與變化，持幣過度集中代表操控風險。</div></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 鏈上數據的限制</div>
+  <p>同一個人可以有很多地址，交易所錢包也會混合大量用戶資產。鏈上數據適合觀察趨勢與異常，不宜單獨作為買賣依據。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">宏觀環境與資金流</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🏛️ 利率與美元流動性</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">加密資產常被視為高風險資產，在寬鬆貨幣環境下較受資金青睞，升息、美元走強時常承壓。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📈 現貨 ETF</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">美國在 2024 年核准比特幣與以太幣現貨 ETF，讓傳統資金能透過證券帳戶參與，ETF 資金流入流出成為觀察指標之一。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⚖️ 監管事件</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">主要國家的監管政策、執法行動，可能在短期內大幅影響市場。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🔁 與美股的相關性</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">比特幣與科技股在某些時期呈現較高相關性，並非總是「避險資產」。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">市場週期</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">比特幣歷史上常被描述為約四年一次的週期，與減半時間大致對應：減半前後逐步上漲、進入狂熱高峰、之後深度回檔（歷史上從高點回撤超過 70% 的情況多次出現）、再長期盤整。但週期只有少數幾次樣本，市場結構也在改變（ETF、機構參與），不能當作必然規律。</p>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 敘事驅動的市場</div>
+  <p>加密市場的資金常追逐「敘事」：DeFi、NFT、Layer 2、AI 代幣、迷因幣等輪流成為焦點。敘事能帶動短期漲幅，但多數熱門項目在敘事退潮後大幅下跌。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔭 第六章測驗</span><span class="quiz-title">估值分析</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 某代幣流通量只占總供給 10%，流通市值 1 億美元，其 FDV 約為多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">1,000 萬美元</button>
+      <button class="quiz-opt" data-correct="0">1 億美元</button>
+      <button class="quiz-opt" data-correct="1">10 億美元</button>
+      <button class="quiz-opt" data-correct="0">無法計算</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 大量比特幣從個人錢包流入交易所，常被解讀為什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">長期持有意願增加</button>
+      <button class="quiz-opt" data-correct="1">可能代表潛在賣壓增加</button>
+      <button class="quiz-opt" data-correct="0">網路即將減半</button>
+      <button class="quiz-opt" data-correct="0">手續費下降</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：衍生品與槓桿 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">⚡ 第七章</div>
+  <h1>衍生品與槓桿<br>24 小時不休市的高槓桿戰場</h1>
+  <p class="desc">加密市場的衍生品交易量往往大於現貨，其中最主要的是永續合約。高槓桿、全年無休、劇烈波動三者疊加，讓強制平倉成為加密市場最常見的虧損來源之一。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">永續合約（Perpetual Futures）</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">♾️</div><div class="card-title">沒有到期日</div><div class="card-body">和傳統期貨不同，永續合約不需要轉倉，可以一直持有。</div></div>
+  <div class="card"><div class="card-icon">💸</div><div class="card-title">資金費率</div><div class="card-body">為了讓合約價格貼近現貨，多空雙方定期互付資金費（許多平台每 8 小時結算一次）。合約價格高於現貨時，多方付給空方；反之空方付給多方。</div></div>
+  <div class="card"><div class="card-icon">🎚️</div><div class="card-title">可選槓桿</div><div class="card-body">平台常提供數倍到數十倍甚至更高的槓桿，槓桿越高，強平價格越接近進場價。</div></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 資金費率的意義</div>
+  <p>資金費率長期大幅為正，代表市場做多擁擠、多方願意付費持有部位，常被視為情緒過熱的指標；大幅為負則代表空方擁擠。持有部位期間，資金費也是一筆持續的成本或收入。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">強制平倉（爆倉）</div>
+<div class="formula">不計手續費與維持保證金的粗略估算：
+強平前可承受的反向波動 ≈ 1 ÷ 槓桿倍數
+10 倍 → 約 10%（實際更少）｜20 倍 → 約 5%｜50 倍 → 約 2%</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>槓桿</th><th>可承受反向波動（粗估）</th><th>比特幣單日波動 5% 時</th></tr></thead>
+<tbody>
+<tr><td>2 倍</td><td>約 50%</td><td>安全空間大</td></tr>
+<tr><td>5 倍</td><td>約 20%</td><td>仍有緩衝</td></tr>
+<tr><td>10 倍</td><td>約 10%（實際更少）</td><td>接近強平</td></tr>
+<tr><td>20 倍以上</td><td>5% 以下</td><td>可能直接被強平</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 連環爆倉</div>
+  <p>價格急跌時，大量多單被強平、被迫市價賣出，進一步推低價格，觸發更多強平，形成瀑布式下跌（反之亦然）。這類行情常在幾分鐘內完成，而且可能發生在你睡覺的時候。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">全倉與逐倉</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>模式</th><th>說明</th><th>風險</th></tr></thead>
+<tbody>
+<tr><td>逐倉（Isolated）</td><td>每個部位只使用分配給它的保證金</td><td>強平時只損失該部位保證金</td></tr>
+<tr><td>全倉（Cross）</td><td>帳戶內所有可用資金共同支撐部位</td><td>可以撐得比較久，但一次極端行情可能讓整個帳戶歸零</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">衍生品使用原則</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>新手不建議使用槓桿；若使用，以低槓桿、小部位開始。</li>
+  <li><span class="check-icon">✅</span>用「停損價」而非「強平價」控制風險，停損應遠在強平價之前觸發。</li>
+  <li><span class="check-icon">✅</span>依停損距離計算部位：可承受虧損 ÷ 停損幅度 = 部位名目金額（概念同期貨課程第七章）。</li>
+  <li><span class="check-icon">✅</span>注意資金費率成本與極端行情時的插針、滑價與平台延遲。</li>
+  <li><span class="check-icon">✅</span>只在受監管或信譽良好的平台交易，了解平台的保險基金與自動減倉機制。</li>
+</ul>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">⚡ 第七章測驗</span><span class="quiz-title">衍生品與槓桿</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 使用 20 倍槓桿做多，粗估價格反向下跌約多少就可能被強制平倉？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">約 50%</button>
+      <button class="quiz-opt" data-correct="0">約 20%</button>
+      <button class="quiz-opt" data-correct="1">約 5% 以下</button>
+      <button class="quiz-opt" data-correct="0">不可能被強平</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 永續合約資金費率長期大幅為正，通常代表什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">空方擁擠</button>
+      <button class="quiz-opt" data-correct="1">多方擁擠，多方需付費給空方</button>
+      <button class="quiz-opt" data-correct="0">合約即將到期</button>
+      <button class="quiz-opt" data-correct="0">交易所倒閉</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：資金與風險管理 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🛡️ 第八章</div>
+  <h1>資金與風險管理<br>能活過熊市的人，才看得到下一次牛市</h1>
+  <p class="desc">加密資產歷史上曾多次從高點下跌 70-80% 以上，許多小型代幣甚至直接歸零。在這樣的市場，資金管理比選幣更重要。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實戰</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">配置原則</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🥧</div><div class="card-title">控制占總資產比例</div><div class="card-body">只投入「即使大幅虧損也不影響生活」的資金。對多數人而言，加密資產適合作為整體資產中的小比例衛星部位。</div></div>
+  <div class="card"><div class="card-icon">🧱</div><div class="card-title">核心與衛星</div><div class="card-body">若參與，可以把較大比例放在流動性高、歷史較長的資產，小比例才分配給高風險的小型代幣。</div></div>
+  <div class="card"><div class="card-icon">💵</div><div class="card-title">保留現金與緊急預備金</div><div class="card-body">不要動用生活費、緊急預備金或借款投資加密資產。</div></div>
+  <div class="card"><div class="card-icon">🏦</div><div class="card-title">分散保管</div><div class="card-body">交易所只放交易所需資金，其餘分散保管，避免單一平台風險。</div></div>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 回撤的數學</div>
+  <p>下跌 80% 後，需要上漲 400% 才能回本。加密市場的大幅回撤並不罕見，配置比例應該以「承受得起這樣的回撤」為前提來決定。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">常見投入方式</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>方式</th><th>說明</th><th>適合情境</th></tr></thead>
+<tbody>
+<tr><td>定期定額（DCA）</td><td>固定時間投入固定金額，不擇時</td><td>長期參與、降低擇時壓力</td></tr>
+<tr><td>分批進場</td><td>預先規劃多個價位或時間點分批買進</td><td>想降低單點進場風險</td></tr>
+<tr><td>一次投入</td><td>一次買進全部預定部位</td><td>有明確判斷，且能承受短期大幅波動</td></tr>
+<tr><td>再平衡</td><td>定期把配置比例調回目標（例如每季）</td><td>漲多時自動獲利了結、跌多時加碼</td></tr>
+</tbody>
+</table>
+</div>
+<div class="formula">再平衡範例：目標配置 加密 10%、其他 90%
+加密大漲後變成 20% → 賣出一部分調回 10%
+加密大跌後變成 5% → 用其他資產補回 10%</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易者的風控規則</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>單筆交易風險不超過總資金 1-2%，並在進場前設定停損。</li>
+  <li><span class="check-icon">✅</span>不追高熱門代幣，尤其是剛上市、流通量低、短期暴漲的項目。</li>
+  <li><span class="check-icon">✅</span>設定單週或單月最大虧損上限，觸及即停止交易。</li>
+  <li><span class="check-icon">✅</span>保留交易紀錄，方便檢討與報稅。</li>
+  <li><span class="check-icon">✅</span>提前規劃獲利了結：例如每漲一倍取回部分本金。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">心理陷阱</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>😱 FOMO</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">看到別人大賺而追高，常常買在敘事的尾聲。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>💎 盲目長抱（Diamond Hands）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">把「不賣」當成信仰，忽略項目基本面已經惡化，抱著小型代幣歸零。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📢 同溫層效應</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">社群媒體與群組充滿看多聲音，容易高估上漲機率、低估風險。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🎰 以小博大</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">把資金分散在大量小代幣，期待其中一個百倍，結果大多數歸零。</p></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🛡️ 第八章測驗</span><span class="quiz-title">資金管理</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 一項資產下跌 80% 後，需要上漲多少才能回本？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">80%</button>
+      <button class="quiz-opt" data-correct="0">160%</button>
+      <button class="quiz-opt" data-correct="1">400%</button>
+      <button class="quiz-opt" data-correct="0">800%</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 目標配置加密資產 10%，大漲後占比變成 20%，依再平衡原則應怎麼做？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">全部加碼</button>
+      <button class="quiz-opt" data-correct="1">賣出一部分讓比例回到 10%</button>
+      <button class="quiz-opt" data-correct="0">什麼都不做</button>
+      <button class="quiz-opt" data-correct="0">借錢再買</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：資安與詐騙防範 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🚨 第九章</div>
+  <h1>資安與詐騙防範<br>在加密世界，你就是自己的銀行與保全</h1>
+  <p class="desc">加密資產被盜或被騙後通常無法追回，詐騙手法也不斷翻新。這一章整理最常見的攻擊與詐騙類型，以及具體的防護措施。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實戰</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">常見的技術型攻擊</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🎣 釣魚網站</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">仿冒交易所或錢包網站，騙你輸入帳密或助記詞。常透過搜尋廣告、假客服、Email、簡訊散播。對策：用書籤進入官方網站，不點不明連結。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>✍️ 惡意授權（Approve）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">錢包簽署「授權」後，對方合約可以轉走你授權的代幣。很多盜幣事件起因於在假網站點了「領取空投」並簽署授權。對策：看懂每一次簽署內容，定期使用授權管理工具撤銷不用的授權。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>☠️ 地址投毒</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">攻擊者用與你常用地址開頭結尾相同的假地址，對你發送小額或零額交易，污染你的交易紀錄，等你下次從紀錄複製錯誤地址。對策：從可信來源複製地址並核對完整內容。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🎁 假空投與惡意代幣</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">錢包突然收到不明代幣，引導你去網站「兌換」，實際上是要騙授權或助記詞。對策：不理會不明代幣與連結。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📱 SIM 卡挾持</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">詐騙者冒用你的身分申請補發 SIM 卡，攔截簡訊驗證碼登入你的帳戶。對策：使用驗證器 App 或實體安全金鑰，而非只用簡訊驗證。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🦠 惡意軟體</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">剪貼簿竄改程式會把你複製的地址換成攻擊者地址。對策：保持裝置更新，不安裝來路不明的軟體或破解版程式。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">常見的社交詐騙</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🐷</div><div class="card-title">殺豬盤</div><div class="card-body">透過交友軟體或社群建立感情或信任，再引導投資「穩賺」的平台。平台帳面一直賺錢，想出金時要求繳稅金、保證金，最後全部被騙。</div></div>
+  <div class="card"><div class="card-icon">🎭</div><div class="card-title">冒充名人或官方</div><div class="card-body">假冒知名人士、交易所官方帳號，宣稱「轉 1 個幣回饋 2 個幣」或贈品活動。</div></div>
+  <div class="card"><div class="card-icon">🧑‍🏫</div><div class="card-title">投資群組與帶單老師</div><div class="card-body">承諾高報酬、要求下載特定 App 或轉幣到指定地址。</div></div>
+  <div class="card"><div class="card-icon">🪤</div><div class="card-title">拉地毯（Rug Pull）</div><div class="card-body">項目方發行代幣、炒熱後撤走流動性或拋售持幣，代幣價格瞬間歸零。</div></div>
+  <div class="card"><div class="card-icon">🛟</div><div class="card-title">假冒找回資產服務</div><div class="card-body">受害者被騙後，又遇到「可以幫你追回」的第二次詐騙，要求先付費用。</div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 判斷詐騙的四個訊號</div>
+  <p>保證獲利或極高報酬、要求轉幣到個人地址或陌生平台、要求提供助記詞或私鑰、製造急迫感（限時、名額有限）。出現任何一項，就應停止並查證。在台灣可撥打 165 反詐騙諮詢專線。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">個人資安清單</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>交易所與 Email 使用獨立、強度高的密碼，搭配密碼管理器。</li>
+  <li><span class="check-icon">✅</span>開啟驗證器 App 或實體安全金鑰作為雙重驗證，不只依賴簡訊。</li>
+  <li><span class="check-icon">✅</span>開啟提幣白名單、防釣魚碼與登入通知。</li>
+  <li><span class="check-icon">✅</span>日常使用的熱錢包只放小額，大額資產放冷錢包或多簽錢包。</li>
+  <li><span class="check-icon">✅</span>用書籤進入官方網站，不點搜尋廣告與私訊連結。</li>
+  <li><span class="check-icon">✅</span>不在公共 Wi-Fi 或他人電腦上操作錢包與交易所。</li>
+  <li><span class="check-icon">✅</span>定期檢查並撤銷不需要的代幣授權。</li>
+</ul>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🚨 第九章測驗</span><span class="quiz-title">資安與詐騙</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 錢包裡出現不明代幣，附上「點此兌換」的網址，應該怎麼做？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">馬上點進去兌換</button>
+      <button class="quiz-opt" data-correct="0">連接錢包並簽署授權</button>
+      <button class="quiz-opt" data-correct="1">不理會，不點擊連結也不與之互動</button>
+      <button class="quiz-opt" data-correct="0">把助記詞輸入網站確認身分</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 網友介紹的投資平台帳面獲利很高，但出金前要求先繳「稅金」，最可能是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">正常的平台流程</button>
+      <button class="quiz-opt" data-correct="1">殺豬盤或假平台詐騙</button>
+      <button class="quiz-opt" data-correct="0">政府新規定</button>
+      <button class="quiz-opt" data-correct="0">區塊鏈網路手續費</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：法規、稅務與總複習 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第十章</div>
+  <h1>法規、稅務與總複習<br>合規是長期參與的基本功</h1>
+  <p class="desc">加密資產的監管在全球快速演變。這一章簡要整理台灣的監管方向與稅務觀念，並提供一份完整的參與前檢查表。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">台灣監管現況（概要）</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🏛️</div><div class="card-title">主管機關</div><div class="card-body">金管會為虛擬資產服務業的洗錢防制主管機關，並持續推動相關專法，監管方向包括業者登記、客戶資產保護、資訊揭露等。</div></div>
+  <div class="card"><div class="card-icon">📝</div><div class="card-title">業者登記制</div><div class="card-body">提供虛擬資產服務的業者須完成洗錢防制登記。依修正後的洗錢防制法，未完成登記而在台提供服務可能有刑事責任。</div></div>
+  <div class="card"><div class="card-icon">🪪</div><div class="card-title">KYC 與旅行規則</div><div class="card-body">合法平台會要求實名驗證，並在一定條件下傳遞轉帳雙方資訊，以符合洗錢防制要求。</div></div>
+  <div class="card"><div class="card-icon">⚠️</div><div class="card-title">高風險提醒</div><div class="card-body">主管機關多次提醒虛擬資產價格波動大、不受存款保險保障，投資人應自行評估風險。</div></div>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 以最新公告為準</div>
+  <p>虛擬資產相關法規正在快速發展，專法立法進度、登記業者名單與規範內容可能隨時更新。上述內容依 2026 年中以前的資訊整理，參與前請查閱金管會最新公告。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">稅務觀念</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">目前台灣對加密資產沒有專門的稅法，但這不代表獲利一定免稅。個人買賣加密資產的獲利，可能依現行所得稅法規定被視為所得課稅；境外交易所的所得也可能涉及海外所得相關規定。實際適用方式請諮詢會計師或向國稅局確認。</p>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>保留每一筆買賣、轉帳、出入金的紀錄與截圖，包括日期、數量、價格與手續費。</li>
+  <li><span class="check-icon">✅</span>保存交易所匯出的對帳單，平台倒閉後可能無法再取得。</li>
+  <li><span class="check-icon">✅</span>金額較大或有境外收入時，及早諮詢專業稅務人士。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">參與加密市場前的檢查表</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>我投入的是「即使大幅虧損也不影響生活」的資金，並已設定占總資產的上限。</li>
+  <li><span class="check-icon">✅</span>我知道自己買的資產屬於哪一類、價值來源與主要風險是什麼。</li>
+  <li><span class="check-icon">✅</span>我使用已完成登記的平台，並開啟雙重驗證、提幣白名單等安全功能。</li>
+  <li><span class="check-icon">✅</span>我懂得助記詞的意義，並以離線方式妥善保管；從不向任何人提供。</li>
+  <li><span class="check-icon">✅</span>轉帳時確認網路、完整地址與 Memo，並先小額測試。</li>
+  <li><span class="check-icon">✅</span>若使用 DeFi，我清楚收益來源，並會定期撤銷不需要的授權。</li>
+  <li><span class="check-icon">✅</span>若使用槓桿，我以低槓桿、小部位操作，停損遠在強平價之前。</li>
+  <li><span class="check-icon">✅</span>我保留完整交易紀錄，了解可能的稅務義務。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+<div class="quiz-card" style="margin-top:0;">
+  <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">加密貨幣總複習</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「Not your keys, not your coins」這句話主要提醒什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">私鑰不重要</button>
+      <button class="quiz-opt" data-correct="1">資產放在交易所時，實際控制權在交易所手上，存在託管風險</button>
+      <button class="quiz-opt" data-correct="0">比特幣沒有私鑰</button>
+      <button class="quiz-opt" data-correct="0">只能用交易所保管資產</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 比特幣總供給上限是多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">2,100 萬枚</button>
+      <button class="quiz-opt" data-correct="0">1 億枚</button>
+      <button class="quiz-opt" data-correct="0">210 萬枚</button>
+      <button class="quiz-opt" data-correct="0">沒有上限</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 提供流動性時，兩資產相對價格變 4 倍，無常損失約為多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">約 −1%</button>
+      <button class="quiz-opt" data-correct="0">約 −5.7%</button>
+      <button class="quiz-opt" data-correct="1">約 −20%</button>
+      <button class="quiz-opt" data-correct="0">約 −75%</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q4. 下列何者最可能是詐騙？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">交易所提醒你開啟雙重驗證</button>
+      <button class="quiz-opt" data-correct="1">有人保證每月 30% 報酬並要求你轉幣到他的地址</button>
+      <button class="quiz-opt" data-correct="0">硬體錢包要求你在裝置上確認交易</button>
+      <button class="quiz-opt" data-correct="0">官方網站公告維護時間</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q5. 關於穩定幣，下列敘述何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">穩定幣保證永遠 1 美元</button>
+      <button class="quiz-opt" data-correct="1">穩定幣有不同的抵押設計，仍可能因準備金、機制或發行商問題而脫鉤</button>
+      <button class="quiz-opt" data-correct="0">穩定幣受存款保險保障</button>
+      <button class="quiz-opt" data-correct="0">演算法穩定幣風險最低</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+</div>
+<div class="disclaimer">
+  ⚠️ 免責聲明：本課程內容為個人學習用的加密資產知識整理，不構成對任何虛擬資產、代幣、平台或金融商品的投資建議，亦不保證任何報酬。加密資產價格波動劇烈，可能大幅下跌或歸零，且不受存款保險保障；交易所倒閉、駭客攻擊、智能合約漏洞與詐騙可能造成無法追回的損失。文中提及的資產與平台僅為說明用途，不代表推薦。市場、法規與稅務資訊依 2026 年中以前的資料整理，可能已有變動，請以金管會、財政部等主管機關最新公告為準，必要時諮詢專業人士。
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>

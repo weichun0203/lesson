@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣權證 Domain Know-how｜挑選指標、造市、牛熊證與風控</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🎫 台灣權證課</div>
+    <div class="sidebar-title">台灣權證 Know-how<br>定價・挑選・造市・風控</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'學習地圖與使用說明', icon:'🗺️', time:'5 分鐘', level:'總覽', content: renderCh0 },
+  { id:1, title:'權證是什麼', subtitle:'認購、認售與發行商', icon:'🎫', time:'15 分鐘', level:'基礎', content: renderCh1 },
+  { id:2, title:'權證規格與交易規則', subtitle:'行使比例、到期、稅費', icon:'📋', time:'18 分鐘', level:'基礎', content: renderCh2 },
+  { id:3, title:'權證的價格組成', subtitle:'內含價值、時間價值、Delta', icon:'🧾', time:'22 分鐘', level:'核心', content: renderCh3 },
+  { id:4, title:'挑選權證的關鍵指標', subtitle:'實質槓桿、隱波、價差比、外流比', icon:'🔍', time:'25 分鐘', level:'核心', content: renderCh4 },
+  { id:5, title:'發行商與造市機制', subtitle:'你的交易對手是誰', icon:'🏦', time:'20 分鐘', level:'核心', content: renderCh5 },
+  { id:6, title:'牛熊證', subtitle:'限制價、財務費用與提前到期', icon:'🐂', time:'18 分鐘', level:'進階', content: renderCh6 },
+  { id:7, title:'權證交易策略', subtitle:'用標的判斷、用權證執行', icon:'🎯', time:'22 分鐘', level:'實戰', content: renderCh7 },
+  { id:8, title:'風險與部位控管', subtitle:'以全損為前提的資金規劃', icon:'🛡️', time:'18 分鐘', level:'實戰', content: renderCh8 },
+  { id:9, title:'常見錯誤與心理陷阱', subtitle:'買最便宜、抱到到期、報牌群', icon:'🧠', time:'15 分鐘', level:'進階', content: renderCh9 },
+  { id:10, title:'交易計畫與總複習', subtitle:'挑選流程與檢查表', icon:'📝', time:'18 分鐘', level:'總複習', content: renderCh10 }
+];
+
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('twwarrant_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('twwarrant_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+
+// ============================================================
+// CHAPTER 0
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>台灣權證 Domain Know-how<br>同一檔股票、上百檔權證，差別在哪裡</h1>
+  <p class="desc">權證讓你用證券戶就能以小資金參與個股漲跌，但同一檔標的常有數十甚至上百檔權證，價格、槓桿、時間成本與造市品質差異很大。這套課程整理挑選與交易權證需要的領域知識：規格與定價、關鍵指標、發行商造市機制、牛熊證，以及以「可能全損」為前提的風險控管。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 3 小時</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>適合已有股票經驗、想了解權證的交易者</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-num">2</div><div class="stat-label">大類：一般權證・牛熊證</div></div>
+<div class="stat-card"><div class="stat-num">6</div><div class="stat-label">個挑選指標</div></div>
+<div class="stat-card"><div class="stat-num">0.1%</div><div class="stat-label">權證證交稅（賣出）</div></div>
+<div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">🎫 基本觀念與規格（第1-2章）</div><div class="step-desc">權證的權利、發行商角色、行使比例、到期與交易規則。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">🧾 定價與挑選（第3-4章）</div><div class="step-desc">權證價格如何組成，以及實質槓桿、隱含波動率、買賣價差比、外流比等挑選指標。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">🏦 造市與牛熊證（第5-6章）</div><div class="step-desc">發行商如何報價、什麼是降波與價差擴大；牛熊證的限制價與提前到期機制。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">🎯 策略與風控（第7-8章）</div><div class="step-desc">用標的判斷方向、用權證執行交易；以全損為前提的部位與出場規劃。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">🧠 陷阱與系統（第9-10章）</div><div class="step-desc">最常見的錯誤與報牌陷阱，最後整合成一套挑選與交易流程。</div></div></div>
+</div>
+<div class="section-title">如何使用本課程</div>
+<div class="card"><div class="card-body"><ul class="checklist">
+  <li><span class="check-icon">✅</span>第4章（挑選指標）和第5章（發行商造市）是權證獨有、也最影響績效的兩章，建議精讀。</li>
+  <li><span class="check-icon">✅</span>若已讀過選擇權課程，第3章可快速複習；權證本質上就是券商發行的選擇權。</li>
+  <li><span class="check-icon">✅</span>學完第4章後，打開發行商或證交所的權證搜尋工具，實際比較同一標的的多檔權證。</li>
+  <li><span class="check-icon">✅</span>做完每章測驗，60 分以上才算過關；答錯的題目回頭重讀對應段落。</li>
+  <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+</ul>
+</div></div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 開始前的提醒</div>
+  <p>本課程為個人學習用的權證知識整理，不構成任何交易建議。權證具高槓桿與時間價值耗損特性，到期時可能價值歸零、損失全部投入金額。文中的股價、權證價格、Delta 等數字皆為說明用的假設值，實際規則以臺灣證券交易所、證券櫃檯買賣中心及發行券商公告為準。</p>
+</div>
+
+</div>
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎫 第一章</div>
+  <h1>權證是什麼<br>券商發行、在股市交易的選擇權</h1>
+  <p class="desc">權證是由券商（發行商）發行的一種有價證券，持有人有權在特定期間或到期時，以約定的履約價格買進或賣出標的股票，或以現金結算差價。它和選擇權概念相同，但交易方式和股票一樣，用一般證券戶就能買賣。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">兩種基本權證</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">📈</div><div class="card-title">認購權證（Call）</div><div class="card-body">標的股價上漲時，權證價格傾向上漲。看好標的時買進。</div></div>
+  <div class="card"><div class="card-icon">📉</div><div class="card-title">認售權證（Put）</div><div class="card-body">標的股價下跌時，權證價格傾向上漲。看壞標的、或想為持股避險時買進。</div></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 投資人只能「買方」</div>
+  <p>一般投資人只能買進權證、再賣出權證，無法像選擇權一樣「賣出開倉」當賣方。所以你的最大虧損就是買進權證付出的金額，不會有追繳保證金的問題。賣方角色由發行商承擔。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">權證 vs 股票 vs 選擇權</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>面向</th><th>股票</th><th>臺指選擇權</th><th>權證</th></tr></thead>
+<tbody>
+<tr><td>發行者</td><td>公司</td><td>期交所的標準化契約</td><td>券商（發行商）</td></tr>
+<tr><td>交易帳戶</td><td>證券戶</td><td>期貨戶</td><td>證券戶</td></tr>
+<tr><td>可否當賣方</td><td>可融券放空</td><td>可以</td><td>一般投資人不行</td></tr>
+<tr><td>標的</td><td>公司本身</td><td>指數等</td><td>個股、ETF、指數等</td></tr>
+<tr><td>到期</td><td>無</td><td>有</td><td>有（常見數月到一年）</td></tr>
+<tr><td>流動性提供者</td><td>市場買賣雙方</td><td>市場買賣雙方</td><td>主要依賴發行商造市</td></tr>
+<tr><td>最大虧損</td><td>股價歸零</td><td>買方為權利金，賣方可能很大</td><td>買進金額</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">為什麼會有人用權證</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">💰</div><div class="card-title">小資金參與高價股</div><div class="card-body">用幾千元到幾萬元，就能參與高價股的漲跌。</div></div>
+  <div class="card"><div class="card-icon">⚡</div><div class="card-title">槓桿效果</div><div class="card-body">標的漲 1%，權證可能漲數個百分點；相反地，跌時也放大虧損。</div></div>
+  <div class="card"><div class="card-icon">🛑</div><div class="card-title">虧損有上限</div><div class="card-body">最多虧掉買進金額，不像融資或期貨會被追繳。</div></div>
+  <div class="card"><div class="card-icon">☂️</div><div class="card-title">避險工具</div><div class="card-body">持有股票時買認售權證，可以在下跌時部分抵銷損失。</div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 另一面</div>
+  <p>權證有時間價值耗損，放著不動也會每天變便宜；槓桿讓虧損速度同樣很快；流動性依賴發行商，挑錯權證可能「看對標的卻賺不到錢」。這些都是後面章節要處理的問題。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎫 第一章測驗</span><span class="quiz-title">權證基本觀念</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 一般投資人交易權證時，可以扮演哪一種角色？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只能當賣方</button>
+      <button class="quiz-opt" data-correct="1">只能買進再賣出，屬於買方</button>
+      <button class="quiz-opt" data-correct="0">買方與賣方都可以</button>
+      <button class="quiz-opt" data-correct="0">只能當造市商</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 看壞某檔股票後市，較符合的權證是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">認購權證</button>
+      <button class="quiz-opt" data-correct="1">認售權證</button>
+      <button class="quiz-opt" data-correct="0">兩者都不適合</button>
+      <button class="quiz-opt" data-correct="0">只能買股票</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：規格與交易規則 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📋 第二章</div>
+  <h1>權證規格與交易規則<br>看懂權證的「身分證」</h1>
+  <p class="desc">每一檔權證都有自己的規格：標的、類型、履約價、行使比例、到期日、履約方式。看不懂這些，就無法計算權證真正的價值與風險。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">權證的主要條款</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>條款</th><th>說明</th><th>範例</th></tr></thead>
+<tbody>
+<tr><td>標的</td><td>權證連結的股票、ETF 或指數</td><td>某上市公司股票</td></tr>
+<tr><td>類型</td><td>認購／認售，一般型或牛熊證</td><td>認購權證</td></tr>
+<tr><td>履約價</td><td>約定買進或賣出標的的價格</td><td>110 元</td></tr>
+<tr><td>行使比例</td><td>1 單位權證可對應多少股標的</td><td>0.1（1 單位對應 0.1 股）</td></tr>
+<tr><td>到期日</td><td>權證失效的日期</td><td>約 6 個月後</td></tr>
+<tr><td>履約方式</td><td>美式（到期前可隨時履約）或歐式（僅到期日）</td><td>台灣多為美式</td></tr>
+<tr><td>結算方式</td><td>現金結算或證券給付</td><td>多數為現金結算</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 行使比例的意義</div>
+  <p>1 張權證 = 1,000 單位。行使比例 0.1 代表 1 張權證對應 100 股標的。標的每漲 1 元，這張權證的內含價值最多增加 1 × 0.1 × 1,000 = 100 元。比較不同權證時，一定要換算行使比例，否則價格高低沒有可比性。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易規則</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">⏰</div><div class="card-title">交易時間</div><div class="card-body">與股票相同，一般交易 9:00–13:30，在證交所或櫃買中心掛牌交易。</div></div>
+  <div class="card"><div class="card-icon">✍️</div><div class="card-title">首次交易</div><div class="card-body">首次買賣權證前，須向券商簽署權證風險預告書；牛熊證等特殊商品可能有另外的規定。</div></div>
+  <div class="card"><div class="card-icon">🏁</div><div class="card-title">最後交易日</div><div class="card-body">通常為到期日前兩個營業日，之後無法在市場賣出，只能等到期結算。</div></div>
+  <div class="card"><div class="card-icon">💵</div><div class="card-title">到期結算</div><div class="card-body">到期時若為價內，多數權證會自動以現金結算價內金額；價外則價值歸零。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易成本</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>費率</th><th>何時收取</th></tr></thead>
+<tbody>
+<tr><td>券商手續費</td><td>0.1425%（可能有折扣）</td><td>買、賣各一次</td></tr>
+<tr><td>證券交易稅</td><td>0.1%</td><td>賣出時</td></tr>
+<tr><td>買賣價差</td><td>依發行商報價而定</td><td>隱性成本，常比手續費更大</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 隱性成本最重要</div>
+  <p>權證單價低，買賣報價的一個價位跳動，可能就占權證價格的 1-3% 甚至更高。這個「買賣價差」是權證交易最容易被忽略、卻常常最大的成本（第四章會教你怎麼計算）。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📋 第二章測驗</span><span class="quiz-title">規格與規則</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 行使比例 0.1 的認購權證，1 張（1,000 單位）對應多少股標的？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">10 股</button>
+      <button class="quiz-opt" data-correct="1">100 股</button>
+      <button class="quiz-opt" data-correct="0">1,000 股</button>
+      <button class="quiz-opt" data-correct="0">10,000 股</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 權證交易中，常被忽略卻可能最大的成本是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">集保費</button>
+      <button class="quiz-opt" data-correct="1">買賣價差</button>
+      <button class="quiz-opt" data-correct="0">股利所得稅</button>
+      <button class="quiz-opt" data-correct="0">融資利息</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：價格組成 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧾 第三章</div>
+  <h1>權證的價格組成<br>權證價格 = (內含價值 + 時間價值) × 行使比例</h1>
+  <p class="desc">權證的定價原理和選擇權相同，只是多乘上一個行使比例。這一章教你拆解權證價格、計算損益平衡點，並理解 Delta、時間價值與隱含波動率如何影響價格。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">內含價值與時間價值</div>
+<div class="formula">認購權證內含價值 = max(標的價 − 履約價, 0) × 行使比例
+認售權證內含價值 = max(履約價 − 標的價, 0) × 行使比例
+時間價值 = 權證價格 − 內含價值</div>
+<div class="card"><div class="card-body">範例：標的股價 100 元，認購權證履約價 110 元、行使比例 0.1、權證價格 0.80 元。<br>• 內含價值：max(100 − 110, 0) × 0.1 = 0（價外）<br>• 時間價值：0.80 − 0 = 0.80 元（全部都是時間價值）<br>• 1 張成本：0.80 × 1,000 = 800 元（未含手續費）</div></div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>狀態</th><th>認購權證</th><th>認售權證</th><th>特性</th></tr></thead>
+<tbody>
+<tr><td>價內</td><td>標的價 > 履約價</td><td>標的價 < 履約價</td><td>權證價格較高、Delta 較大、槓桿較低</td></tr>
+<tr><td>價平</td><td>標的價 ≈ 履約價</td><td>標的價 ≈ 履約價</td><td>時間價值最大</td></tr>
+<tr><td>價外</td><td>標的價 < 履約價</td><td>標的價 > 履約價</td><td>價格便宜、槓桿高，但歸零機率高</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">到期損益平衡點</div>
+<div class="formula">認購權證到期損益平衡價 = 履約價 + 權證價格 ÷ 行使比例
+認售權證到期損益平衡價 = 履約價 − 權證價格 ÷ 行使比例</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">以上例計算：110 + 0.80 ÷ 0.1 = 118 元。也就是說，如果一路持有到期，標的必須漲到 118 元以上（漲 18%）才會賺錢。這就是為什麼多數權證交易者是「短線進出、賺權證價格變動」，而不是持有到期。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">影響權證價格的因素</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>因素</th><th>對認購權證</th><th>對認售權證</th><th>對應 Greek</th></tr></thead>
+<tbody>
+<tr><td>標的股價上漲</td><td>↑</td><td>↓</td><td>Delta</td></tr>
+<tr><td>時間經過</td><td>↓</td><td>↓</td><td>Theta</td></tr>
+<tr><td>隱含波動率上升</td><td>↑</td><td>↑</td><td>Vega</td></tr>
+<tr><td>履約價越高</td><td>↓</td><td>↑</td><td>—</td></tr>
+<tr><td>剩餘天數越長</td><td>↑（時間價值多）</td><td>↑</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 Delta 在權證的用法</div>
+  <p>Delta 表示標的每漲 1 元，權證「每股對應」價格變動多少。換算到權證時要乘上行使比例：權證價格變動 ≈ Delta × 標的變動 × 行使比例。例：Delta 0.35、標的漲 5 元，權證約漲 0.35 × 5 × 0.1 = 0.175 元。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧾 第三章測驗</span><span class="quiz-title">權證定價</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 標的 100 元，認購權證履約價 90 元、行使比例 0.1，其內含價值是多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">0 元</button>
+      <button class="quiz-opt" data-correct="0">0.1 元</button>
+      <button class="quiz-opt" data-correct="1">1 元</button>
+      <button class="quiz-opt" data-correct="0">10 元</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 履約價 110 元、行使比例 0.1、權證價格 0.8 元的認購權證，到期損益平衡價是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">110.8 元</button>
+      <button class="quiz-opt" data-correct="0">111 元</button>
+      <button class="quiz-opt" data-correct="1">118 元</button>
+      <button class="quiz-opt" data-correct="0">190 元</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：挑選指標 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔍 第四章</div>
+  <h1>挑選權證的關鍵指標<br>選對標的只是一半，選對權證是另一半</h1>
+  <p class="desc">同一檔股票可能有上百檔權證，看對方向卻選錯權證，常常賺得比預期少、甚至賠錢。這一章介紹六個最重要的挑選指標，以及它們彼此之間的取捨。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>25 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">指標一：實質槓桿（有效槓桿）</div>
+<div class="formula">實質槓桿 = Delta × 標的價 × 行使比例 ÷ 權證價格</div>
+<div class="card"><div class="card-body">續用範例：Delta 0.35、標的 100 元、行使比例 0.1、權證 0.80 元。<br>實質槓桿 = 0.35 × 100 × 0.1 ÷ 0.80 ≈ 4.4 倍。<br>代表標的漲 5%，權證約漲 4.4 × 5% ≈ 22%；標的跌 5%，權證約跌 22%（未計時間價值與隱波變化）。</div></div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 槓桿越高不一定越好</div>
+  <p>高槓桿通常來自深價外、剩餘天數短的權證，代表歸零機率高、時間價值流失快。比較槓桿時，要同時看價內外程度和剩餘天數。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">指標二：價內外程度</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">一般而言，價外 0-15% 左右、接近價平的權證，在槓桿與成功機率之間較平衡；深價外權證便宜但需要大行情；深價內權證槓桿低，行為接近股票。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">指標三：剩餘天數</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">剩餘天數越短，時間價值流失越快。短線交易通常會選擇剩餘天數至少 60-90 天以上的權證，避免在持有的幾天內就被時間價值大幅侵蝕；剩餘不到一個月的權證，時間價值會急速下降。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">指標四：隱含波動率（IV）</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">隱含波動率越高，權證越貴。比較同一標的、條件相近的權證時，選擇隱含波動率較低的，等於用較便宜的價格買到相同的權利。此外，要觀察發行商是否穩定維持 IV（見第五章），IV 忽高忽低的權證要小心。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">指標五：買賣價差比</div>
+<div class="formula">買賣價差比 = (委賣價 − 委買價) ÷ 委賣價</div>
+<div class="card"><div class="card-body">範例：權證委買 0.78、委賣 0.80，價差比 = 0.02 ÷ 0.80 = 2.5%。代表你一買進，若立刻賣出就先虧約 2.5%，再加上手續費與稅。權證價格越低，一個跳動占比越高；價差比過大的權證，短線交易很難賺錢。</div></div>
+<div class="box box-success">
+  <div class="box-title">✅ 價差比與槓桿要一起看</div>
+  <p>價差比 ÷ 實質槓桿，約略等於「標的要先漲多少，才能補回價差成本」。例：價差比 2.5%、槓桿 4.4 倍，標的要先漲約 0.57% 才打平價差。這個數字越小越好。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">指標六：外流比（流通在外比例）</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">外流比 = 已賣給投資人的權證數量 ÷ 發行總量。外流比高時，發行商手上可賣的權證變少，市場上的買賣越來越依賴其他投資人，發行商可能較難維持良好的報價。一般會避開外流比過高的權證。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">六大指標總整理</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>指標</th><th>偏好</th><th>原因</th></tr></thead>
+<tbody>
+<tr><td>實質槓桿</td><td>適中（依策略）</td><td>過高常代表深價外、短天期</td></tr>
+<tr><td>價內外程度</td><td>接近價平至輕度價外</td><td>平衡槓桿與成功機率</td></tr>
+<tr><td>剩餘天數</td><td>較長（例如 60-90 天以上）</td><td>降低時間價值耗損</td></tr>
+<tr><td>隱含波動率</td><td>同條件下較低且穩定</td><td>買得比較便宜</td></tr>
+<tr><td>買賣價差比</td><td>越小越好</td><td>降低進出成本</td></tr>
+<tr><td>外流比</td><td>較低</td><td>發行商報價空間較充足</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔍 第四章測驗</span><span class="quiz-title">挑選指標</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. Delta 0.5、標的 50 元、行使比例 0.1、權證 1 元，實質槓桿約為？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">0.5 倍</button>
+      <button class="quiz-opt" data-correct="1">2.5 倍</button>
+      <button class="quiz-opt" data-correct="0">5 倍</button>
+      <button class="quiz-opt" data-correct="0">25 倍</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 兩檔條件相近的認購權證，一檔 IV 較低、一檔 IV 較高，一般應優先考慮哪一檔？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">IV 較高的，因為波動大</button>
+      <button class="quiz-opt" data-correct="1">IV 較低的，等於用較便宜價格買到相近權利</button>
+      <button class="quiz-opt" data-correct="0">兩者完全沒有差別</button>
+      <button class="quiz-opt" data-correct="0">外流比較高的</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：發行商與造市 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🏦 第五章</div>
+  <h1>發行商與造市機制<br>你的交易對手，是發行權證的券商</h1>
+  <p class="desc">權證市場的流動性主要來自發行商的造市：發行商持續掛出委買委賣報價。發行商的報價品質，直接決定你能不能用合理價格買進、賣出。這是權證和股票最大的不同，也是權證交易最關鍵的 know-how。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">發行商如何賺錢與避險</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">💵</div><div class="card-title">發行時的權利金</div><div class="card-body">發行商把權證賣給投資人，收取權證價格。</div></div>
+  <div class="card"><div class="card-icon">⚖️</div><div class="card-title">買賣價差</div><div class="card-body">造市時委賣價高於委買價，價差是發行商的收益之一。</div></div>
+  <div class="card"><div class="card-icon">🛡️</div><div class="card-title">Delta 避險</div><div class="card-body">發行商賣出認購權證後，會在市場買進一定比例的標的股票避險；標的漲跌時動態調整。</div></div>
+  <div class="card"><div class="card-icon">📉</div><div class="card-title">時間價值與波動率</div><div class="card-body">投資人付出的時間價值與隱含波動率溢價，也是發行商的收益來源之一。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">常見的不良造市行為</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📉 降波（調降隱含波動率）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">發行商調低委買報價所使用的隱含波動率，讓權證價格下降。即使標的沒動，權證也可能突然變便宜，投資人賣出時被迫吃虧。常見時機包括標的大漲後、外流比升高時。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>↔️ 價差擴大</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">發行商把委買委賣價差拉大，或只掛少量委買，讓投資人賣出時成交價不佳。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⏸️ 報價不連續</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">在盤中某些時段或標的急漲急跌時，暫停掛單或掛單量很少，讓投資人無法及時出場。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📊 標的漲、權證不漲</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">標的上漲時，權證漲幅明顯小於理論值（Delta × 標的漲幅 × 行使比例），常是降波或價差擴大的結果。</p></div>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 規範與實務</div>
+  <p>主管機關與交易所對造市有規範，發行商也會公布造市與報價原則，並有權證資訊平台揭露各檔權證的報價品質。但實務上報價品質仍有差異，所以要優先選擇造市紀錄穩定的發行商。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">如何評估發行商</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>觀察同一檔權證歷史隱含波動率是否穩定，是否常在標的上漲後突然下降。</li>
+  <li><span class="check-icon">✅</span>觀察委買委賣是否持續、掛單量是否足夠、價差是否穩定。</li>
+  <li><span class="check-icon">✅</span>參考交易所或權證資訊網站提供的造市評比、報價品質統計。</li>
+  <li><span class="check-icon">✅</span>同一標的若有多家發行商，比較相近條件權證的報價行為，長期累積自己的「好發行商名單」。</li>
+  <li><span class="check-icon">✅</span>外流比升高時，同一發行商的報價品質可能變差，需提高警覺。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">實務技巧</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🧮</div><div class="card-title">用理論值檢查</div><div class="card-body">標的漲 1%，權證理論上應漲約「實質槓桿 × 1%」。實際漲幅明顯偏低時，檢查是否被降波。</div></div>
+  <div class="card"><div class="card-icon">⏰</div><div class="card-title">避開開盤與收盤前</div><div class="card-body">開盤初期與收盤前發行商報價可能較不穩定，價差也較大。</div></div>
+  <div class="card"><div class="card-icon">📝</div><div class="card-title">掛限價單</div><div class="card-body">避免直接用市價成交，以發行商委買委賣價附近的限價單進出。</div></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🏦 第五章測驗</span><span class="quiz-title">發行商與造市</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 標的股價沒有下跌，但權證價格卻突然下降，最可能的原因是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">行使比例改變</button>
+      <button class="quiz-opt" data-correct="1">發行商調降隱含波動率（降波）</button>
+      <button class="quiz-opt" data-correct="0">標的公司發放股利</button>
+      <button class="quiz-opt" data-correct="0">證交稅調整</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 權證的外流比過高時，可能會有什麼影響？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">發行商報價空間變少，造市品質可能下降</button>
+      <button class="quiz-opt" data-correct="0">權證一定會漲停</button>
+      <button class="quiz-opt" data-correct="0">權證不會有時間價值</button>
+      <button class="quiz-opt" data-correct="0">發行商必須提前買回全部權證</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：牛熊證 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🐂 第六章</div>
+  <h1>牛熊證<br>時間價值較少，但多了「提前出局」的規則</h1>
+  <p class="desc">牛熊證是一種有「限制價」（又稱回收價）的權證：牛證看多、熊證看空，一旦標的價格觸及限制價，牛熊證就會提前到期。它的價格結構和一般權證不同，時間價值與隱含波動率的影響較小。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">牛證與熊證</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🐂</div><div class="card-title">牛證（下限型認購）</div><div class="card-body">看多標的。限制價設在履約價之上、標的現價之下，標的跌到限制價即提前到期。</div></div>
+  <div class="card"><div class="card-icon">🐻</div><div class="card-title">熊證（上限型認售）</div><div class="card-body">看空標的。限制價設在履約價之下、標的現價之上，標的漲到限制價即提前到期。</div></div>
+</div>
+<div class="formula">牛證價格 ≈ (標的價 − 履約價) × 行使比例 + 財務費用
+熊證價格 ≈ (履約價 − 標的價) × 行使比例 + 財務費用</div>
+
+</div>
+<div class="section">
+  <div class="section-title">牛熊證 vs 一般權證</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>面向</th><th>一般權證</th><th>牛熊證</th></tr></thead>
+<tbody>
+<tr><td>價格組成</td><td>內含價值 + 時間價值（受隱含波動率影響大）</td><td>內含價值 + 財務費用</td></tr>
+<tr><td>隱含波動率影響</td><td>大</td><td>小，較不易被降波影響</td></tr>
+<tr><td>Delta</td><td>隨價內外程度變化</td><td>接近 1（每股），價格走勢較貼近標的</td></tr>
+<tr><td>時間成本</td><td>時間價值耗損，越接近到期越快</td><td>財務費用隨時間逐步反映</td></tr>
+<tr><td>提前到期</td><td>無（到期前都可交易）</td><td>觸及限制價即提前到期</td></tr>
+<tr><td>槓桿</td><td>依價內外程度與天數</td><td>依標的價與履約價距離，越接近限制價槓桿越高</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">限制價觸及後會發生什麼</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">觸及限制價</div><div class="step-desc">標的價格觸及限制價後，牛熊證會停止交易並提前到期。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">結算</div><div class="step-desc">依發行條件計算結算價值，可能拿回少量剩餘價值，也可能完全歸零。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">無法再參與反彈</div><div class="step-desc">即使標的之後立刻回到原方向，已到期的牛熊證也不會恢復。</div></div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 被「掃出場」的風險</div>
+  <p>標的在盤中短暫急跌觸及限制價又拉回，牛證已經提前到期出局。挑選牛熊證時，要確認限制價與標的現價的距離，是否足以容納標的的正常波動。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">適合使用牛熊證的情境</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>想要價格走勢貼近標的、不想承擔隱含波動率變化風險。</li>
+  <li><span class="check-icon">✅</span>對標的方向有明確判斷，而且願意接受觸及限制價就出局的規則（類似內建停損）。</li>
+  <li><span class="check-icon">✅</span>持有期間相對較長、希望避免一般權證快速的時間價值流失。</li>
+</ul>
+<div class="box box-info">
+  <div class="box-title">💡 挑選重點</div>
+  <p>比較財務費用高低、限制價距離（通常以標的波動度衡量是否足夠）、行使比例與槓桿。牛熊證同樣需要看發行商報價品質與買賣價差。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🐂 第六章測驗</span><span class="quiz-title">牛熊證</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 牛證的標的價格觸及限制價時，會發生什麼事？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">自動轉換成熊證</button>
+      <button class="quiz-opt" data-correct="1">提前到期，可能只剩少量價值或歸零</button>
+      <button class="quiz-opt" data-correct="0">行使比例加倍</button>
+      <button class="quiz-opt" data-correct="0">延長到期日</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 相較一般權證，牛熊證較不容易受到哪一項因素影響？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">標的股價</button>
+      <button class="quiz-opt" data-correct="1">隱含波動率變化（降波）</button>
+      <button class="quiz-opt" data-correct="0">限制價</button>
+      <button class="quiz-opt" data-correct="0">行使比例</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：交易策略 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎯 第七章</div>
+  <h1>權證交易策略<br>用標的做判斷，用權證做執行</h1>
+  <p class="desc">權證本身沒有基本面，所有的判斷都應該回到標的：趨勢、籌碼、題材與關鍵價位。權證只是執行工具。這一章整理幾種常見的權證使用方式，以及進出場的設計邏輯。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實戰</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">核心原則：看標的，不看權證走勢</div>
+<div class="box box-info">
+  <div class="box-title">💡 一句話理解</div>
+  <p>權證的 K 線被發行商報價、時間價值與隱波影響，技術分析意義有限。進出場訊號、停損停利都應該以「標的股價」為依據，權證只負責放大部位。（標的判斷方法可參考台股波段課程。）</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">常見策略</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⚡ 短線波段：搭配標的突破或拉回</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">標的出現突破整理區或回測支撐的訊號時買進認購權證，持有數天到數週。優先選擇剩餘天數夠長、價差比低、發行商穩定的權證。停損以標的跌破關鍵價位為準。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📅 事件交易：財報、營收、法說</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">在標的預期有重要消息前布局。要注意消息公布前隱含波動率可能已被墊高，公布後即使方向正確，權證也可能因 IV 下降而漲幅有限（和選擇權的 IV Crush 相同）。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>💸 以權證替代部分持股</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">看好標的但不想投入大量資金，用少量資金買進較價內、槓桿適中的認購權證參與上漲，其餘資金保留現金。最大虧損有限，但仍要承受時間價值成本。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>☂️ 用認售權證為持股避險</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">持有股票又擔心短期回檔，可買進對應標的的認售權證。避險張數可依 Delta 與行使比例估算，但要留意認售權證流動性通常較認購權證差。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">避險張數估算</div>
+<div class="formula">需要的權證單位數 ≈ 持股股數 ÷ (|Delta| × 行使比例)
+權證張數 = 單位數 ÷ 1,000</div>
+<div class="card"><div class="card-body">範例：持有 2,000 股，認售權證 Delta −0.4、行使比例 0.1。<br>單位數 ≈ 2,000 ÷ (0.4 × 0.1) = 50,000 單位 = 50 張權證。<br>Delta 會隨標的價格與時間變化，避險效果只是近似值，需定期調整。</div></div>
+
+</div>
+<div class="section">
+  <div class="section-title">進出場設計</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">用標的決定進場</div><div class="step-desc">標的出現你的進場訊號時才買權證，不因為權證價格便宜就買。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">用標的決定停損</div><div class="step-desc">例如標的跌破前低或月線就出場，而不是權證跌多少百分比。也可以同時設定權證虧損上限（例如 −30% 至 −50%）作為第二道防線。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">用時間決定出場</div><div class="step-desc">若持有一段時間標的仍未表態，時間價值持續流失，應考慮時間停損。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">提早出場，不抱到期</div><div class="step-desc">多數情況下在權證市場賣出即可，避免接近最後交易日時時間價值快速流失與流動性下降。</div></div></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎯 第七章測驗</span><span class="quiz-title">交易策略</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 權證交易的進出場訊號，較合理的依據是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">權證本身的 K 線型態</button>
+      <button class="quiz-opt" data-correct="1">標的股票的趨勢與關鍵價位</button>
+      <button class="quiz-opt" data-correct="0">權證價格是否低於 1 元</button>
+      <button class="quiz-opt" data-correct="0">發行商的名稱</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 持有 1,000 股，認售權證 Delta −0.5、行使比例 0.1，粗估約需幾張權證避險？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">2 張</button>
+      <button class="quiz-opt" data-correct="0">10 張</button>
+      <button class="quiz-opt" data-correct="1">20 張</button>
+      <button class="quiz-opt" data-correct="0">200 張</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：風險與部位控管 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🛡️ 第八章</div>
+  <h1>風險與部位控管<br>把每一筆權證都當作可能全損</h1>
+  <p class="desc">權證的最大虧損是投入金額，但因為槓桿與時間價值，全損的機率比股票高得多。正確的風控方式是：以「全損或停損後的虧損」來決定投入金額，而不是以權證便宜來決定買多少。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實戰</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">權證的主要風險</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">⏳</div><div class="card-title">時間價值耗損</div><div class="card-body">標的不動，權證也會每天變便宜，越接近到期越快。</div></div>
+  <div class="card"><div class="card-icon">📉</div><div class="card-title">槓桿虧損</div><div class="card-body">標的反向變動時，權證虧損速度是標的的數倍。</div></div>
+  <div class="card"><div class="card-icon">🏦</div><div class="card-title">發行商報價風險</div><div class="card-body">降波、價差擴大、報價不連續，讓你無法以合理價格出場。</div></div>
+  <div class="card"><div class="card-icon">💧</div><div class="card-title">流動性風險</div><div class="card-body">冷門權證、外流比高或認售權證，市場承接可能不足。</div></div>
+  <div class="card"><div class="card-icon">0️⃣</div><div class="card-title">歸零風險</div><div class="card-body">到期時為價外，價值歸零；牛熊證觸及限制價也可能歸零。</div></div>
+  <div class="card"><div class="card-icon">🏢</div><div class="card-title">發行商信用風險</div><div class="card-body">權證是發行商的債務性承諾，極端情況下仍需考量發行商的財務狀況。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">部位計算：兩種方法</div>
+<div class="formula">方法一（全損法）：單筆投入 ≤ 總資金 × 1-2%
+方法二（停損法）：單筆投入 = 總資金 × 風險% ÷ 預估停損時的權證跌幅%</div>
+<div class="card"><div class="card-body">範例：總資金 100 萬、單筆風險 1%（1 萬元）。<br>• 全損法：最多投入 1 萬元。<br>• 停損法：若標的觸及停損時，權證預估下跌約 40%，則投入 = 10,000 ÷ 40% = 25,000 元。<br>停損法需要嚴格執行出場，並考慮降波與跳空讓實際虧損超過預估。</div></div>
+<div class="box box-success">
+  <div class="box-title">✅ 權證的總曝險上限</div>
+  <p>除了單筆上限，也建議設定所有權證部位加總的上限（例如總資金的 5-10%）。權證適合作為「放大特定機會」的衛星部位，而不是資產的主力。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">到期前的處理</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>記住最後交易日通常在到期日前兩個營業日，過了就無法在市場賣出。</li>
+  <li><span class="check-icon">✅</span>剩餘天數低於一個月時，時間價值流失加快，除非有明確理由，否則考慮提前出場或換成較長天期權證（換倉）。</li>
+  <li><span class="check-icon">✅</span>價內權證若持有到期，會依結算規則自動以現金結算，確認結算價的計算方式。</li>
+  <li><span class="check-icon">✅</span>價外權證接近到期時價格可能只剩最低價位，賣出成本可能高於剩餘價值。</li>
+</ul>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🛡️ 第八章測驗</span><span class="quiz-title">風險與部位</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 總資金 50 萬、單筆風險 1%，以「全損法」計算，單筆權證最多投入多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">500 元</button>
+      <button class="quiz-opt" data-correct="1">5,000 元</button>
+      <button class="quiz-opt" data-correct="0">50,000 元</button>
+      <button class="quiz-opt" data-correct="0">500,000 元</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 下列何者不是權證的主要風險？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">時間價值耗損</button>
+      <button class="quiz-opt" data-correct="0">發行商降波</button>
+      <button class="quiz-opt" data-correct="1">被追繳保證金</button>
+      <button class="quiz-opt" data-correct="0">到期歸零</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：常見錯誤與陷阱 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧠 第九章</div>
+  <h1>常見錯誤與心理陷阱<br>權證賠錢，常常不是看錯方向</h1>
+  <p class="desc">許多權證交易者的經驗是「股票漲了，權證卻沒賺」。這通常不是運氣不好，而是犯了挑選、持有或心態上的錯誤。這一章整理最常見的陷阱。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">七大常見錯誤</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 只買最便宜的權證</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">便宜的權證通常是深價外、剩餘天數短，或價差比大的權證。便宜代表機率低，不代表划算。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 忽略買賣價差</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">權證單價低，一個跳動就是幾個百分點。沒算價差比就進場，常常一買就先虧一大截。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 不看發行商</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">同條件權證中，發行商報價品質差異很大。選到常降波的發行商，看對方向也賺不到。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 抱到到期</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">把權證當股票長抱，忽略時間價值加速流失，最後眼看權證價值一點點歸零。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑤ 用權證攤平</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">權證虧損後再買更多、甚至換更便宜的權證攤平，讓虧損不斷擴大。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑥ 以權證 K 線判斷</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">權證走勢受報價與隱波影響，用權證本身的技術分析決策容易誤判。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>⑦ 事件前追高</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">重大消息前隱含波動率已被墊高，消息公布後即使方向正確，權證仍可能下跌。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">心理陷阱</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🎰</div><div class="card-title">樂透心態</div><div class="card-body">偶爾遇到權證一天翻倍，就不斷追逐下一檔「飆權證」，忽略長期期望值。</div></div>
+  <div class="card"><div class="card-icon">🧮</div><div class="card-title">小額錯覺</div><div class="card-body">「只是幾千元而已」，結果交易頻率與張數越來越高，累積虧損遠超預期。</div></div>
+  <div class="card"><div class="card-icon">🔁</div><div class="card-title">不願認賠</div><div class="card-body">權證跌 50% 後覺得「剩這點錢賣掉也沒差」，乾脆放到歸零。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">報牌群與權證詐騙</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 提高警覺</div>
+  <p>網路上常見「權證飆股」「保證翻倍」的群組或老師，可能推薦冷門權證讓成員集體追價，或以教學名義收費、要求匯款到私人帳戶。合法交易只會在你本人的證券帳戶進行，沒有人能保證獲利；疑似詐騙可撥打 165 反詐騙諮詢專線查證。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧠 第九章測驗</span><span class="quiz-title">常見錯誤</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 標的上漲，但持有的權證沒賺錢，下列何者「不太可能」是原因？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">時間價值流失</button>
+      <button class="quiz-opt" data-correct="0">發行商降波</button>
+      <button class="quiz-opt" data-correct="0">買賣價差過大</button>
+      <button class="quiz-opt" data-correct="1">行使比例太低讓權證不受任何影響</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼「只買最便宜的權證」常常不是好策略？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">便宜的權證不能賣出</button>
+      <button class="quiz-opt" data-correct="1">便宜通常代表深價外、短天期或價差比大，成功機率低</button>
+      <button class="quiz-opt" data-correct="0">便宜權證的證交稅比較高</button>
+      <button class="quiz-opt" data-correct="0">便宜權證沒有行使比例</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：交易計畫與總複習 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第十章</div>
+  <h1>交易計畫與總複習<br>先選標的，再選權證，最後定部位</h1>
+  <p class="desc">恭喜走到最後一章！權證交易可以整理成一條清楚的流程：用標的判斷方向與進出場，再用指標挑出合適的權證，最後以全損或停損法決定投入金額。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">權證挑選與交易流程</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">判斷標的</div><div class="step-desc">標的的趨勢、籌碼與題材是否支持你的方向？進場訊號與停損價位在哪？</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">決定權證類型</div><div class="step-desc">一般權證或牛熊證？認購或認售？</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">篩選條件</div><div class="step-desc">價內外程度（例如價平到價外 15%）、剩餘天數（例如 90 天以上）、價差比（例如 2% 以下）。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">比較指標</div><div class="step-desc">在篩選結果中比較隱含波動率、實質槓桿、外流比與發行商造市品質。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">計算部位</div><div class="step-desc">依全損法或停損法計算投入金額，並確認權證總曝險上限。</div></div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-content"><div class="step-title">執行與追蹤</div><div class="step-desc">限價單進場，以標的價位停損停利；追蹤隱含波動率與報價是否異常。</div></div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易前檢查表</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>我是因為標的訊號而交易，不是因為權證便宜。</li>
+  <li><span class="check-icon">✅</span>我已確認權證的行使比例、履約價、到期日與最後交易日。</li>
+  <li><span class="check-icon">✅</span>買賣價差比在可接受範圍，並算過「價差比 ÷ 槓桿」。</li>
+  <li><span class="check-icon">✅</span>同條件權證中，我選擇了隱含波動率較低、發行商報價較穩定的。</li>
+  <li><span class="check-icon">✅</span>外流比沒有過高，牛熊證的限制價距離足夠。</li>
+  <li><span class="check-icon">✅</span>投入金額符合單筆與總曝險上限，並寫下停損與時間停損條件。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">交易日誌要記什麼</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>標的、權證代號、發行商、類型、履約價、行使比例、剩餘天數。</li>
+  <li><span class="check-icon">✅</span>進場時的隱含波動率、實質槓桿、價差比。</li>
+  <li><span class="check-icon">✅</span>標的進出場價、權證進出場價、損益。</li>
+  <li><span class="check-icon">✅</span>權證實際漲跌是否符合理論值（檢查是否被降波）。</li>
+  <li><span class="check-icon">✅</span>累積數據後，整理出報價穩定的「好發行商名單」與需要避開的名單。</li>
+</ul>
+<div class="box box-info">
+  <div class="box-title">💡 建議行動</div>
+  <p>先挑一檔你熟悉的標的，用權證搜尋工具列出所有權證，依本課程的指標逐一比較並寫下選擇理由。以極小金額實際交易幾次，觀察權證相對標的的漲跌是否符合預期，再逐步建立自己的挑選標準。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+<div class="quiz-card" style="margin-top:0;">
+  <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">台灣權證總複習</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 一般投資人交易權證的最大虧損是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">買進權證所付出的金額</button>
+      <button class="quiz-opt" data-correct="0">無限</button>
+      <button class="quiz-opt" data-correct="0">標的股價的兩倍</button>
+      <button class="quiz-opt" data-correct="0">需要補繳保證金</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 行使比例 0.1、Delta 0.4 的認購權證，標的上漲 10 元，權證價格約上漲多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">0.04 元</button>
+      <button class="quiz-opt" data-correct="1">0.4 元</button>
+      <button class="quiz-opt" data-correct="0">4 元</button>
+      <button class="quiz-opt" data-correct="0">10 元</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 下列哪一個是挑選權證時「越小越好」的指標？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">剩餘天數</button>
+      <button class="quiz-opt" data-correct="1">買賣價差比</button>
+      <button class="quiz-opt" data-correct="0">行使比例</button>
+      <button class="quiz-opt" data-correct="0">標的股價</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q4. 權證的停損依據，較合理的是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">權證本身的 K 線型態</button>
+      <button class="quiz-opt" data-correct="1">標的股價跌破關鍵價位，並搭配權證虧損上限</button>
+      <button class="quiz-opt" data-correct="0">權證價格低於 0.1 元</button>
+      <button class="quiz-opt" data-correct="0">發行商公告</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q5. 牛熊證和一般權證相比的主要特點是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">沒有到期日</button>
+      <button class="quiz-opt" data-correct="1">受隱含波動率影響較小，但觸及限制價會提前到期</button>
+      <button class="quiz-opt" data-correct="0">可以當賣方</button>
+      <button class="quiz-opt" data-correct="0">不需要任何交易成本</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+</div>
+<div class="disclaimer">
+  ⚠️ 免責聲明：本課程內容為個人學習用的權證知識整理，不構成對任何權證、股票或金融商品的交易建議，亦不保證任何報酬。權證具高槓桿與時間價值耗損特性，可能損失全部投入金額；牛熊證觸及限制價即提前到期，可能價值歸零。文中股價、權證價格、Delta、隱含波動率等數字均為說明用的假設值。權證發行條件、交易規則、稅費與造市規範可能調整，請以臺灣證券交易所、證券櫃檯買賣中心、金管會及發行券商之最新公告為準。
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>

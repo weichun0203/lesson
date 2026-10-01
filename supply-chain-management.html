@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>供應鏈管理 Domain Know-how｜從需求預測到韌性策略</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🔗 供應鏈管理課</div>
+    <div class="sidebar-title">供應鏈管理 Know-how<br>預測・庫存・採購・物流・韌性</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'學習地圖與使用說明', icon:'🗺️', time:'5 分鐘', level:'總覽', content: renderCh0 },
+  { id:1, title:'供應鏈管理是什麼', subtitle:'三流、SCOR 模型、推式與拉式', icon:'🔗', time:'18 分鐘', level:'基礎', content: renderCh1 },
+  { id:2, title:'需求預測與 S&OP', subtitle:'預測方法、誤差衡量、產銷協調', icon:'📈', time:'22 分鐘', level:'核心', content: renderCh2 },
+  { id:3, title:'存貨管理', subtitle:'EOQ、安全庫存、再訂購點、ABC', icon:'📦', time:'25 分鐘', level:'核心', content: renderCh3 },
+  { id:4, title:'長鞭效應與協同', subtitle:'需求放大的成因與 VMI、CPFR', icon:'🌊', time:'18 分鐘', level:'核心', content: renderCh4 },
+  { id:5, title:'採購與供應商管理', subtitle:'TCO、Kraljic 矩陣、供應商評鑑', icon:'🤝', time:'22 分鐘', level:'實務', content: renderCh5 },
+  { id:6, title:'生產規劃與精實', subtitle:'MPS、MRP、JIT、限制理論', icon:'🏭', time:'22 分鐘', level:'實務', content: renderCh6 },
+  { id:7, title:'物流、倉儲與配送', subtitle:'運輸模式、Incoterms、網路設計', icon:'🚚', time:'22 分鐘', level:'實務', content: renderCh7 },
+  { id:8, title:'績效指標與財務連結', subtitle:'OTIF、完美訂單、現金轉換週期', icon:'📊', time:'20 分鐘', level:'進階', content: renderCh8 },
+  { id:9, title:'風險、韌性與永續', subtitle:'斷鏈、多元布局、碳管理', icon:'🛡️', time:'22 分鐘', level:'進階', content: renderCh9 },
+  { id:10, title:'數位化與總複習', subtitle:'ERP、APS、WMS 與 AI 應用', icon:'💻', time:'18 分鐘', level:'總複習', content: renderCh10 }
+];
+
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('scm_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('scm_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+
+// ============================================================
+// CHAPTER 0
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>供應鏈管理 Domain Know-how<br>讓對的東西，在對的時間、以對的成本到對的地方</h1>
+  <p class="desc">這套課程整理供應鏈管理的核心領域知識：從需求預測、產銷協調（S&OP），到存貨、採購、生產、物流配送，再到績效指標、財務連結、風險韌性與數位化工具。每章都有可直接套用的公式與實務框架，幫你建立「看懂一條供應鏈、找出問題、提出改善」的能力。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 3.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>適合想系統化理解供應鏈的工作者、管理者與轉職者</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-num">3</div><div class="stat-label">流：物流・資訊流・金流</div></div>
+<div class="stat-card"><div class="stat-num">10+</div><div class="stat-label">個實用公式</div></div>
+<div class="stat-card"><div class="stat-num">4</div><div class="stat-label">象限：Kraljic 採購矩陣</div></div>
+<div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">🔗 全局觀（第1章）</div><div class="step-desc">供應鏈的三流、SCOR 模型六大流程，以及推式、拉式與解耦點的概念。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">📈 計畫端（第2-4章）</div><div class="step-desc">需求預測與 S&OP、存貨政策與安全庫存計算、長鞭效應與上下游協同。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">🤝 執行端（第5-7章）</div><div class="step-desc">採購與供應商管理、生產規劃與精實、物流倉儲與配送網路。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">📊 管理端（第8-9章）</div><div class="step-desc">用 KPI 與現金轉換週期衡量供應鏈，並建立風險韌性與永續管理。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">💻 數位化（第10章）</div><div class="step-desc">ERP、APS、WMS、TMS 等系統的角色，數據與 AI 的應用，以及總複習。</div></div></div>
+</div>
+<div class="section-title">如何使用本課程</div>
+<div class="card"><div class="card-body"><ul class="checklist">
+  <li><span class="check-icon">✅</span>第3章（存貨管理）是公式最多、最常用的一章，建議拿紙筆把範例自己算一次。</li>
+  <li><span class="check-icon">✅</span>每學完一章，試著把觀念套用到你熟悉的產品或公司：它的供應鏈長什麼樣子？問題可能出在哪裡？</li>
+  <li><span class="check-icon">✅</span>第8章的指標可以當作檢查清單，回頭評估你工作中的供應鏈表現。</li>
+  <li><span class="check-icon">✅</span>做完每章測驗，60 分以上才算過關；答錯的題目回頭重讀對應段落。</li>
+  <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+</ul>
+</div></div>
+<div class="box box-info">
+  <div class="box-title">💡 關於本課程</div>
+  <p>課程內容為通用的供應鏈管理知識整理，數字範例皆為說明用的假設值。不同產業（電子製造、零售、食品、醫療器材等）在實務上會有差異，套用時請依產品特性、法規與公司規模調整。</p>
+</div>
+
+</div>
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔗 第一章</div>
+  <h1>供應鏈管理是什麼<br>從原料到顧客手上，再回到原點</h1>
+  <p class="desc">供應鏈是讓產品或服務從原料走到最終顧客手上的一連串企業與活動。供應鏈管理（SCM）則是協調這些活動，在服務水準、成本與資金之間找到最佳平衡。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">供應鏈的三流</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">📦</div><div class="card-title">物流</div><div class="card-body">實體貨品的移動與儲存：原料進廠、半成品、成品出貨、退貨回收。</div></div>
+  <div class="card"><div class="card-icon">💬</div><div class="card-title">資訊流</div><div class="card-body">訂單、預測、庫存、出貨狀態等資訊的傳遞。資訊流越快越準，物流就越不需要用庫存來緩衝。</div></div>
+  <div class="card"><div class="card-icon">💰</div><div class="card-title">金流</div><div class="card-body">付款、收款、信用條件。供應鏈決策最終都會反映在現金與獲利上。</div></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 一句話理解</div>
+  <p>好的供應鏈管理，就是「用資訊取代庫存」：當上下游能即時、準確地分享資訊，就不需要在每個環節囤積大量庫存來應付不確定性。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">SCOR 模型：供應鏈的六大流程</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>流程</th><th>英文</th><th>核心問題</th></tr></thead>
+<tbody>
+<tr><td>計畫</td><td>Plan</td><td>要賣多少？需要多少產能、物料與庫存？</td></tr>
+<tr><td>採購</td><td>Source</td><td>向誰買？買多少？何時到？</td></tr>
+<tr><td>生產</td><td>Make</td><td>怎麼排程、怎麼生產、品質如何確保？</td></tr>
+<tr><td>配送</td><td>Deliver</td><td>訂單處理、倉儲、運輸如何準時交到顧客手上？</td></tr>
+<tr><td>退貨</td><td>Return</td><td>瑕疵品、退貨、維修與回收如何處理？</td></tr>
+<tr><td>支援</td><td>Enable</td><td>規則、績效、資料、風險與法規等支撐所有流程的管理機制</td></tr>
+</tbody>
+</table>
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">SCOR（Supply Chain Operations Reference）是業界常用的供應鏈參考模型，提供共通語言與流程框架，方便企業比較、診斷與改善。新版模型也把協同、永續等面向納入，但六大流程仍是最常用的切入方式。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">推式、拉式與解耦點</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>模式</th><th>運作方式</th><th>適合產品</th><th>優缺點</th></tr></thead>
+<tbody>
+<tr><td>推式（Push）</td><td>依預測先生產、先備貨</td><td>需求穩定、標準品、規模經濟大</td><td>交期短、成本低；但預測錯會造成庫存積壓或缺貨</td></tr>
+<tr><td>拉式（Pull）</td><td>依實際訂單才生產或補貨</td><td>客製化、高單價、需求波動大</td><td>庫存低；但交期較長，產能需有彈性</td></tr>
+<tr><td>推拉結合</td><td>前段依預測備料，後段依訂單組裝</td><td>模組化產品（如電腦、汽車選配）</td><td>兼顧交期與彈性</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 解耦點（Decoupling Point）</div>
+  <p>推式與拉式交界的位置，也就是「庫存停放、等待顧客訂單」的地方。常見策略有：備貨生產（MTS）、接單組裝（ATO）、接單生產（MTO）、接單設計（ETO）。解耦點越往下游，交期越短但庫存越多；越往上游則相反。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">效率型 vs 回應型供應鏈</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">費雪（Fisher）的框架指出：功能型產品（需求穩定、生命週期長、毛利較低，如日用品）適合效率型供應鏈，重點在降低成本；創新型產品（需求難預測、生命週期短、毛利較高，如新款電子產品、時尚）適合回應型供應鏈，重點在速度與彈性。產品與供應鏈類型錯配，是常見的績效問題來源。</p>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔗 第一章測驗</span><span class="quiz-title">供應鏈基本觀念</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 「用資訊取代庫存」這句話主要強調哪一流的重要性？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">物流</button>
+      <button class="quiz-opt" data-correct="1">資訊流</button>
+      <button class="quiz-opt" data-correct="0">金流</button>
+      <button class="quiz-opt" data-correct="0">人流</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 需求難預測、生命週期短、毛利高的創新型產品，較適合哪一種供應鏈？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">效率型供應鏈</button>
+      <button class="quiz-opt" data-correct="1">回應型供應鏈</button>
+      <button class="quiz-opt" data-correct="0">完全推式供應鏈</button>
+      <button class="quiz-opt" data-correct="0">不需要供應鏈</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：需求預測與 S&OP →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📈 第二章</div>
+  <h1>需求預測與 S&OP<br>預測一定會錯，重點是錯多少、怎麼管理</h1>
+  <p class="desc">幾乎所有供應鏈決策都始於需求預測：要買多少料、排多少產能、備多少庫存。這一章介紹常用的預測方法、如何衡量預測誤差，以及把預測轉化為跨部門共識的 S&OP 流程。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">預測的三個基本定律</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>預測幾乎一定不準，所以要同時預測「誤差有多大」。</li>
+  <li><span class="check-icon">✅</span>彙總預測比細項預測準：全公司總量比單一 SKU 準，月預測比日預測準。</li>
+  <li><span class="check-icon">✅</span>預測期間越遠越不準，所以縮短前置時間，本身就是降低預測風險的方法。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">常見預測方法</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📊 移動平均（Moving Average）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">取最近 N 期的平均作為下一期預測。簡單易懂，適合需求平穩的產品；N 越大越平滑，但反應越慢。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📉 指數平滑（Exponential Smoothing）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">新預測 = α × 本期實際 + (1 − α) × 本期預測。α 介於 0 與 1，越大越重視近期資料。進階版本可處理趨勢（Holt）與季節性（Holt-Winters）。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📅 季節性與趨勢分解</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">把歷史需求拆成「趨勢、季節、促銷與隨機」等成分，分別預測再組合。零售、食品、節慶商品特別重要。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🔗 因果模型（迴歸）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">以價格、促銷、天氣、經濟指標等因素解釋需求。適合影響因素明確且有資料的情境。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🧑‍💼 判斷式預測</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">業務、行銷、市場專家的判斷，適合新產品或沒有歷史資料的情況。容易有樂觀偏差，需與統計預測對照。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🤖 機器學習</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">能處理大量變數與非線性關係，近年應用快速增加；但仍需要乾淨的資料與人為檢查，並非萬能。</p></div>
+</div>
+<div class="formula">指數平滑：F(t+1) = α × A(t) + (1 − α) × F(t)
+例：本期實際 120、本期預測 100、α = 0.3 → 下期預測 = 0.3×120 + 0.7×100 = 106</div>
+
+</div>
+<div class="section">
+  <div class="section-title">衡量預測誤差</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>指標</th><th>公式</th><th>意義</th></tr></thead>
+<tbody>
+<tr><td>偏差（Bias）</td><td>Σ(預測 − 實際)</td><td>長期偏高或偏低？正值代表習慣性高估</td></tr>
+<tr><td>MAD</td><td>Σ|預測 − 實際| ÷ n</td><td>平均絕對誤差，單位同需求量</td></tr>
+<tr><td>MAPE</td><td>Σ(|預測 − 實際| ÷ 實際) ÷ n × 100%</td><td>平均絕對百分比誤差，方便跨產品比較；實際值很小時會失真</td></tr>
+<tr><td>WMAPE</td><td>Σ|預測 − 實際| ÷ Σ實際</td><td>依量加權的百分比誤差，實務上常比 MAPE 穩定</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 偏差比誤差更危險</div>
+  <p>隨機誤差可以用安全庫存吸收；但系統性偏差（例如業務每次都高估 20%）會讓庫存持續累積或持續缺貨。追蹤 Bias 並找出原因，往往是改善預測最快的方法。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">S&OP：銷售與作業規劃</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">資料蒐集</div><div class="step-desc">整理上月實際銷售、庫存、產能、預測準確度等資料。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">需求審查</div><div class="step-desc">業務、行銷提出未來銷售計畫，納入促銷、新品、客戶動向，形成無限制需求計畫。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">供給審查</div><div class="step-desc">生產、採購、物流評估產能與物料限制，找出供需缺口。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">預備會議（Pre-S&OP）</div><div class="step-desc">跨部門討論缺口方案，例如加班、外包、調整促銷、建立庫存，並估算財務影響。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">高階決策會議</div><div class="step-desc">由高階主管拍板，形成全公司唯一的一套計畫（One Number），並與財務預算連結。</div></div></div>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ S&OP 的價值</div>
+  <p>S&OP 不是預測會議，而是「決策會議」：讓業務、生產、採購、財務用同一套數字做事，避免各部門各自囤貨、各自追單。成熟的形式常被稱為整合式業務規劃（IBP）。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📈 第二章測驗</span><span class="quiz-title">預測與 S&OP</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 指數平滑法，本期實際 200、本期預測 180、α = 0.5，下期預測是多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">180</button>
+      <button class="quiz-opt" data-correct="1">190</button>
+      <button class="quiz-opt" data-correct="0">200</button>
+      <button class="quiz-opt" data-correct="0">210</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 業務部門每次預測都比實際高約 20%，這屬於哪一類問題？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">隨機誤差，靠安全庫存就能解決</button>
+      <button class="quiz-opt" data-correct="1">系統性偏差（Bias），需找出原因修正</button>
+      <button class="quiz-opt" data-correct="0">MAPE 計算錯誤</button>
+      <button class="quiz-opt" data-correct="0">與預測無關</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：存貨管理 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📦 第三章</div>
+  <h1>存貨管理<br>庫存是保險，也是被凍結的現金</h1>
+  <p class="desc">庫存可以吸收需求與供給的不確定性，但也占用資金、倉儲空間，並有過期、跌價的風險。這一章介紹存貨的類型、經濟訂購量、安全庫存、再訂購點與 ABC 分類，讓你能用數字決定「買多少、什麼時候買」。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>25 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">為什麼會有庫存</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🔄</div><div class="card-title">週期庫存</div><div class="card-body">為了批量採購或生產帶來的規模經濟，一次買進比當期需求更多。</div></div>
+  <div class="card"><div class="card-icon">🛟</div><div class="card-title">安全庫存</div><div class="card-body">為了應付需求或交期的不確定性而多備的緩衝。</div></div>
+  <div class="card"><div class="card-icon">🚢</div><div class="card-title">在途庫存</div><div class="card-body">運輸途中的貨品，前置時間越長，在途庫存越多。</div></div>
+  <div class="card"><div class="card-icon">📅</div><div class="card-title">預期庫存</div><div class="card-body">為了旺季、促銷或預期漲價而提前建立的庫存。</div></div>
+  <div class="card"><div class="card-icon">⚙️</div><div class="card-title">在製品（WIP）</div><div class="card-body">生產流程中尚未完成的半成品。</div></div>
+  <div class="card"><div class="card-icon">🗑️</div><div class="card-title">呆滯庫存</div><div class="card-body">長期沒有動用的庫存，是最需要管理的部分。</div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 庫存的持有成本</div>
+  <p>持有成本包含資金成本、倉儲、保險、損耗、過時跌價等，常見每年約為庫存價值的 15-30% 甚至更高（依產業而異）。看到倉庫滿滿的貨，要想到那是被凍結的現金。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">經濟訂購量（EOQ）</div>
+<div class="formula">EOQ = √(2 × D × S ÷ H)
+D = 年需求量｜S = 每次訂購成本｜H = 每單位每年持有成本</div>
+<div class="card"><div class="card-body">範例：年需求 D = 12,000 個、每次訂購成本 S = 500 元、每個每年持有成本 H = 20 元。<br>EOQ = √(2 × 12,000 × 500 ÷ 20) = √600,000 ≈ 775 個。<br>每年約訂購 12,000 ÷ 775 ≈ 15.5 次。</div></div>
+<div class="box box-info">
+  <div class="box-title">💡 EOQ 的限制</div>
+  <p>EOQ 假設需求穩定、價格固定、交期確定，現實中很少完全成立。但它提供了重要的直覺：訂購成本與持有成本互相拉扯，最佳批量落在兩者平衡處；而且 EOQ 對參數不太敏感，小幅估錯影響不大。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">安全庫存與再訂購點</div>
+<div class="formula">安全庫存 SS = Z × σd × √LT
+再訂購點 ROP = 平均日需求 d × 前置時間 LT + SS
+（Z：服務水準係數；σd：日需求標準差；LT：前置時間天數）</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>目標服務水準（週期服務水準）</th><th>Z 值</th></tr></thead>
+<tbody>
+<tr><td>90%</td><td>1.28</td></tr>
+<tr><td>95%</td><td>1.65</td></tr>
+<tr><td>97.5%</td><td>1.96</td></tr>
+<tr><td>99%</td><td>2.33</td></tr>
+</tbody>
+</table>
+</div>
+<div class="card"><div class="card-body">範例：平均日需求 50 個、日需求標準差 20 個、前置時間 9 天、目標 95%。<br>SS = 1.65 × 20 × √9 = 1.65 × 20 × 3 = 99 個。<br>ROP = 50 × 9 + 99 = 549 個。庫存降到 549 個時就下單補貨。</div></div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 服務水準的代價</div>
+  <p>從 95% 提高到 99%，Z 從 1.65 增加到 2.33，安全庫存增加約 41%。最後幾個百分點的服務水準非常昂貴，應依產品重要性分級設定，而不是全部追求 99%。如果交期本身也不穩定，安全庫存還需要納入交期變異。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">ABC 分析與 XYZ 分析</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>類別</th><th>占品項比例（約）</th><th>占金額比例（約）</th><th>管理方式</th></tr></thead>
+<tbody>
+<tr><td>A 類</td><td>10-20%</td><td>70-80%</td><td>嚴格管控、頻繁檢討預測與庫存、重點供應商協同</td></tr>
+<tr><td>B 類</td><td>20-30%</td><td>15-20%</td><td>標準化管理、定期檢討</td></tr>
+<tr><td>C 類</td><td>50-70%</td><td>5-10%</td><td>簡化管理、批量採購、自動補貨</td></tr>
+</tbody>
+</table>
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">XYZ 分析則依需求波動程度分類：X 類需求穩定、Y 類有波動、Z 類高度不規則。把 ABC 與 XYZ 交叉（例如 AX、CZ），就能為不同品項設定不同的預測方法、補貨策略與服務水準。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">存貨績效</div>
+<div class="formula">存貨週轉率 = 銷貨成本 ÷ 平均存貨
+存貨週轉天數（DIO）= 365 ÷ 存貨週轉率
+例：銷貨成本 1.2 億、平均存貨 2,000 萬 → 週轉率 6 次 → DIO ≈ 61 天</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📦 第三章測驗</span><span class="quiz-title">存貨計算</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 平均日需求 40、日需求標準差 10、前置時間 4 天、Z = 1.65，安全庫存約為多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">16.5</button>
+      <button class="quiz-opt" data-correct="1">33</button>
+      <button class="quiz-opt" data-correct="0">66</button>
+      <button class="quiz-opt" data-correct="0">160</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. ABC 分析中，A 類品項的特性通常是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">品項多、金額占比小</button>
+      <button class="quiz-opt" data-correct="1">品項少、金額占比高</button>
+      <button class="quiz-opt" data-correct="0">完全沒有需求</button>
+      <button class="quiz-opt" data-correct="0">只包含原物料</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：長鞭效應與協同 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🌊 第四章</div>
+  <h1>長鞭效應與協同<br>末端一點小波動，上游變成大海嘯</h1>
+  <p class="desc">長鞭效應（Bullwhip Effect）是指需求波動沿著供應鏈往上游傳遞時被逐級放大的現象。零售端需求只增加一點，到了上游原料供應商可能變成數倍的訂單暴增，隨後又暴跌。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">長鞭效應的樣貌</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">經典案例來自民生消費品：消費者購買量相當穩定，但零售商給批發商、批發商給製造商、製造商給原料商的訂單波動卻一層比一層大。疫情期間許多產業先缺貨、後庫存過剩，也是長鞭效應的典型展現。</p>
+<div class="formula">長鞭效應程度 ≈ 上游訂單變異數 ÷ 下游需求變異數（大於 1 代表被放大）</div>
+
+</div>
+<div class="section">
+  <div class="section-title">四大成因</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>① 需求訊號處理</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">每一層都根據下游的「訂單」而非最終「需求」做預測，並加上自己的安全庫存，波動被層層放大。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>② 批量訂購</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">為了節省訂購與運輸成本而集中下大單，讓上游看到的是不連續的大訂單。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>③ 價格波動與促銷</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">促銷或預期漲價時下游提前囤貨，之後又長時間不下單，造成需求假象。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>④ 短缺博弈（配額遊戲）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">預期缺貨時，下游故意下超過實際需要的訂單以爭取配額，一旦供給恢復就大量取消訂單。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">對策</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>成因</th><th>對策</th></tr></thead>
+<tbody>
+<tr><td>需求訊號處理</td><td>分享 POS（銷售時點）資料與最終需求、縮短前置時間、減少層級</td></tr>
+<tr><td>批量訂購</td><td>降低訂購成本（電子化下單）、混裝運輸、小批量高頻率補貨</td></tr>
+<tr><td>價格波動</td><td>天天低價（EDLP）、減少促銷造成的需求扭曲</td></tr>
+<tr><td>短缺博弈</td><td>依歷史銷售而非訂單量分配配額、限制訂單取消、資訊透明</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">上下游協同機制</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🏪</div><div class="card-title">VMI（供應商管理庫存）</div><div class="card-body">由供應商依據客戶的庫存與銷售資料決定補貨時機與數量，客戶不再下單。降低長鞭效應，但需要高度資訊分享與信任。</div></div>
+  <div class="card"><div class="card-icon">🤝</div><div class="card-title">CPFR（協同規劃、預測與補貨）</div><div class="card-body">買賣雙方共同制定銷售預測與補貨計畫，定期檢討差異並處理例外狀況。</div></div>
+  <div class="card"><div class="card-icon">📦</div><div class="card-title">寄售庫存（Consignment）</div><div class="card-body">供應商的貨放在客戶端，客戶用了才算購買。客戶降低資金壓力，供應商則承擔庫存風險。</div></div>
+  <div class="card"><div class="card-icon">🔁</div><div class="card-title">連續補貨（CRP）</div><div class="card-body">依實際消耗自動、頻繁地少量補貨，取代大批量訂單。</div></div>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 協同的前提</div>
+  <p>協同機制最大的障礙通常不是技術，而是信任、利益分配與資料品質。導入前要談清楚：誰承擔庫存風險、資料如何保密、績效指標怎麼定義。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🌊 第四章測驗</span><span class="quiz-title">長鞭效應</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 預期缺貨時，下游刻意下超量訂單爭取配額，屬於長鞭效應的哪一種成因？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">批量訂購</button>
+      <button class="quiz-opt" data-correct="0">價格波動</button>
+      <button class="quiz-opt" data-correct="1">短缺博弈</button>
+      <button class="quiz-opt" data-correct="0">需求訊號處理</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 下列哪一項措施最能直接降低長鞭效應？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">每一層各自加大安全庫存</button>
+      <button class="quiz-opt" data-correct="1">與上游分享最終銷售（POS）資料</button>
+      <button class="quiz-opt" data-correct="0">增加促銷次數</button>
+      <button class="quiz-opt" data-correct="0">拉長前置時間</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：採購與供應商管理 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🤝 第五章</div>
+  <h1>採購與供應商管理<br>不是買最便宜，而是買總成本最低</h1>
+  <p class="desc">採購通常占製造業營收很大比例，是影響成本、品質與交期的關鍵環節。這一章介紹總持有成本思維、採購品項分類（Kraljic 矩陣）、供應商評選與評鑑，以及供應來源策略。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實務</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">總持有成本（TCO）</div>
+<div class="formula">TCO = 採購價格 + 取得成本（運費、關稅、驗收）+ 使用成本（良率、停機、維護）
+      + 持有成本（庫存、資金）+ 處置成本（報廢、回收）</div>
+<div class="box box-info">
+  <div class="box-title">💡 實例思維</div>
+  <p>A 供應商單價便宜 3%，但交期不穩、良率差 2%，導致產線停線與重工；B 供應商單價較高但品質穩定。用 TCO 計算後，B 往往更便宜。採購的績效不應只看「降價幅度」。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">Kraljic 採購矩陣</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">依兩個維度把採購品項分類：<b>對獲利的影響</b>（金額、對產品成本與品質的影響）與<b>供應風險</b>（供應商數量、替代難度、稀缺性）。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>象限</th><th>獲利影響</th><th>供應風險</th><th>典型品項</th><th>策略</th></tr></thead>
+<tbody>
+<tr><td>策略型</td><td>高</td><td>高</td><td>關鍵晶片、核心零組件</td><td>長期夥伴關係、共同開發、多元布局與風險計畫</td></tr>
+<tr><td>槓桿型</td><td>高</td><td>低</td><td>標準原料、通用零件</td><td>善用議價力、招標、集中採購</td></tr>
+<tr><td>瓶頸型</td><td>低</td><td>高</td><td>特殊規格小零件、獨家耗材</td><td>確保供應、安全庫存、尋找替代或改設計</td></tr>
+<tr><td>一般型</td><td>低</td><td>低</td><td>文具、一般耗材</td><td>簡化流程、電子化、合併供應商</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 別忽略瓶頸型品項</div>
+  <p>瓶頸型品項金額小、容易被忽視，卻可能因為一顆缺料讓整條產線停擺。許多斷鏈事件的元兇，正是這些便宜但無法替代的零件。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">供應商評選與評鑑</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>構面</th><th>代表指標</th></tr></thead>
+<tbody>
+<tr><td>品質（Q）</td><td>進料不良率、客訴、認證（如 ISO 9001、產業特定標準）</td></tr>
+<tr><td>成本（C）</td><td>價格競爭力、降本提案、TCO</td></tr>
+<tr><td>交期（D）</td><td>準時交貨率、前置時間、彈性應變能力</td></tr>
+<tr><td>服務（S）</td><td>溝通回應速度、技術支援、問題處理</td></tr>
+<tr><td>其他</td><td>財務穩健度、產能、ESG 表現、資訊安全、地緣風險</td></tr>
+</tbody>
+</table>
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">常見做法是依構面設定權重並定期評分（例如每季），分級為 A、B、C 級，對應不同的採購配額、輔導或汰換措施。評鑑結果應與供應商溝通，形成持續改善的循環。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">供應來源策略</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">1️⃣</div><div class="card-title">單一來源（Sole/Single）</div><div class="card-body">只向一家供應商採購。量大、關係深、議價集中，但斷供風險高。</div></div>
+  <div class="card"><div class="card-icon">2️⃣</div><div class="card-title">雙來源或多來源</div><div class="card-body">分散給兩家以上供應商，提高韌性與比價空間，但規模經濟與管理成本受影響。</div></div>
+  <div class="card"><div class="card-icon">🏠</div><div class="card-title">自製或外購（Make or Buy）</div><div class="card-body">依核心能力、成本、產能、智財與風險決定，是重要的策略決策。</div></div>
+  <div class="card"><div class="card-icon">📑</div><div class="card-title">合約形式</div><div class="card-body">長約、框架合約、指數連動價格（隨原物料價格調整）等，用來平衡價格與供應穩定。</div></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🤝 第五章測驗</span><span class="quiz-title">採購與供應商</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 在 Kraljic 矩陣中，「獲利影響低、供應風險高」的品項屬於哪一類？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">策略型</button>
+      <button class="quiz-opt" data-correct="0">槓桿型</button>
+      <button class="quiz-opt" data-correct="1">瓶頸型</button>
+      <button class="quiz-opt" data-correct="0">一般型</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 評估供應商時，使用 TCO 而非單看價格的主要原因是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">TCO 計算比較簡單</button>
+      <button class="quiz-opt" data-correct="1">能納入品質、交期、運費、停線等隱藏成本，反映真實總成本</button>
+      <button class="quiz-opt" data-correct="0">法律規定必須使用 TCO</button>
+      <button class="quiz-opt" data-correct="0">TCO 只考慮運費</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：生產規劃與精實 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🏭 第六章</div>
+  <h1>生產規劃與精實<br>從計畫層級到現場流動</h1>
+  <p class="desc">生產規劃把需求計畫轉成「什麼時候生產什麼、需要什麼物料」。這一章介紹規劃層級、MPS 與 MRP 的運作，以及精實生產與限制理論兩大改善思維。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實務</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">規劃的層級</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">S&OP／總體規劃（中長期，月）</div><div class="step-desc">以產品族為單位，決定產能、人力、庫存水準的大方向。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">主生產排程 MPS（中期，週）</div><div class="step-desc">以最終產品為單位，決定每週要完成多少數量。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">物料需求計畫 MRP</div><div class="step-desc">依 MPS 與物料清單（BOM），算出每個零件何時需要、需要多少、何時下單。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">現場排程（短期，日／班）</div><div class="step-desc">決定每台機器、每條產線的工作順序與時間。</div></div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">MRP 的運作邏輯</div>
+<div class="formula">淨需求 = 毛需求 − 現有庫存 − 預計到貨 + 安全庫存
+下單時間 = 需求時間 − 前置時間（時間倒推）</div>
+<div class="card"><div class="card-body">範例：一台產品需要 2 個零件 X。第 5 週要生產 100 台 → 毛需求 200 個。現有庫存 50、預計到貨 30、安全庫存 20 → 淨需求 = 200 − 50 − 30 + 20 = 140 個。零件 X 前置時間 2 週 → 第 3 週就要下單。</div></div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ MRP 的關鍵：資料準確</div>
+  <p>MRP 的計算完全依賴 BOM、庫存、前置時間與 MPS 的正確性。BOM 版本錯誤、庫存帳實不符、前置時間設定過時，都會讓系統算出錯誤的建議，這也是許多企業 ERP 失靈的主因。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">產能規劃</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">產能規劃要確認計畫在資源上是否可行。粗略產能規劃（RCCP）檢查 MPS 對關鍵資源的負荷；產能需求規劃（CRP）則依 MRP 結果檢查各工作站負荷。計畫超出產能時，需透過加班、外包、調整排程或調整需求來平衡。</p>
+<div class="formula">稼動率 = 實際產出時間 ÷ 可用時間
+OEE（設備綜合效率）= 稼動率 × 性能效率 × 良率
+例：90% × 95% × 98% ≈ 83.8%</div>
+
+</div>
+<div class="section">
+  <div class="section-title">精實生產（Lean）：消除浪費</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>七大浪費</th><th>說明</th></tr></thead>
+<tbody>
+<tr><td>過量生產</td><td>做得比需要的多、比需要的早，是最嚴重的浪費</td></tr>
+<tr><td>等待</td><td>人員或機器等料、等指示、等設備</td></tr>
+<tr><td>搬運</td><td>不必要的物料移動</td></tr>
+<tr><td>過度加工</td><td>做了顧客不需要的加工或品質</td></tr>
+<tr><td>庫存</td><td>多餘的原料、在製品與成品</td></tr>
+<tr><td>動作</td><td>人員不必要的走動、尋找、彎腰</td></tr>
+<tr><td>不良</td><td>重工、報廢、檢驗</td></tr>
+</tbody>
+</table>
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">精實常用工具包括：價值流圖（VSM）、看板（Kanban）拉式補貨、5S、快速換線（SMED）、防呆（Poka-yoke）與持續改善（Kaizen）。JIT（及時生產）追求在需要時才生產需要的數量，但前提是供應穩定、品質一致。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">限制理論（TOC）</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">找出限制（瓶頸）</div><div class="step-desc">整個系統的產出由最慢的環節決定。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">充分利用瓶頸</div><div class="step-desc">確保瓶頸不停機、不等料、不做不良品。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">其他環節配合瓶頸</div><div class="step-desc">非瓶頸做再快也只會堆積在製品（鼓－緩衝－繩 DBR 排程）。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">提升瓶頸產能</div><div class="step-desc">增加設備、人力或外包。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">重新尋找限制</div><div class="step-desc">瓶頸移轉後，回到第一步持續改善。</div></div></div>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 關鍵洞察</div>
+  <p>在非瓶頸工作站省下一小時沒有價值；在瓶頸工作站損失一小時，就是整個工廠損失一小時。改善資源應該優先投入瓶頸。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🏭 第六章測驗</span><span class="quiz-title">生產規劃</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 毛需求 300、現有庫存 80、預計到貨 40、安全庫存 20，淨需求是多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">160</button>
+      <button class="quiz-opt" data-correct="0">180</button>
+      <button class="quiz-opt" data-correct="1">200</button>
+      <button class="quiz-opt" data-correct="0">220</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 依限制理論，下列哪一項改善最能提升整體產出？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">讓非瓶頸工作站加快速度</button>
+      <button class="quiz-opt" data-correct="1">提升瓶頸工作站的產能與利用率</button>
+      <button class="quiz-opt" data-correct="0">增加所有工作站的在製品</button>
+      <button class="quiz-opt" data-correct="0">延長所有工作站的換線時間</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：物流、倉儲與配送 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🚚 第七章</div>
+  <h1>物流、倉儲與配送<br>把東西準時、完整、低成本地送到</h1>
+  <p class="desc">物流連結供應鏈的每一個節點。運輸方式、倉儲作業、配送網路與貿易條件的選擇，直接影響交期、成本與顧客體驗。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實務</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">運輸模式比較</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>模式</th><th>成本</th><th>速度</th><th>適合貨物</th></tr></thead>
+<tbody>
+<tr><td>海運</td><td>低</td><td>慢（數週）</td><td>大宗、低單價、不急的貨物；整櫃 FCL／併櫃 LCL</td></tr>
+<tr><td>空運</td><td>高</td><td>快（數天）</td><td>高單價、輕薄短小、急件、生鮮</td></tr>
+<tr><td>陸運（卡車）</td><td>中</td><td>中</td><td>短中距離、門到門配送；整車 FTL／零擔 LTL</td></tr>
+<tr><td>鐵路</td><td>低～中</td><td>中</td><td>長距離陸路大宗貨物</td></tr>
+<tr><td>複合運輸</td><td>依組合而定</td><td>依組合而定</td><td>結合多種方式，例如海空聯運、海鐵聯運</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">國際貿易條件（Incoterms® 2020）</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">Incoterms 由國際商會（ICC）制定，定義買賣雙方在運輸、保險、風險移轉與費用上的責任分界，目前常用版本為 2020 年版，共 11 種條件。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>條件</th><th>重點</th><th>賣方責任</th></tr></thead>
+<tbody>
+<tr><td>EXW（工廠交貨）</td><td>買方到賣方場所提貨</td><td>最小</td></tr>
+<tr><td>FCA（貨交承運人）</td><td>交給買方指定承運人即移轉風險，適用各種運輸</td><td>小</td></tr>
+<tr><td>FOB（船上交貨）</td><td>貨物裝上船即移轉風險，限海運與內河運輸</td><td>小～中</td></tr>
+<tr><td>CIF（運保費在內）</td><td>賣方付運費與保險至目的港，但風險在裝船時移轉</td><td>中</td></tr>
+<tr><td>DAP（目的地交貨）</td><td>賣方負責運到指定目的地，不含進口清關</td><td>大</td></tr>
+<tr><td>DDP（完稅後交貨）</td><td>賣方負責到目的地並完成進口清關與稅費</td><td>最大</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 常見誤解</div>
+  <p>CIF 雖然由賣方付運費與保險，但貨物在出口港裝船後風險就移轉給買方。也就是說，運送途中出事，是買方去向保險公司求償。費用由誰付和風險由誰承擔，是兩回事。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">倉儲作業流程</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">收貨（Receiving）</div><div class="step-desc">核對數量、品質與文件，登錄系統。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">上架（Putaway）</div><div class="step-desc">依儲位規則放到指定位置，常見依週轉率分區（快動品靠近出貨區）。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">儲存（Storage）</div><div class="step-desc">庫存管理、循環盤點、先進先出（FIFO）或先到期先出（FEFO）。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">揀貨（Picking）</div><div class="step-desc">常是倉庫中最耗人力的作業，可用批次揀貨、分區揀貨、波次揀貨提升效率。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">包裝與出貨（Packing & Shipping）</div><div class="step-desc">包裝、貼標、裝載、交給承運人。</div></div></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 越庫作業（Cross-docking）</div>
+  <p>貨物進倉後不入庫儲存，直接依目的地分貨後出貨，大幅降低庫存與作業時間。適合需求穩定、資訊同步良好的零售與物流中心。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">配送網路設計</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🏢</div><div class="card-title">集中式</div><div class="card-body">少數大型物流中心，庫存集中、安全庫存較低（風險彙總效果），但距離顧客遠、運費與交期增加。</div></div>
+  <div class="card"><div class="card-icon">🏬</div><div class="card-title">分散式</div><div class="card-body">多個區域倉，離顧客近、交期短，但總庫存與設施成本較高。</div></div>
+  <div class="card"><div class="card-icon">🛵</div><div class="card-title">最後一哩</div><div class="card-body">電商時代成本最高、最影響顧客體驗的環節，常見方案有超商取貨、智慧櫃、區域微倉。</div></div>
+  <div class="card"><div class="card-icon">↩️</div><div class="card-title">逆物流</div><div class="card-body">退貨、維修、回收與再利用，在電商與循環經濟下越來越重要。</div></div>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 風險彙總（平方根定律）</div>
+  <p>在一定假設下，把 n 個倉庫的庫存集中到 1 個倉庫，總安全庫存約可降為原本的 1 ÷ √n。例如 4 個倉合併為 1 個，安全庫存約可減少一半。這是庫存集中化的理論基礎，但要和運費、交期一起權衡。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🚚 第七章測驗</span><span class="quiz-title">物流與配送</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 以 CIF 條件交易，貨物在海上運送途中受損，風險通常由誰承擔？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">賣方</button>
+      <button class="quiz-opt" data-correct="1">買方</button>
+      <button class="quiz-opt" data-correct="0">船公司一定全額賠償</button>
+      <button class="quiz-opt" data-correct="0">海關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 依平方根定律，把 9 個倉庫的安全庫存集中到 1 個倉庫，總安全庫存約為原本的多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">1/9</button>
+      <button class="quiz-opt" data-correct="1">1/3</button>
+      <button class="quiz-opt" data-correct="0">1/2</button>
+      <button class="quiz-opt" data-correct="0">不變</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：績效指標與財務連結 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📊 第八章</div>
+  <h1>績效指標與財務連結<br>用數字說服老闆，也用數字找問題</h1>
+  <p class="desc">供應鏈的價值最終要反映在顧客服務、成本與現金上。這一章介紹最常用的供應鏈 KPI、完美訂單率與現金轉換週期，讓你能把營運改善翻譯成財務語言。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">常用供應鏈 KPI</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>構面</th><th>指標</th><th>定義</th></tr></thead>
+<tbody>
+<tr><td>服務</td><td>OTIF（準時足量交貨率）</td><td>準時且足量交付的訂單數 ÷ 總訂單數</td></tr>
+<tr><td>服務</td><td>訂單滿足率（Fill Rate）</td><td>直接從庫存滿足的需求量 ÷ 總需求量</td></tr>
+<tr><td>服務</td><td>訂單週期時間</td><td>從接單到交貨所需的時間</td></tr>
+<tr><td>計畫</td><td>預測準確率</td><td>1 − WMAPE 等指標</td></tr>
+<tr><td>庫存</td><td>存貨週轉率／DIO</td><td>衡量庫存效率</td></tr>
+<tr><td>成本</td><td>供應鏈總成本占營收比</td><td>採購、物流、倉儲、庫存持有等成本</td></tr>
+<tr><td>供應</td><td>供應商準時交貨率、進料不良率</td><td>上游表現</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 指標之間會互相拉扯</div>
+  <p>追求高服務水準會增加庫存，壓低庫存又可能降低服務水準；只看運費會傾向大批量慢船，卻拉長交期、增加庫存。應建立平衡的指標組合，並讓各部門看同一組數字。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">完美訂單率</div>
+<div class="formula">完美訂單率 = 準時率 × 足量率 × 無損率 × 文件正確率
+例：95% × 97% × 99% × 98% ≈ 89.4%</div>
+
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">完美訂單率是從顧客角度衡量整體交付品質。每個環節看起來都在 95% 以上，相乘後可能不到九成，這提醒我們：顧客感受到的是所有環節的總和。</p>
+<div class="section">
+  <div class="section-title">現金轉換週期（CCC）</div>
+<div class="formula">CCC = DIO（存貨週轉天數）+ DSO（應收帳款天數）− DPO（應付帳款天數）
+例：DIO 60 + DSO 45 − DPO 50 = 55 天</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">CCC 代表從付錢給供應商到從顧客收回現金所需的天數。天數越短，營運所需的資金越少。降低 DIO（減少庫存）、縮短 DSO（加快收款）、延長 DPO（與供應商協商付款條件）都能改善 CCC。</p>
+<div class="box box-info">
+  <div class="box-title">💡 把改善翻譯成金額</div>
+  <p>若年銷貨成本 3.65 億，DIO 減少 10 天，約可釋放 3.65 億 ÷ 365 × 10 = 1,000 萬元的現金。用這種方式呈現供應鏈改善，比只講「庫存降低」更有說服力。</p>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 不要只壓供應商</div>
+  <p>一味延長付款天數（DPO）雖然改善自己的現金流，但可能把財務壓力轉嫁給供應商，增加供應商倒閉或斷供的風險。供應鏈金融（如應收帳款融資）是兼顧雙方的做法之一。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">服務成本分析（Cost-to-Serve）</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">不同顧客、通路與訂單型態的服務成本差異很大：少量多樣、急單、客製包裝、偏遠地區配送都會推高成本。計算每個顧客或通路的服務成本與毛利，可以找出「營收大但其實不賺錢」的客戶，進而調整訂單門檻、運費政策或服務分級。</p>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📊 第八章測驗</span><span class="quiz-title">KPI 與財務</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. DIO 50 天、DSO 40 天、DPO 30 天，現金轉換週期是多少天？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">20 天</button>
+      <button class="quiz-opt" data-correct="1">60 天</button>
+      <button class="quiz-opt" data-correct="0">80 天</button>
+      <button class="quiz-opt" data-correct="0">120 天</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 準時率 90%、足量率 90%、無損率 100%、文件正確率 100%，完美訂單率是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">90%</button>
+      <button class="quiz-opt" data-correct="1">81%</button>
+      <button class="quiz-opt" data-correct="0">95%</button>
+      <button class="quiz-opt" data-correct="0">100%</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：風險、韌性與永續 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🛡️ 第九章</div>
+  <h1>風險、韌性與永續<br>效率之外，供應鏈還要扛得住</h1>
+  <p class="desc">過去供應鏈追求精實與低成本，但疫情、塞港、地緣政治、天災與關稅變化讓許多企業體會到：最便宜的供應鏈，未必是最可靠的。這一章介紹風險辨識、韌性策略與永續（ESG）管理。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">供應鏈風險類型</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🌪️</div><div class="card-title">自然與意外</div><div class="card-body">地震、颱風、火災、乾旱、疫情等，可能使單一工廠或港口停擺。</div></div>
+  <div class="card"><div class="card-icon">🌐</div><div class="card-title">地緣政治與政策</div><div class="card-body">關稅、出口管制、制裁、貿易協定變動，影響供應來源與成本。</div></div>
+  <div class="card"><div class="card-icon">🏭</div><div class="card-title">供應商風險</div><div class="card-body">財務危機、品質問題、產能不足、單一來源依賴。</div></div>
+  <div class="card"><div class="card-icon">🚢</div><div class="card-title">物流風險</div><div class="card-body">塞港、運力短缺、運價暴漲、航道中斷。</div></div>
+  <div class="card"><div class="card-icon">💻</div><div class="card-title">資訊與資安</div><div class="card-body">勒索軟體、系統當機、資料外洩，可能讓訂單與生產全面停擺。</div></div>
+  <div class="card"><div class="card-icon">📉</div><div class="card-title">需求風險</div><div class="card-body">需求急升或急降、產品快速過時，造成缺貨或庫存積壓。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">風險評估方法</div>
+<div class="formula">風險優先度 = 發生機率 × 衝擊程度
+存活時間（TTS）：斷供後還能維持運作多久
+恢復時間（TTR）：供應商恢復正常需要多久
+若 TTR > TTS → 屬於需要優先處理的高風險節點</div>
+
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 看見第二層、第三層供應商</div>
+  <p>很多風險藏在你看不到的地方：你的供應商可能都向同一家二階供應商買關鍵原料，表面上的多來源其實是單點失效。供應鏈地圖（Supply Chain Mapping）往下追到 Tier-2、Tier-3，是韌性管理的基礎。</p>
+</div>
+<div class="section">
+  <div class="section-title">韌性策略</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>策略</th><th>做法</th><th>代價</th></tr></thead>
+<tbody>
+<tr><td>多元來源</td><td>開發第二供應商、跨區域布局（例如中國加一、近岸外包、友岸外包）</td><td>導入成本、規模經濟下降</td></tr>
+<tr><td>策略庫存</td><td>對關鍵或瓶頸物料建立緩衝庫存</td><td>資金與倉儲成本</td></tr>
+<tr><td>產品設計彈性</td><td>共用零件、替代料設計、模組化</td><td>研發投入</td></tr>
+<tr><td>產能彈性</td><td>預留產能、合約製造備援</td><td>閒置成本</td></tr>
+<tr><td>即時可視化</td><td>追蹤在途貨物、供應商狀態、風險事件預警</td><td>系統與資料投入</td></tr>
+<tr><td>營運持續計畫（BCP）</td><td>預先規劃斷鏈時的應變流程與替代方案</td><td>規劃與演練時間</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 從 Just-in-Time 到 Just-in-Case</div>
+  <p>韌性不代表放棄效率，而是針對「高衝擊、難替代」的節點有選擇性地投資。用 Kraljic 矩陣與 TTS／TTR 找出關鍵節點，把韌性資源集中在那裡。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">永續與碳管理</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🌱 範疇一、二、三排放</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">範疇一是自身直接排放，範疇二是購買電力等能源的間接排放，範疇三是供應鏈上下游的其他間接排放。多數企業的碳排大部分落在範疇三，因此供應鏈是減碳的主戰場。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🇪🇺 國際法規與客戶要求</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">歐盟碳邊境調整機制（CBAM）、供應鏈盡職調查相關法規，以及國際品牌的減碳目標，讓出口企業需要提供產品碳足跡等資料。各國制度仍在變動，需持續追蹤。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>♻️ 循環經濟</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">產品設計可回收、再利用、再製造，搭配逆物流建立資源循環。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>👷 社會責任</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">勞動條件、人權、衝突礦產等議題，供應商稽核與行為準則越來越常見。</p></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 實務起點</div>
+  <p>先盤點主要供應商的能源使用與排放資料、要求關鍵供應商提供碳數據、把 ESG 納入供應商評鑑構面，再逐步建立產品碳足跡計算能力。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🛡️ 第九章測驗</span><span class="quiz-title">風險與韌性</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 某關鍵零件斷供後，公司庫存可撐 2 週（TTS），供應商恢復需要 6 週（TTR），應如何判斷？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">TTR > TTS，屬於高風險節點，需優先建立對策</button>
+      <button class="quiz-opt" data-correct="0">TTS > TTR，風險很低</button>
+      <button class="quiz-opt" data-correct="0">兩者無關</button>
+      <button class="quiz-opt" data-correct="0">只要價格便宜就不用處理</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 多數企業的碳排放，大部分落在哪一個範疇？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">範疇一</button>
+      <button class="quiz-opt" data-correct="0">範疇二</button>
+      <button class="quiz-opt" data-correct="1">範疇三</button>
+      <button class="quiz-opt" data-correct="0">都一樣</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：數位化與總複習 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">💻 第十章</div>
+  <h1>數位化與總複習<br>讓系統承擔計算，讓人專注在決策</h1>
+  <p class="desc">恭喜走到最後一章！供應鏈的計畫與執行涉及大量資料與計算，數位系統是現代供應鏈的骨幹。這一章介紹主要系統的角色、數據與 AI 的應用，並整合全課程內容。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">供應鏈系統地圖</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>系統</th><th>用途</th><th>對應流程</th></tr></thead>
+<tbody>
+<tr><td>ERP（企業資源規劃）</td><td>訂單、採購、庫存、生產、財務的核心交易紀錄</td><td>全流程</td></tr>
+<tr><td>APS（先進規劃排程）</td><td>考慮產能與物料限制的最佳化排程與規劃</td><td>計畫、生產</td></tr>
+<tr><td>MES（製造執行系統）</td><td>現場生產追蹤、品質與設備資料</td><td>生產</td></tr>
+<tr><td>WMS（倉儲管理系統）</td><td>儲位、揀貨、盤點、出入庫作業</td><td>倉儲</td></tr>
+<tr><td>TMS（運輸管理系統）</td><td>運輸規劃、承運商管理、運費結算、貨況追蹤</td><td>配送</td></tr>
+<tr><td>SRM（供應商關係管理）</td><td>供應商資料、詢報價、評鑑與協同</td><td>採購</td></tr>
+<tr><td>控制塔（Control Tower）</td><td>整合多系統資料，即時可視化與異常預警</td><td>跨流程</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 系統不能取代流程與資料</div>
+  <p>導入系統前，先確認流程清楚、主資料（料號、BOM、前置時間、供應商資料）正確。用髒資料跑先進系統，只會更快得到錯誤的答案。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">數據與 AI 的應用</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">📈</div><div class="card-title">需求預測</div><div class="card-body">結合銷售、促銷、天氣、市場訊號，用機器學習提升預測準確率。</div></div>
+  <div class="card"><div class="card-icon">📦</div><div class="card-title">庫存最佳化</div><div class="card-body">多層級庫存最佳化（MEIO），在整個網路中配置安全庫存。</div></div>
+  <div class="card"><div class="card-icon">🧪</div><div class="card-title">數位孿生</div><div class="card-body">建立供應鏈的虛擬模型，模擬斷鏈、需求變化或新設廠的影響。</div></div>
+  <div class="card"><div class="card-icon">🤖</div><div class="card-title">自動化與生成式 AI</div><div class="card-body">自動處理訂單異常、彙整供應商資訊、草擬採購文件與分析報告，但關鍵決策仍需人為判斷。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">供應鏈診斷檢查表</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>產品類型與供應鏈策略是否匹配（效率型 vs 回應型）？解耦點放對位置嗎？</li>
+  <li><span class="check-icon">✅</span>預測是否有系統性偏差？是否有運作中的 S&OP 流程與單一計畫數字？</li>
+  <li><span class="check-icon">✅</span>庫存是否依 ABC／XYZ 分級，安全庫存是否有計算依據？呆滯庫存有多少？</li>
+  <li><span class="check-icon">✅</span>是否有長鞭效應跡象？與上下游分享哪些資料？</li>
+  <li><span class="check-icon">✅</span>關鍵與瓶頸物料是否有替代來源或緩衝？是否看得到二階供應商？</li>
+  <li><span class="check-icon">✅</span>OTIF、完美訂單率、CCC 目前是多少？趨勢如何？</li>
+  <li><span class="check-icon">✅</span>主資料是否正確？系統建議是否被信任與採用？</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+<div class="quiz-card" style="margin-top:0;">
+  <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">供應鏈管理總複習</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 年需求 8,000 個、每次訂購成本 400 元、每個每年持有成本 16 元，EOQ 約為多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">200</button>
+      <button class="quiz-opt" data-correct="0">400</button>
+      <button class="quiz-opt" data-correct="1">632</button>
+      <button class="quiz-opt" data-correct="0">800</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 平均日需求 100、前置時間 5 天、安全庫存 150，再訂購點是多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">150</button>
+      <button class="quiz-opt" data-correct="0">500</button>
+      <button class="quiz-opt" data-correct="1">650</button>
+      <button class="quiz-opt" data-correct="0">750</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 預期缺貨時下游超量下單、供給恢復後又大量取消，這會加劇什麼現象？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">規模經濟</button>
+      <button class="quiz-opt" data-correct="1">長鞭效應</button>
+      <button class="quiz-opt" data-correct="0">風險彙總</button>
+      <button class="quiz-opt" data-correct="0">平方根定律</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q4. 下列何者能縮短現金轉換週期（CCC）？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">增加存貨週轉天數</button>
+      <button class="quiz-opt" data-correct="0">延長應收帳款天數</button>
+      <button class="quiz-opt" data-correct="1">降低存貨天數並加快收款</button>
+      <button class="quiz-opt" data-correct="0">縮短應付帳款天數</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q5. 關於供應鏈韌性，下列何者較正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">所有物料都應建立大量安全庫存</button>
+      <button class="quiz-opt" data-correct="1">應針對高衝擊、難替代的節點選擇性投資韌性</button>
+      <button class="quiz-opt" data-correct="0">只要單價最低就是最好的供應鏈</button>
+      <button class="quiz-opt" data-correct="0">只需要管理一階供應商</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+</div>
+<div class="disclaimer">
+  ℹ️ 說明：本課程為個人學習用的供應鏈管理知識整理，公式與數字範例皆為說明用途，實際應用需依產業特性、資料品質與公司情況調整。Incoterms® 為國際商會（ICC）之註冊商標，實際交易請以合約與最新版本條款為準；ESG、碳排放與貿易相關法規可能持續變動，請以主管機關最新公告為準。
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>

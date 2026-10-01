@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台指選擇權 Domain Know-how｜權利金、Greeks、策略與風控</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🎲 台指選擇權課</div>
+    <div class="sidebar-title">台指選擇權 Know-how<br>權利金・Greeks・策略・風控</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'學習地圖與使用說明', icon:'🗺️', time:'5 分鐘', level:'總覽', content: renderCh0 },
+  { id:1, title:'選擇權是什麼', subtitle:'買權、賣權與四種基本部位', icon:'🔑', time:'18 分鐘', level:'基礎', content: renderCh1 },
+  { id:2, title:'台指選擇權規格', subtitle:'月選、週選、結算與交易成本', icon:'📋', time:'18 分鐘', level:'基礎', content: renderCh2 },
+  { id:3, title:'權利金與到期損益', subtitle:'內含價值、時間價值、損益平衡點', icon:'🧾', time:'22 分鐘', level:'核心', content: renderCh3 },
+  { id:4, title:'Greeks 與隱含波動率', subtitle:'Delta、Gamma、Theta、Vega', icon:'📐', time:'25 分鐘', level:'核心', content: renderCh4 },
+  { id:5, title:'買方策略', subtitle:'以小博大的真實勝率', icon:'🎯', time:'18 分鐘', level:'實戰', content: renderCh5 },
+  { id:6, title:'賣方策略與保證金', subtitle:'收租的代價：有限獲利、巨大風險', icon:'🏦', time:'22 分鐘', level:'實戰', content: renderCh6 },
+  { id:7, title:'價差與組合策略', subtitle:'垂直價差、跨式、勒式、鐵兀鷹', icon:'🧩', time:'25 分鐘', level:'進階', content: renderCh7 },
+  { id:8, title:'籌碼與波動率應用', subtitle:'未平倉、P/C 比、IV 高低判斷', icon:'🔭', time:'20 分鐘', level:'進階', content: renderCh8 },
+  { id:9, title:'風險控管與心理陷阱', subtitle:'黑天鵝、樂透心態、週選誘惑', icon:'🧠', time:'18 分鐘', level:'進階', content: renderCh9 },
+  { id:10, title:'交易計畫與總複習', subtitle:'策略選擇地圖與檢查表', icon:'📝', time:'18 分鐘', level:'總複習', content: renderCh10 }
+];
+
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('twoptions_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('twoptions_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+
+// ============================================================
+// CHAPTER 0
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>台指選擇權 Domain Know-how<br>搞懂權利金的組成，才知道自己在買賣什麼</h1>
+  <p class="desc">這套課程整理交易台指選擇權（TXO）需要的領域知識：買權與賣權的權利義務、台灣選擇權規格與結算、權利金如何由內含價值與時間價值組成、Greeks 與隱含波動率，以及買方、賣方、價差組合等策略的真實風險報酬。最後幫你建立依「方向 × 波動率」選策略的思考地圖與風控規則。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 3.5 小時</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>適合已了解期貨基本概念、想學選擇權的交易者</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-num">4</div><div class="stat-label">種基本部位</div></div>
+<div class="stat-card"><div class="stat-num">4</div><div class="stat-label">個核心 Greeks</div></div>
+<div class="stat-card"><div class="stat-num">8+</div><div class="stat-label">種策略與組合</div></div>
+<div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">🔑 基本觀念與規格（第1-2章）</div><div class="step-desc">買權、賣權、買方、賣方的權利義務，以及台指選擇權的契約規格、到期與結算方式。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">🧾 定價核心（第3-4章）</div><div class="step-desc">權利金的組成、到期損益計算，以及 Delta、Gamma、Theta、Vega 與隱含波動率如何影響價格。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">🎯 單一部位策略（第5-6章）</div><div class="step-desc">買方與賣方各自的優勢、劣勢與適用情境，賣方保證金與風險指標的運作。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">🧩 組合與應用（第7-8章）</div><div class="step-desc">垂直價差、跨式、勒式、鐵兀鷹等組合策略，並學會解讀未平倉籌碼與波動率。</div></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">🧠 風控與系統（第9-10章）</div><div class="step-desc">賣方黑天鵝、買方樂透心態等陷阱，最後整合成一份策略選擇地圖與交易計畫。</div></div></div>
+</div>
+<div class="section-title">如何使用本課程</div>
+<div class="card"><div class="card-body"><ul class="checklist">
+  <li><span class="check-icon">✅</span>第3章（權利金與損益）和第4章（Greeks）是理解所有策略的基礎，建議務必讀懂再往後。</li>
+  <li><span class="check-icon">✅</span>每學一種策略，自己在紙上畫出到期損益圖，並算出最大獲利、最大虧損與損益平衡點。</li>
+  <li><span class="check-icon">✅</span>先用 1 口或模擬交易觀察權利金每天怎麼變化，特別是時間價值的流失速度。</li>
+  <li><span class="check-icon">✅</span>做完每章測驗，60 分以上才算過關；答錯的題目回頭重讀對應段落。</li>
+  <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+</ul>
+</div></div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 開始前的提醒</div>
+  <p>本課程為個人學習用的選擇權知識整理，不構成任何交易建議。選擇權買方可能損失全部權利金，賣方的潛在虧損可能遠超過收取的權利金與保證金。文中的指數、履約價、權利金皆為說明用的假設數字，實際契約規格、保證金與稅費會由臺灣期貨交易所與期貨商調整，請以最新公告為準。</p>
+</div>
+
+</div>
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔑 第一章</div>
+  <h1>選擇權是什麼<br>買的是「權利」，賣的是「義務」</h1>
+  <p class="desc">選擇權是一種契約：買方支付權利金，取得在到期時以約定價格（履約價）買進或賣出標的的權利；賣方收取權利金，承擔對應的義務。理解這層不對稱，是學習所有策略的起點。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">兩種選擇權</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">📈</div><div class="card-title">買權（Call）</div><div class="card-body">在到期時以履約價「買進」標的的權利。標的價格上漲超過履約價越多，買權越有價值。看漲時買進買權。</div></div>
+  <div class="card"><div class="card-icon">📉</div><div class="card-title">賣權（Put）</div><div class="card-body">在到期時以履約價「賣出」標的的權利。標的價格下跌低於履約價越多，賣權越有價值。看跌時買進賣權。</div></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 生活化比喻</div>
+  <p>買權像是「預購訂金」：付一筆小錢鎖定未來用某個價格買房的權利，房價大漲就行使權利，房價下跌就放棄，最多損失訂金。賣權像是「保險」：付保費換取資產跌價時的理賠。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">四種基本部位</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>部位</th><th>你的看法</th><th>付出／收取</th><th>最大獲利</th><th>最大虧損</th></tr></thead>
+<tbody>
+<tr><td>買進買權（Buy Call）</td><td>大漲</td><td>付權利金</td><td>理論上無限</td><td>已付權利金</td></tr>
+<tr><td>賣出買權（Sell Call）</td><td>不漲（盤整或下跌）</td><td>收權利金</td><td>已收權利金</td><td>理論上無限</td></tr>
+<tr><td>買進賣權（Buy Put）</td><td>大跌</td><td>付權利金</td><td>很大（跌到零為止）</td><td>已付權利金</td></tr>
+<tr><td>賣出賣權（Sell Put）</td><td>不跌（盤整或上漲）</td><td>收權利金</td><td>已收權利金</td><td>很大（跌到零為止）</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 重點結論</div>
+  <p>買方：虧損有限、獲利可能很大，但需要行情「夠快、夠大」才會賺。賣方：獲利有限、虧損可能很大，但只要行情「不要大幅不利」就能賺。沒有哪一方比較好，只是風險報酬的形狀不同。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">選擇權 vs 期貨</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>面向</th><th>期貨</th><th>選擇權</th></tr></thead>
+<tbody>
+<tr><td>權利義務</td><td>雙方都有義務</td><td>買方只有權利，賣方承擔義務</td></tr>
+<tr><td>損益形狀</td><td>線性（漲一點賺一點）</td><td>非線性（依履約價、時間、波動率而變）</td></tr>
+<tr><td>影響價格的因素</td><td>主要是標的價格</td><td>標的價格、時間、波動率、利率</td></tr>
+<tr><td>保證金</td><td>多空雙方都繳</td><td>只有賣方繳，買方付清權利金即可</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔑 第一章測驗</span><span class="quiz-title">選擇權基本觀念</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 看好台股會大漲，但想把最大虧損限制在固定金額，較符合的部位是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">賣出買權</button>
+      <button class="quiz-opt" data-correct="1">買進買權</button>
+      <button class="quiz-opt" data-correct="0">賣出賣權</button>
+      <button class="quiz-opt" data-correct="0">買進賣權</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 選擇權「賣方」的特性是什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">虧損有限、獲利無限</button>
+      <button class="quiz-opt" data-correct="0">付出權利金並取得權利</button>
+      <button class="quiz-opt" data-correct="1">收取權利金、獲利有限，但承擔可能很大的虧損</button>
+      <button class="quiz-opt" data-correct="0">不需要繳保證金</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：台指選擇權規格 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📋 第二章</div>
+  <h1>台指選擇權規格<br>先搞清楚遊戲規則</h1>
+  <p class="desc">台灣最活躍的選擇權是以臺灣加權股價指數為標的的臺指選擇權（TXO）。這一章整理它的契約規格、到期與結算方式、交易時間與成本。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">臺指選擇權（TXO）主要規格</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>內容</th></tr></thead>
+<tbody>
+<tr><td>標的</td><td>臺灣證券交易所發行量加權股價指數</td></tr>
+<tr><td>每點價值</td><td>新台幣 50 元（權利金 1 點 = 50 元）</td></tr>
+<tr><td>履約方式</td><td>歐式：只能在到期日履約</td></tr>
+<tr><td>結算方式</td><td>現金結算，以最後結算價計算價內金額</td></tr>
+<tr><td>合約月份</td><td>月選擇權（到期日為每月第三個週三），另有週選擇權等短天期契約</td></tr>
+<tr><td>履約價間距</td><td>依到期月份與距離價平遠近而不同，近月價平附近間距較小</td></tr>
+<tr><td>交易時間</td><td>一般時段 8:45–13:45，另有盤後交易時段（與期貨相同）</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 規格會調整</div>
+  <p>期交所會依市場需求調整履約價序列、週選擇權的到期日安排與交易時段。下單前請確認你交易的是哪一個到期序列，週選和月選的權利金與時間價值差很多。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">價內、價平、價外</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>狀態</th><th>買權（Call）</th><th>賣權（Put）</th></tr></thead>
+<tbody>
+<tr><td>價內（ITM）</td><td>指數 > 履約價</td><td>指數 < 履約價</td></tr>
+<tr><td>價平（ATM）</td><td>指數 ≈ 履約價</td><td>指數 ≈ 履約價</td></tr>
+<tr><td>價外（OTM）</td><td>指數 < 履約價</td><td>指數 > 履約價</td></tr>
+</tbody>
+</table>
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">假設指數在 20,000 點：20,200 的買權是價外、19,800 的買權是價內；20,200 的賣權是價內、19,800 的賣權是價外。價外選擇權權利金便宜，但到期歸零的機率也高。</p>
+
+</div>
+<div class="section">
+  <div class="section-title">到期與結算</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🏁</div><div class="card-title">最後結算價</div><div class="card-body">與台指期相同，以到期日現貨收盤前 30 分鐘（13:00–13:30）的加權指數簡單算術平均價計算。</div></div>
+  <div class="card"><div class="card-icon">💵</div><div class="card-title">自動履約</div><div class="card-body">到期時價內的選擇權會自動以現金結算價內金額；價外的選擇權則價值歸零。</div></div>
+  <div class="card"><div class="card-icon">⏳</div><div class="card-title">提前平倉</div><div class="card-body">雖然是歐式選擇權不能提前履約，但可以隨時在市場上買賣平倉，實務上大多數交易者都是平倉而非等到期。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">交易成本</div>
+<div class="formula">期交稅 = 權利金金額 × 0.1%（買賣各收一次）
+例：權利金 80 點 → 80 × 50 = 4,000 元 → 期交稅 4 元</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">另外還有期貨商手續費（依議價而定）。深價外選擇權權利金很小，手續費和稅相對權利金的比例會變得很高，頻繁交易便宜的價外單，成本侵蝕非常明顯。</p>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📋 第二章測驗</span><span class="quiz-title">規格與價內外</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 臺指選擇權權利金 1 點價值多少元？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">10 元</button>
+      <button class="quiz-opt" data-correct="1">50 元</button>
+      <button class="quiz-opt" data-correct="0">200 元</button>
+      <button class="quiz-opt" data-correct="0">1,000 元</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 指數位於 20,000 點時，下列哪一個是「價外」選擇權？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">19,800 買權</button>
+      <button class="quiz-opt" data-correct="0">20,200 賣權</button>
+      <button class="quiz-opt" data-correct="1">20,200 買權</button>
+      <button class="quiz-opt" data-correct="0">19,600 買權</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：權利金與到期損益 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧾 第三章</div>
+  <h1>權利金與到期損益<br>選擇權的價格由什麼組成</h1>
+  <p class="desc">權利金可以拆成「內含價值」與「時間價值」兩部分。懂得拆解權利金，就能算出損益平衡點、最大獲利與最大虧損，這是評估任何選擇權交易的第一步。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">權利金 = 內含價值 + 時間價值</div>
+<div class="formula">買權內含價值 = max(指數 − 履約價, 0)
+賣權內含價值 = max(履約價 − 指數, 0)
+時間價值 = 權利金 − 內含價值</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>範例（指數 20,000）</th><th>權利金（假設）</th><th>內含價值</th><th>時間價值</th></tr></thead>
+<tbody>
+<tr><td>19,800 買權（價內）</td><td>260 點</td><td>200 點</td><td>60 點</td></tr>
+<tr><td>20,000 買權（價平）</td><td>150 點</td><td>0 點</td><td>150 點</td></tr>
+<tr><td>20,200 買權（價外）</td><td>70 點</td><td>0 點</td><td>70 點</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 關鍵觀察</div>
+  <p>價平選擇權的時間價值最大；價外選擇權的權利金全部都是時間價值，如果到期前指數沒有越過履約價，會全部歸零。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">到期損益計算</div>
+<div class="formula">買進買權到期損益 = max(結算價 − 履約價, 0) − 權利金
+買進賣權到期損益 = max(履約價 − 結算價, 0) − 權利金
+（點數 × 50 元 = 新台幣損益）</div>
+<div class="card"><div class="card-body">範例：指數 20,000 點時，以 80 點買進 20,200 買權（成本 80 × 50 = 4,000 元）。<br>• 損益平衡點：20,200 + 80 = 20,280 點。<br>• 到期結算 20,500：價內 300 點，獲利 300 − 80 = 220 點 = 11,000 元。<br>• 到期結算 20,250：價內 50 點，虧損 30 點 = 1,500 元。<br>• 到期結算 20,100：價外歸零，虧損全部 80 點 = 4,000 元。</div></div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>部位</th><th>損益平衡點</th></tr></thead>
+<tbody>
+<tr><td>買進買權 / 賣出買權</td><td>履約價 + 權利金</td></tr>
+<tr><td>買進賣權 / 賣出賣權</td><td>履約價 − 權利金</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 猜對方向不等於賺錢</div>
+  <p>上面的例子中，指數從 20,000 漲到 20,250，你看漲是對的，但到期仍然虧錢。買方必須漲得「超過損益平衡點」才會賺，這是選擇權買方最常見的挫折來源。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">到期前的價格</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">到期前，選擇權價格除了內含價值，還包含時間價值；而時間價值又受「剩餘天數」與「波動率」影響。所以到期前的損益曲線是一條平滑的曲線，而不是到期時的折線。這就是下一章 Greeks 要解釋的內容。</p>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧾 第三章測驗</span><span class="quiz-title">權利金與損益</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 指數 20,000 點時，20,000 買權權利金 150 點，其時間價值是多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">0 點</button>
+      <button class="quiz-opt" data-correct="0">50 點</button>
+      <button class="quiz-opt" data-correct="1">150 點</button>
+      <button class="quiz-opt" data-correct="0">20,150 點</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 以 60 點買進 19,800 賣權，到期損益平衡點是多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">19,740</button>
+      <button class="quiz-opt" data-correct="0">19,800</button>
+      <button class="quiz-opt" data-correct="0">19,860</button>
+      <button class="quiz-opt" data-correct="0">20,000</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：Greeks 與隱含波動率 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📐 第四章</div>
+  <h1>Greeks 與隱含波動率<br>權利金為什麼會這樣動</h1>
+  <p class="desc">Greeks（希臘字母）是衡量選擇權價格對各種因素敏感度的指標。你不需要會推導公式，但要知道每個 Greek 在告訴你什麼，以及它們如何決定一個部位的風險。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>25 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>核心</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">四個核心 Greeks</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>Δ Delta：對指數變動的敏感度</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">指數每漲 1 點，選擇權大約變動多少點。買權 Delta 介於 0 到 1，賣權介於 −1 到 0。價平約 ±0.5，深價內接近 ±1，深價外接近 0。Delta 也常被粗略視為「到期成為價內的機率」。例如 Delta 0.3 的買權，指數漲 100 點，權利金約漲 30 點。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>Γ Gamma：Delta 的變化速度</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">指數每動 1 點，Delta 改變多少。價平且接近到期的選擇權 Gamma 最大，代表 Delta 會劇烈變化，權利金可能在短時間內暴漲或歸零。買方擁有正 Gamma（行情大動有利），賣方承擔負 Gamma（行情大動不利）。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>Θ Theta：時間價值的流失</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">每過一天，選擇權因時間流逝而減少的價值。買方的 Theta 為負（每天都在失血），賣方的 Theta 為正（每天賺時間價值）。越接近到期，價平選擇權的時間價值流失越快。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>ν Vega：對波動率的敏感度</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">隱含波動率每上升 1 個百分點，選擇權價格變動多少。買方 Vega 為正（波動率上升有利），賣方 Vega 為負。距到期越遠的選擇權，Vega 越大。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">Greeks 對照表</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>部位</th><th>Delta</th><th>Gamma</th><th>Theta</th><th>Vega</th></tr></thead>
+<tbody>
+<tr><td>買進買權</td><td>＋</td><td>＋</td><td>－（時間不利）</td><td>＋</td></tr>
+<tr><td>賣出買權</td><td>－</td><td>－</td><td>＋（時間有利）</td><td>－</td></tr>
+<tr><td>買進賣權</td><td>－</td><td>＋</td><td>－</td><td>＋</td></tr>
+<tr><td>賣出賣權</td><td>＋</td><td>－</td><td>＋</td><td>－</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-success">
+  <div class="box-title">✅ 一句話記憶</div>
+  <p>買方：付時間成本（負 Theta），換取行情大動與波動率上升的好處（正 Gamma、正 Vega）。賣方：賺時間價值（正 Theta），但承擔行情大動與波動率飆升的風險（負 Gamma、負 Vega）。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">時間價值流失的曲線</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">時間價值不是均勻流失，而是越接近到期流失越快。距到期一個月的選擇權，最初幾週流失較慢，最後一週會急速下降，到期當天價外選擇權的時間價值會歸零。</p>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 週選擇權的特性</div>
+  <p>週選擇權剩餘天數短、權利金便宜、Gamma 大、Theta 流失快。買方可能在一兩天內翻好幾倍，也可能迅速歸零；賣方看似每週穩定收租，卻要承受行情急動時的巨大 Gamma 風險。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">隱含波動率（IV）</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">隱含波動率是從市場權利金「反推」出來的預期波動程度，反映市場對未來波動的預期與恐慌程度。臺指選擇權波動率指數（臺指 VIX）就是以此編製的指標。</p>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🔥</div><div class="card-title">IV 偏高時</div><div class="card-body">權利金偏貴，常出現在大跌、恐慌或重大事件前。對賣方較有利（收比較多權利金），但也代表市場預期會大動。</div></div>
+  <div class="card"><div class="card-icon">❄️</div><div class="card-title">IV 偏低時</div><div class="card-body">權利金偏便宜，常出現在穩定緩漲的盤勢。對買方較有利，但行情若持續平淡，時間價值仍會流失。</div></div>
+  <div class="card"><div class="card-icon">💥</div><div class="card-title">IV Crush（波動率崩跌）</div><div class="card-body">重大事件（如選舉、央行決議）結束後，不確定性消失，IV 常快速下降，即使方向猜對，買方權利金也可能不漲反跌。</div></div>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">📐 第四章測驗</span><span class="quiz-title">Greeks 與波動率</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. Delta 0.4 的買權，指數上漲 100 點時，權利金大約變動多少？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">下跌 40 點</button>
+      <button class="quiz-opt" data-correct="0">上漲 4 點</button>
+      <button class="quiz-opt" data-correct="1">上漲 40 點</button>
+      <button class="quiz-opt" data-correct="0">上漲 100 點</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 重大事件公布後，方向猜對但買進的選擇權卻沒有賺錢，最可能的原因是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">Delta 變成負數</button>
+      <button class="quiz-opt" data-correct="1">隱含波動率下降（IV Crush），抵銷了方向上的獲利</button>
+      <button class="quiz-opt" data-correct="0">期交所取消了交易</button>
+      <button class="quiz-opt" data-correct="0">選擇權變成美式</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：買方策略 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎯 第五章</div>
+  <h1>買方策略<br>以小博大，但要知道真實的勝率</h1>
+  <p class="desc">買方最大虧損就是權利金，看起來風險可控、報酬無限，是很多新手的起點。但買方要同時對抗方向、幅度與時間，理解它的真實特性，才能正確使用。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實戰</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">買方適合的情境</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🚀</div><div class="card-title">預期短期大行情</div><div class="card-body">看好或看壞有明確催化劑，而且預期幅度夠大、速度夠快，能超過損益平衡點。</div></div>
+  <div class="card"><div class="card-icon">☂️</div><div class="card-title">為股票部位買保險</div><div class="card-body">持有股票又擔心大跌，買進價外賣權作為保護（保護性賣權），損失上限就是權利金。</div></div>
+  <div class="card"><div class="card-icon">❄️</div><div class="card-title">IV 偏低時</div><div class="card-body">權利金便宜，若之後波動放大，除了方向獲利，還能享受 IV 上升的好處。</div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">買方的三個敵人</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">方向</div><div class="step-desc">必須猜對漲或跌。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">幅度</div><div class="step-desc">必須漲跌得「夠多」，超過履約價加權利金的損益平衡點。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">時間</div><div class="step-desc">必須在時間價值流失完之前發生。行情晚了兩天來，可能已經來不及。</div></div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 深價外的迷思</div>
+  <p>深價外選擇權只要幾點、幾百元，看起來像便宜的樂透，偶爾也真的會翻數十倍。但它到期歸零的機率非常高，長期反覆購買的累計虧損往往很可觀。低價不等於低風險，而是低機率。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">買方的實務技巧</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>選擇 Delta 約 0.3～0.5 的價平附近履約價，比深價外有更合理的成功機率。</li>
+  <li><span class="check-icon">✅</span>預留足夠的時間：預期行情一週內發生，可考慮買距到期兩週以上的合約，降低時間價值快速流失的影響。</li>
+  <li><span class="check-icon">✅</span>設定停損：例如權利金虧損 50% 出場，不要總是抱到歸零。</li>
+  <li><span class="check-icon">✅</span>設定停利：選擇權權利金波動劇烈，達到目標可分批獲利了結，避免獲利迅速回吐。</li>
+  <li><span class="check-icon">✅</span>控制總投入：把買方權利金視為「可以全部損失的錢」，單筆不超過總資金的 1-2%。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">保護性賣權（Protective Put）</div>
+<div class="formula">持有股票（或期貨多單）＋ 買進價外賣權
+= 下跌時損失有上限，上漲時保留獲利（扣除權利金成本）</div>
+<div class="card"><div class="card-body">範例：持股組合對應約 1 口小台曝險，指數 20,000 點。買進 19,500 賣權（權利金假設 60 點 = 3,000 元），若指數跌到 19,000，賣權價內 500 點，可抵銷部分股票虧損。代價是若行情沒有下跌，3,000 元權利金就像保費一樣花掉。</div></div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🎯 第五章測驗</span><span class="quiz-title">買方策略</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 選擇權買方要獲利，需要同時克服哪三個因素？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">利率、匯率、股利</button>
+      <button class="quiz-opt" data-correct="1">方向、幅度、時間</button>
+      <button class="quiz-opt" data-correct="0">成交量、融資、融券</button>
+      <button class="quiz-opt" data-correct="0">保證金、手續費、稅</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 為什麼長期反覆買進深價外選擇權常常虧錢？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">因為深價外選擇權不能平倉</button>
+      <button class="quiz-opt" data-correct="0">因為期交所會收較高的稅</button>
+      <button class="quiz-opt" data-correct="1">因為到期歸零的機率很高，累積虧損可觀</button>
+      <button class="quiz-opt" data-correct="0">因為深價外選擇權 Delta 為 1</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：賣方策略與保證金 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🏦 第六章</div>
+  <h1>賣方策略與保證金<br>收租的人，也要準備好面對房子失火</h1>
+  <p class="desc">賣方收取權利金，賺的是時間價值與「行情沒有大動」的機率。統計上賣方勝率常高於買方，但一次大行情就可能吞掉長期累積的獲利。這一章說明賣方的邏輯、保證金計算與風險。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>22 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>實戰</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">賣方的獲利邏輯</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">⏳</div><div class="card-title">賺時間價值</div><div class="card-body">每過一天，選擇權時間價值流失，賣方就賺一點（正 Theta）。</div></div>
+  <div class="card"><div class="card-icon">🎲</div><div class="card-title">賺機率</div><div class="card-body">賣出價外選擇權，只要到期時指數沒有越過履約價，權利金全部入袋。</div></div>
+  <div class="card"><div class="card-icon">🔥</div><div class="card-title">賺波動率回落</div><div class="card-body">IV 偏高時賣出，若之後波動降低，權利金下跌，賣方獲利。</div></div>
+</div>
+<div class="box box-danger">
+  <div class="box-title">🚫 賣方的本質風險</div>
+  <p>賣出買權的虧損理論上無限；賣出賣權的虧損也可能非常大。賣方常見的績效曲線是「長時間小賺、偶爾一次大虧」，而那一次大虧往往發生在最意想不到的跳空或崩盤。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">賣方保證金</div>
+<div class="formula">賣出選擇權保證金 = 權利金市值 + max(A 值 − 價外值, B 值)</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">A 值與 B 值由期交所公告並定期調整；價外越深，需要的保證金越少，但仍有 B 值作為下限。保證金會隨權利金市值每日變動：行情往不利方向走時，權利金上漲，所需保證金也同步增加。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>狀態</th><th>發生什麼事</th></tr></thead>
+<tbody>
+<tr><td>權益數低於維持保證金</td><td>盤後追繳，須在期限內補足</td></tr>
+<tr><td>盤中風險指標低於 25%</td><td>期貨商代為沖銷（砍倉）</td></tr>
+<tr><td>跳空造成超額損失</td><td>帳戶變負值，仍須補足欠款</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 賣方的保證金陷阱</div>
+  <p>行情急動時，賣方同時面臨三重打擊：部位虧損擴大、權利金暴漲讓保證金需求增加、IV 上升讓權利金更貴。帳戶資金若只剛好夠保證金，很容易在最混亂的時刻被砍倉。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">常見的賣方應用</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>📦 掩護性買權（Covered Call）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">持有現貨或期貨多單，同時賣出價外買權收取權利金。適合預期「溫和上漲或盤整」，權利金可以增加收益、稍微降低成本；代價是若行情大漲，超過履約價的獲利會被封頂。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🛒 賣出賣權（願意低接）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">若本來就願意在較低價位持有多頭部位，可賣出價外賣權收權利金。行情沒跌就賺權利金；大跌時則會承受虧損，需嚴格控制口數。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🧱 裸賣（Naked）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">沒有任何避險部位的單純賣出。這是風險最高的做法，不建議新手使用；若要當賣方，建議從第七章的價差策略開始，先把最大虧損鎖住。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">賣方的風控原則</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>帳戶資金遠高於保證金需求，保留應付保證金增加的緩衝。</li>
+  <li><span class="check-icon">✅</span>設定停損：例如權利金漲到賣出價的 2～3 倍時出場，而不是等到期。</li>
+  <li><span class="check-icon">✅</span>重大事件（選舉、央行、長假）前降低賣方口數或改用價差鎖住風險。</li>
+  <li><span class="check-icon">✅</span>避免在過低的權利金（深價外、剩一兩點）大量賣出，報酬極小但尾端風險仍在。</li>
+</ul>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🏦 第六章測驗</span><span class="quiz-title">賣方與保證金</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 選擇權賣方常見的績效特徵是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">長時間大虧、偶爾大賺</button>
+      <button class="quiz-opt" data-correct="1">長時間小賺、偶爾一次大虧</button>
+      <button class="quiz-opt" data-correct="0">每一筆都保證獲利</button>
+      <button class="quiz-opt" data-correct="0">損益完全與行情無關</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 行情往賣方不利方向急動時，下列何者正確？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">所需保證金會減少</button>
+      <button class="quiz-opt" data-correct="1">部位虧損擴大，所需保證金也可能同步增加</button>
+      <button class="quiz-opt" data-correct="0">賣方不需要承擔任何風險</button>
+      <button class="quiz-opt" data-correct="0">期交所會自動退回權利金</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：價差與組合策略 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧩 第七章</div>
+  <h1>價差與組合策略<br>把風險的形狀，調成你要的樣子</h1>
+  <p class="desc">選擇權最大的魅力在於「組合」：透過同時買賣不同履約價或類型的選擇權，可以把最大虧損鎖住、降低成本，或針對「波動大小」而非方向下注。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>25 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">垂直價差：有限風險的方向策略</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>策略</th><th>組成</th><th>看法</th><th>最大獲利</th><th>最大虧損</th></tr></thead>
+<tbody>
+<tr><td>買權多頭價差（Bull Call Spread）</td><td>買低履約價買權＋賣高履約價買權</td><td>溫和上漲</td><td>履約價差 − 淨權利金</td><td>淨付出權利金</td></tr>
+<tr><td>賣權空頭價差（Bear Put Spread）</td><td>買高履約價賣權＋賣低履約價賣權</td><td>溫和下跌</td><td>履約價差 − 淨權利金</td><td>淨付出權利金</td></tr>
+<tr><td>賣權多頭價差（Bull Put Spread）</td><td>賣高履約價賣權＋買低履約價賣權</td><td>不跌</td><td>淨收權利金</td><td>履約價差 − 淨收權利金</td></tr>
+<tr><td>買權空頭價差（Bear Call Spread）</td><td>賣低履約價買權＋買高履約價買權</td><td>不漲</td><td>淨收權利金</td><td>履約價差 − 淨收權利金</td></tr>
+</tbody>
+</table>
+</div>
+<div class="card"><div class="card-body">範例（指數 20,000）：買 20,000 買權（150 點）＋ 賣 20,200 買權（60 點），淨付 90 點。<br>• 最大虧損：90 點（4,500 元）<br>• 最大獲利：200 − 90 = 110 點（5,500 元），到期 20,200 以上<br>• 損益平衡點：20,000 + 90 = 20,090</div></div>
+<div class="box box-success">
+  <div class="box-title">✅ 價差的好處</div>
+  <p>用賣出的那一腳補貼買進成本，並降低 Theta 與 Vega 的影響；收取權利金的價差則把賣方的無限風險變成有限風險。代價是獲利被封頂。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">跨式與勒式：押注「波動大小」</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">⚡</div><div class="card-title">買進跨式（Long Straddle）</div><div class="card-body">同時買進相同履約價（通常價平）的買權與賣權。預期大漲或大跌但不確定方向。最大虧損為兩個權利金總和，需要行情大動才會賺。</div></div>
+  <div class="card"><div class="card-icon">↔️</div><div class="card-title">買進勒式（Long Strangle）</div><div class="card-body">同時買進價外買權與價外賣權，成本比跨式低，但需要更大的行情。</div></div>
+  <div class="card"><div class="card-icon">🛌</div><div class="card-title">賣出跨式／勒式</div><div class="card-body">反向操作，預期盤整、波動下降。收取兩邊權利金，但兩個方向都可能無限或巨大虧損，屬於高風險策略。</div></div>
+</div>
+<div class="formula">買進跨式損益平衡點 = 履約價 ± (買權權利金 + 賣權權利金)</div>
+
+</div>
+<div class="section">
+  <div class="section-title">鐵兀鷹（Iron Condor）</div>
+<div class="formula">賣權多頭價差 ＋ 買權空頭價差
+= 賣出價外買權與賣權，再各買更價外的一口保護</div>
+
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">適合預期指數在一段區間內盤整。最大獲利是淨收權利金，最大虧損是一邊履約價差減去淨收權利金。它是「有保護的賣出勒式」，讓賣方策略的尾端風險可以被計算與控制。</p>
+<div class="section">
+  <div class="section-title">策略選擇地圖</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th></th><th>預期波動變大</th><th>預期波動不大</th></tr></thead>
+<tbody>
+<tr><td>看漲</td><td>買進買權</td><td>買權多頭價差、賣出賣權（或賣權多頭價差）</td></tr>
+<tr><td>看跌</td><td>買進賣權</td><td>賣權空頭價差、賣出買權（或買權空頭價差）</td></tr>
+<tr><td>方向不明</td><td>買進跨式、買進勒式</td><td>鐵兀鷹、（高風險）賣出勒式</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 多腳策略的執行風險</div>
+  <p>組合策略需要同時成交多個部位，分開下單可能出現「一腳成交、另一腳沒成交」的風險；每一腳都有手續費與稅，成本比單一部位高。許多期貨商提供組合單功能，下單前先確認。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧩 第七章測驗</span><span class="quiz-title">組合策略</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 買 20,000 買權 150 點、賣 20,200 買權 60 點，此價差的最大獲利是多少點？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">60 點</button>
+      <button class="quiz-opt" data-correct="0">90 點</button>
+      <button class="quiz-opt" data-correct="1">110 點</button>
+      <button class="quiz-opt" data-correct="0">200 點</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 預期將有大行情但不確定方向，較符合的策略是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">買進跨式</button>
+      <button class="quiz-opt" data-correct="0">鐵兀鷹</button>
+      <button class="quiz-opt" data-correct="0">賣出勒式</button>
+      <button class="quiz-opt" data-correct="0">掩護性買權</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：籌碼與波動率應用 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔭 第八章</div>
+  <h1>籌碼與波動率應用<br>從選擇權市場讀出大資金的想法</h1>
+  <p class="desc">期交所每天公布選擇權各履約價的未平倉量與三大法人部位，讓選擇權市場成為觀察市場情緒與支撐壓力的重要窗口。搭配隱含波動率，可以判斷現在適合當買方還是賣方。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">未平倉量（OI）的解讀</div>
+<div class="card-grid">
+  <div class="card"><div class="card-icon">🧱</div><div class="card-title">買權最大未平倉履約價</div><div class="card-body">大量賣出買權的價位，常被市場視為短期「壓力區」，因為賣方不希望指數漲過該價位。</div></div>
+  <div class="card"><div class="card-icon">🛟</div><div class="card-title">賣權最大未平倉履約價</div><div class="card-body">大量賣出賣權的價位，常被視為短期「支撐區」。</div></div>
+  <div class="card"><div class="card-icon">🧲</div><div class="card-title">結算日的吸引效應</div><div class="card-body">部分交易者觀察到，指數在結算前可能被吸往未平倉最集中的價位附近，但這不是必然規律。</div></div>
+</div>
+<div class="box box-warning">
+  <div class="box-title">⚠️ 支撐壓力會移動</div>
+  <p>未平倉最大履約價會隨行情轉移，大行情來時賣方會停損、轉倉，原本的「牆」可能瞬間被突破。它描述的是市場目前的布局，不是指數不能越過的價位。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">P/C Ratio 與法人部位</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>指標</th><th>計算方式</th><th>常見解讀</th><th>限制</th></tr></thead>
+<tbody>
+<tr><td>P/C 未平倉比</td><td>賣權未平倉量 ÷ 買權未平倉量</td><td>有人視為賣權賣方較多（支撐強）而偏多，也有人視為避險需求高</td><td>解讀派別不同，需搭配行情與歷史區間</td></tr>
+<tr><td>外資選擇權部位</td><td>期交所三大法人選擇權資料</td><td>觀察外資買賣權的多空傾向與金額</td><td>外資部位常用於避險與組合，單看淨額容易誤判</td></tr>
+<tr><td>臺指 VIX</td><td>由選擇權隱含波動率編製</td><td>數值飆高代表市場恐慌、權利金變貴</td><td>高 VIX 不代表一定是底部</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">用波動率選擇買方或賣方</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">比較 IV 的相對位置</div><div class="step-desc">觀察目前 IV（或臺指 VIX）在過去一段期間的高低位置，判斷權利金是偏貴還是偏便宜。</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">比較 IV 與實際波動</div><div class="step-desc">若 IV 明顯高於近期實際波動，權利金相對昂貴，賣方策略的期望值可能較佳；反之買方較有利。</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">考慮事件</div><div class="step-desc">事件前 IV 通常上升，事件後回落。事件前當買方要承擔 IV Crush；事件前當賣方則承擔事件本身的跳空風險。</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">配合方向判斷</div><div class="step-desc">把波動率判斷與方向判斷結合，使用第七章的策略選擇地圖挑出對應策略。</div></div></div>
+</div>
+<div class="box box-info">
+  <div class="box-title">💡 實務提醒</div>
+  <p>籌碼與波動率都是「背景資訊」，適合用來決定策略類型與部位大小，而不是單一的進出場訊號。建立固定的盤後觀察表，追蹤連續多日的變化，比盯著單日數字更有意義。</p>
+</div>
+
+</div>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🔭 第八章測驗</span><span class="quiz-title">籌碼與波動率</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 買權未平倉量最大的履約價，通常被市場視為什麼？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">保證會到達的目標價</button>
+      <button class="quiz-opt" data-correct="1">短期壓力區，但可能隨行情移動</button>
+      <button class="quiz-opt" data-correct="0">最後結算價</button>
+      <button class="quiz-opt" data-correct="0">期交所規定的漲停價</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 當隱含波動率明顯高於近期實際波動時，一般來說？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">權利金相對便宜，買方有利</button>
+      <button class="quiz-opt" data-correct="1">權利金相對昂貴，賣方策略的期望值可能較佳</button>
+      <button class="quiz-opt" data-correct="0">選擇權無法交易</button>
+      <button class="quiz-opt" data-correct="0">Delta 會變成 0</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：風險控管與心理陷阱 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🧠 第九章</div>
+  <h1>風險控管與心理陷阱<br>選擇權會放大你的偏誤</h1>
+  <p class="desc">選擇權的非線性特性讓人容易誤判風險：買方低估歸零機率，賣方低估尾端風險。這一章整理最常見的陷阱，以及對應的風控規則。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">賣方的黑天鵝</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">台灣選擇權市場曾在 2018 年 2 月因國際股市急跌、台股夜盤與早盤劇烈波動，導致大量選擇權賣方在極短時間內鉅額虧損、被強制平倉，部分帳戶出現超額損失。這個事件常被用來提醒：賣方的長期穩定收益，可能在一天之內全數吐回，甚至倒賠。</p>
+<div class="box box-danger">
+  <div class="box-title">🚫 從事件學到的教訓</div>
+  <p>一、流動性在恐慌時會消失，深價外選擇權可能出現極不合理的成交價；二、被砍倉時是以市價平倉，成交價可能遠比你預期的差；三、只要一次沒有保護的大部位，就可能抹去多年累積。用價差或預留大量資金，是賣方生存的基本條件。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">常見心理陷阱</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🎰 樂透心態（買方）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">反覆買進便宜的深價外選擇權，期待一次翻數十倍。偶爾中獎會強化這個行為，但長期來看多數權利金都歸零。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🧺 撿硬幣心態（賣方）</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">賣出只剩幾點的深價外選擇權，覺得「不可能到」。報酬很小但尾端風險仍在，等於在壓路機前撿硬幣。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🧮 週選成癮</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">週選擇權每週都有到期、權利金便宜、漲跌劇烈，很容易變成頻繁交易甚至賭博。建議設定每週交易次數與金額上限。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🔁 虧損後加倍</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">賣方被軋時加倍賣出更遠的履約價來「攤平」，或買方虧損後改買更多更便宜的價外單。這兩種都是擴大風險的典型行為。</p></div>
+</div>
+<div class="accordion">
+  <div class="acc-header" onclick="accToggle(this)"><span>🧠 只看勝率</span><span class="acc-arrow">▼</span></div>
+  <div class="acc-body"><p style="font-size:13px;color:var(--text-muted);">賣方勝率高、買方勝率低，但勝率本身不代表賺錢，要同時看平均獲利與平均虧損（期望值）。</p></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">選擇權風控規則範本</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>買方：單筆權利金不超過總資金 1-2%，總買方權利金曝險設定上限。</li>
+  <li><span class="check-icon">✅</span>賣方：以最大可能虧損（價差寬度或壓力情境）計算口數，而不是以保證金計算。</li>
+  <li><span class="check-icon">✅</span>優先使用價差鎖住最大虧損，除非有充足資金與經驗，否則不裸賣。</li>
+  <li><span class="check-icon">✅</span>事件前檢查整體部位的 Delta、Gamma、Vega，確認大跳空時能承受。</li>
+  <li><span class="check-icon">✅</span>避免持有流動性差的深價外或遠月合約，出場時可能嚴重滑價。</li>
+  <li><span class="check-icon">✅</span>設定單日、單週虧損上限，觸及即停止交易並復盤。</li>
+</ul>
+
+</div>
+<div class="section">
+  <div class="section-title">壓力測試</div>
+<div class="formula">壓力情境損益 ≈ 假設指數跳空 ±3%、±5%、±8% 時，整個部位的損益
+（同時考慮 IV 上升 5～10 個百分點）</div>
+
+</div>
+<p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;">許多交易軟體提供模擬損益圖功能，可以輸入不同的指數與波動率情境。建立部位前先做壓力測試，確認最壞情境下帳戶不會被砍倉或出現超額損失。</p>
+<div class="quiz-card">
+  <div class="quiz-header"><span class="quiz-badge">🧠 第九章測驗</span><span class="quiz-title">風險與心理</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 選擇權賣方計算口數時，較合理的依據是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">只看目前所需保證金</button>
+      <button class="quiz-opt" data-correct="1">以最大可能虧損或壓力情境損益計算</button>
+      <button class="quiz-opt" data-correct="0">以勝率高低決定</button>
+      <button class="quiz-opt" data-correct="0">以權利金越低越好為原則</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 賣出只剩 1-2 點的深價外選擇權，最主要的問題是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">保證金一定為零</button>
+      <button class="quiz-opt" data-correct="1">報酬很小，但尾端風險仍在，類似在壓路機前撿硬幣</button>
+      <button class="quiz-opt" data-correct="0">一定會被期交所取消</button>
+      <button class="quiz-opt" data-correct="0">Theta 為負</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：交易計畫與總複習 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📝 第十章</div>
+  <h1>交易計畫與總複習<br>用「方向 × 波動率」選對策略</h1>
+  <p class="desc">恭喜走到最後一章！選擇權交易的決策可以拆成三步：判斷方向、判斷波動率、決定風險形狀。這一章把前面的內容整合成交易前檢查表與例行流程。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">交易前的四個問題</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">我的方向看法是什麼？</div><div class="step-desc">看漲、看跌，還是不確定方向？信心有多強？</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">我預期波動會變大還是變小？</div><div class="step-desc">目前 IV 在歷史區間的高低位置如何？近期有沒有重大事件？</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">我能接受什麼樣的風險形狀？</div><div class="step-desc">要虧損有限（買方、價差），還是能承受較大尾端風險換取高勝率？</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">時間框架多長？</div><div class="step-desc">選擇月選還是週選？到期日是否給了行情足夠的發展時間？</div></div></div>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">選擇權交易計畫模板</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>項目</th><th>內容</th></tr></thead>
+<tbody>
+<tr><td>策略與理由</td><td>例如：買權多頭價差，理由為趨勢偏多但預期漲幅有限、IV 偏高</td></tr>
+<tr><td>履約價與到期日</td><td>買／賣哪些履約價、哪個到期序列</td></tr>
+<tr><td>最大獲利／最大虧損／損益平衡點</td><td>進場前算好並寫下</td></tr>
+<tr><td>口數</td><td>依最大虧損 ≤ 總資金 1-2% 計算</td></tr>
+<tr><td>出場規則</td><td>停損條件（權利金或指數位置）、停利目標、到期前幾天平倉</td></tr>
+<tr><td>事件與壓力測試</td><td>跳空 ±5% 時的損益是否可接受</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">每日與每週例行流程</div>
+<ul class="checklist">
+  <li><span class="check-icon">✅</span>盤前：檢查夜盤、美股與臺指 VIX；確認持倉的 Greeks 與今日重要事件。</li>
+  <li><span class="check-icon">✅</span>盤中：只執行計畫內交易；多腳策略使用組合單，避免單腳成交。</li>
+  <li><span class="check-icon">✅</span>盤後：記錄選擇權未平倉分布、P/C 比與法人部位變化；更新交易日誌。</li>
+  <li><span class="check-icon">✅</span>結算週：決定到期部位要平倉、轉倉或讓它結算，避免最後一天的流動性與 Gamma 風險。</li>
+  <li><span class="check-icon">✅</span>每 20-30 筆交易：依策略類型統計勝率、平均獲利虧損與期望值，淘汰表現差的策略。</li>
+</ul>
+<div class="box box-info">
+  <div class="box-title">💡 建議行動</div>
+  <p>先從「有限風險」的策略開始：買方或垂直價差，每筆 1 口，紀錄權利金每天的變化與 Greeks，體會時間價值與波動率的影響。熟悉後再考慮更複雜的組合，並始終避免在沒有保護的情況下大量賣出選擇權。</p>
+</div>
+
+</div>
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+<div class="quiz-card" style="margin-top:0;">
+  <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">台指選擇權總複習</span></div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q1. 哪一種部位的最大虧損「理論上無限」？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">買進買權</button>
+      <button class="quiz-opt" data-correct="0">買進賣權</button>
+      <button class="quiz-opt" data-correct="1">賣出買權</button>
+      <button class="quiz-opt" data-correct="0">買權多頭價差</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q2. 以 100 點買進 20,000 買權，到期結算 20,150，損益為何？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">虧損 100 點</button>
+      <button class="quiz-opt" data-correct="1">獲利 50 點</button>
+      <button class="quiz-opt" data-correct="0">獲利 150 點</button>
+      <button class="quiz-opt" data-correct="0">打平</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q3. 越接近到期，價平選擇權的哪個特性最明顯？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="1">時間價值流失加速、Gamma 變大</button>
+      <button class="quiz-opt" data-correct="0">Vega 變大</button>
+      <button class="quiz-opt" data-correct="0">Delta 固定為 1</button>
+      <button class="quiz-opt" data-correct="0">權利金不再變動</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q4. 預期盤整、波動下降，且希望最大虧損有限，較適合的策略是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">買進跨式</button>
+      <button class="quiz-opt" data-correct="1">鐵兀鷹</button>
+      <button class="quiz-opt" data-correct="0">裸賣勒式</button>
+      <button class="quiz-opt" data-correct="0">買進深價外買權</button>
+    </div>
+  </div>
+  <div class="quiz-q">
+    <div class="quiz-q-text">Q5. 選擇權賣方最重要的風控觀念是？</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" data-correct="0">勝率高就不需要停損</button>
+      <button class="quiz-opt" data-correct="0">只要保證金夠就沒問題</button>
+      <button class="quiz-opt" data-correct="1">以最大可能虧損與壓力情境控制口數，並優先用價差鎖住風險</button>
+      <button class="quiz-opt" data-correct="0">深價外權利金越低越安全</button>
+    </div>
+  </div>
+  <div class="quiz-result"></div>
+  <button class="btn-quiz">🔄 重新測驗</button>
+</div>
+
+</div>
+<div class="disclaimer">
+  ⚠️ 免責聲明：本課程內容為個人學習用的選擇權知識整理，不構成對任何選擇權、期貨或金融商品的交易建議，亦不保證任何報酬。選擇權買方可能損失全部權利金，賣方的虧損可能遠超過所收取的權利金與保證金。文中指數、履約價、權利金與 Greeks 數值均為說明用的假設值，過去的統計與事件不代表未來表現。契約規格、保證金（含 A 值、B 值）、稅費與交易時間可能隨時調整，請以臺灣期貨交易所、金管會及往來期貨商之最新公告為準。
+</div>
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>
