@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影片剪輯入門課程｜從邏輯到手感的剪接思維</title>
+<style>
+:root{--primary:#4F46E5;--primary-dark:#3730A3;--secondary:#06B6D4;--accent:#F59E0B;--success:#10B981;--danger:#EF4444;--bg:#0F172A;--surface:#1E293B;--surface2:#334155;--text:#F1F5F9;--text-muted:#94A3B8;--border:#334155;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px;}
+
+#app{display:flex;min-height:100vh;}
+#sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+#main{margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+#content{flex:1;padding:40px 48px;max-width:900px;margin:0 auto;width:100%;}
+
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar-logo{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.sidebar-title{font-size:17px;font-weight:700;color:var(--text);line-height:1.3;}
+.progress-bar-wrap{margin-top:12px;}
+.progress-label{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:2px;transition:width .5s;}
+.chapter-list{padding:12px 0;}
+.chapter-item{padding:10px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.chapter-item:hover{background:rgba(79,70,229,.12);border-left-color:var(--primary);}
+.chapter-item.active{background:rgba(79,70,229,.2);border-left-color:var(--primary);}
+.chapter-item.done .ch-num{background:var(--success)!important;}
+.ch-num{width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-muted);}
+.chapter-item.active .ch-num{background:var(--primary);color:#fff;}
+.ch-info{flex:1;min-width:0;}
+.ch-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ch-subtitle{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-chapter{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;gap:8px;}
+.btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);color:var(--text);}
+
+.chapter-hero{background:linear-gradient(135deg,var(--surface) 0%,rgba(79,70,229,.15) 100%);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:36px;}
+.chapter-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,70,229,.2);color:var(--primary);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid rgba(79,70,229,.3);}
+.chapter-hero h1{font-size:28px;font-weight:800;margin-bottom:8px;line-height:1.3;}
+.chapter-hero .desc{color:var(--text-muted);font-size:15px;max-width:640px;}
+.chapter-hero .meta{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-muted);}
+.meta-icon{font-size:16px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:var(--text);}
+.section-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--secondary));border-radius:2px;display:block;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:16px;}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-weight:700;margin-bottom:6px;font-size:15px;}
+.card-body{color:var(--text-muted);font-size:13px;line-height:1.6;}
+
+.box{border-radius:10px;padding:16px 20px;margin-bottom:16px;border-left:4px solid;}
+.box-info{background:rgba(6,182,212,.08);border-color:var(--secondary);color:#a5f3fc;}
+.box-warning{background:rgba(245,158,11,.08);border-color:var(--accent);color:#fde68a;}
+.box-success{background:rgba(16,185,129,.08);border-color:var(--success);color:#a7f3d0;}
+.box-danger{background:rgba(239,68,68,.08);border-color:var(--danger);color:#fca5a5;}
+.box-title{font-weight:700;font-size:13px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.box p,.box li{font-size:13px;line-height:1.7;}
+.box ul{padding-left:16px;}
+
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin:3px;}
+.tag-blue{background:rgba(79,70,229,.2);color:#a5b4fc;}
+.tag-cyan{background:rgba(6,182,212,.2);color:#67e8f9;}
+.tag-green{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.tag-yellow{background:rgba(245,158,11,.2);color:#fcd34d;}
+.tag-red{background:rgba(239,68,68,.2);color:#fca5a5;}
+
+.table-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);padding:10px 14px;text-align:left;font-weight:700;color:var(--text);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-muted);}
+tr:hover td{background:rgba(255,255,255,.03);}
+
+.quiz-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.quiz-badge{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+.quiz-title{font-size:16px;font-weight:700;}
+.quiz-q{margin-bottom:20px;}
+.quiz-q-text{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{padding:10px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;transition:all .2s;background:transparent;color:var(--text);text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:rgba(79,70,229,.1);}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(79,70,229,.15);}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.15);color:#6ee7b7;}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.15);color:#fca5a5;}
+.quiz-result{margin-top:20px;padding:16px;border-radius:8px;font-size:14px;display:none;}
+.quiz-result.show{display:block;}
+.quiz-result.pass{background:rgba(16,185,129,.1);border:1px solid var(--success);color:#6ee7b7;}
+.quiz-result.fail{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:#fca5a5;}
+.quiz-score{font-size:24px;font-weight:800;margin-bottom:4px;}
+.btn-quiz{margin-top:16px;background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;}
+.btn-quiz:hover{background:var(--primary-dark);}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.checklist li:last-child{border-bottom:none;}
+.check-icon{color:var(--success);font-size:16px;flex-shrink:0;margin-top:1px;}
+
+.steps{counter-reset:step;}
+.step{display:flex;gap:16px;margin-bottom:20px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;color:#fff;}
+.step-content{flex:1;}
+.step-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.step-desc{color:var(--text-muted);font-size:13px;}
+
+.formula{background:var(--surface2);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:15px;text-align:center;margin:16px 0;border:1px solid var(--border);color:var(--secondary);white-space:pre;}
+
+.chapter-nav{display:flex;justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
+
+#sidebar-toggle{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;}
+  #content{padding:24px 20px;}
+  #sidebar-toggle{display:block;}
+  .chapter-hero h1{font-size:22px;}
+  .card-grid{grid-template-columns:1fr;}
+  .compare-wrap{grid-template-columns:1fr;}
+}
+
+.accordion{margin-bottom:8px;}
+.acc-header{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14px;transition:all .2s;}
+.acc-header:hover{border-color:var(--primary);}
+.acc-header.open{border-radius:10px 10px 0 0;border-color:var(--primary);background:rgba(79,70,229,.1);}
+.acc-body{background:var(--surface);border:1px solid var(--primary);border-top:none;border-radius:0 0 10px 10px;padding:0;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;}
+.acc-body.open{padding:16px;max-height:900px;}
+.acc-arrow{transition:transform .3s;}
+.acc-header.open .acc-arrow{transform:rotate(180deg);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-num{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+.disclaimer{background:#0B1220;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:32px;font-size:12px;color:var(--text-muted);}
+
+/* ===== Video-editing visual components (extends the base template vocabulary) ===== */
+.timeline{background:var(--surface2);border-radius:10px;padding:16px;margin:16px 0;overflow-x:auto;}
+.timeline-ruler{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);padding:0 2px 6px;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.track-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;min-width:520px;}
+.track-row:last-child{margin-bottom:0;}
+.track-label{width:46px;font-size:11px;color:var(--text-muted);font-weight:700;flex-shrink:0;text-align:right;}
+.track-lane{flex:1;background:rgba(255,255,255,.04);border-radius:6px;height:36px;position:relative;display:flex;gap:4px;padding:3px;}
+.clip{height:100%;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;padding:0 6px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);}
+.clip-v1{background:linear-gradient(135deg,var(--primary),var(--primary-dark));}
+.clip-v2{background:linear-gradient(135deg,var(--secondary),#0e7490);}
+.clip-a1{background:linear-gradient(135deg,var(--accent),#b45309);}
+.clip-a2{background:linear-gradient(135deg,#f472b6,#be185d);}
+.clip-empty{background:repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0 6px,transparent 6px 12px);box-shadow:none;}
+.playhead{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--danger);z-index:2;}
+.playhead::before{content:'';position:absolute;top:-5px;left:-4px;width:10px;height:10px;background:var(--danger);border-radius:2px;}
+
+.filmstrip{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:12px 4px;margin:16px 0;}
+.frame{flex-shrink:0;width:108px;}
+.frame-thumb{width:108px;height:66px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:6px;background:var(--surface2);}
+.frame-thumb.hl{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.25);}
+.frame-label{font-size:11px;color:var(--text-muted);text-align:center;line-height:1.4;}
+.frame-arrow{flex-shrink:0;color:var(--text-muted);font-size:18px;}
+
+.waveform{display:flex;align-items:center;gap:2px;height:56px;margin:16px 0;background:var(--surface2);border-radius:8px;padding:8px 12px;}
+.wave-bar{flex:1;background:linear-gradient(to top,var(--secondary),var(--primary));border-radius:2px;min-width:2px;}
+
+.compare-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.compare-box{border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.compare-frame{height:130px;display:flex;align-items:center;justify-content:center;font-size:34px;}
+.compare-tag{padding:8px 12px;font-size:12px;font-weight:700;text-align:center;background:var(--surface2);}
+
+.aspect-demo{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end;margin:16px 0;}
+.aspect-item{text-align:center;}
+.aspect-box{background:var(--surface2);border:2px dashed var(--primary);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 8px;}
+.aspect-name{font-size:11px;font-weight:700;color:var(--text);}
+.aspect-use{font-size:10px;color:var(--text-muted);}
+
+.cut-diagram{margin:16px 0;background:var(--surface2);border-radius:10px;padding:16px;}
+.cut-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.cut-row:last-child{margin-bottom:0;}
+.cut-row-label{width:52px;font-size:11px;color:var(--text-muted);font-weight:700;text-align:right;flex-shrink:0;}
+.cut-lane{flex:1;display:flex;gap:4px;height:38px;}
+.cut-seg{border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);}
+
+.pacing-chart{display:flex;align-items:flex-end;gap:6px;height:110px;margin:24px 0 30px;padding:0 4px;position:relative;}
+.pacing-bar{flex:1;background:linear-gradient(to top,var(--primary),var(--secondary));border-radius:4px 4px 0 0;position:relative;min-height:6px;}
+.pacing-bar-label{position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-size:10px;color:var(--text-muted);white-space:nowrap;}
+
+.level-meter{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+.level-row{display:flex;align-items:center;gap:10px;}
+.level-label{width:64px;font-size:11px;color:var(--text-muted);font-weight:700;flex-shrink:0;}
+.level-track{flex:1;height:16px;background:var(--surface2);border-radius:8px;overflow:hidden;display:flex;}
+.level-fill{height:100%;}
+.level-db{width:52px;font-size:11px;color:var(--text-muted);text-align:right;flex-shrink:0;}
+
+.grid-overlay{position:relative;width:100%;max-width:340px;aspect-ratio:16/9;background:linear-gradient(135deg,#1e293b,#334155);border-radius:10px;margin:16px auto;border:1px solid var(--border);overflow:hidden;}
+.grid-overlay .gline{position:absolute;background:rgba(255,255,255,.35);}
+.grid-overlay .v1{left:33.33%;top:0;bottom:0;width:1px;}
+.grid-overlay .v2{left:66.66%;top:0;bottom:0;width:1px;}
+.grid-overlay .h1{top:33.33%;left:0;right:0;height:1px;}
+.grid-overlay .h2{top:66.66%;left:0;right:0;height:1px;}
+.grid-overlay .subject{position:absolute;font-size:30px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🎬 影片剪輯入門課</div>
+    <div class="sidebar-title">影片剪輯入門課程<br>從邏輯到手感的剪接思維</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label"><span>課程進度</span><span id="progress-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+</nav>
+
+<div id="main">
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-chapter" id="topbar-title">課程總覽</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="prevChapter()">← 上一章</button>
+      <button class="btn btn-primary" onclick="nextChapter()">下一章 →</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+</div>
+
+<script>
+const chapters = [
+  { id:0, title:'課程總覽', subtitle:'學習地圖與使用說明', icon:'🗺️', time:'5 分鐘', level:'入門', content: renderCh0 },
+  { id:1, title:'剪輯的核心思維', subtitle:'庫勒雪夫效應與剪接如何說故事', icon:'🎬', time:'15 分鐘', level:'基礎', content: renderCh1 },
+  { id:2, title:'認識剪輯工作環境', subtitle:'時間軸、軌道與素材面板', icon:'🖥️', time:'15 分鐘', level:'基礎', content: renderCh2 },
+  { id:3, title:'剪接點與運鏡邏輯', subtitle:'配對剪接、插入鏡頭與180度線', icon:'✂️', time:'20 分鐘', level:'基礎', content: renderCh3 },
+  { id:4, title:'轉場手法全解析', subtitle:'卡接、疊化、划接與J/L-Cut', icon:'🔀', time:'18 分鐘', level:'進階', content: renderCh4 },
+  { id:5, title:'節奏與時間感', subtitle:'鏡頭長度如何決定「爽感」', icon:'🥁', time:'18 分鐘', level:'進階', content: renderCh5 },
+  { id:6, title:'敘事結構與蒙太奇', subtitle:'三幕劇與蒙太奇序列剪輯', icon:'📖', time:'18 分鐘', level:'進階', content: renderCh6 },
+  { id:7, title:'調色與影像風格', subtitle:'從校色到風格化的調色思維', icon:'🎨', time:'15 分鐘', level:'進階', content: renderCh7 },
+  { id:8, title:'聲音設計與混音基礎', subtitle:'音量、層次與音效的搭配', icon:'🔊', time:'15 分鐘', level:'進階', content: renderCh8 },
+  { id:9, title:'常見剪輯錯誤與避雷', subtitle:'跳接、越軸與過度剪輯', icon:'🚫', time:'15 分鐘', level:'進階', content: renderCh9 },
+  { id:10, title:'匯出規格與剪輯計畫', subtitle:'總複習：從時間軸到成品輸出', icon:'📤', time:'18 分鐘', level:'總複習', content: renderCh10 }
+];
+
+let currentChapter = 0;
+let completedChapters = new Set();
+try { completedChapters = new Set(JSON.parse(localStorage.getItem('videoedit101_done')||'[]')); } catch(e){}
+
+function renderSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch=>`
+    <div class="chapter-item ${ch.id===currentChapter?'active':''} ${completedChapters.has(ch.id)?'done':''}"
+         onclick="goChapter(${ch.id})">
+      <div class="ch-num">${completedChapters.has(ch.id)?'✓':ch.id}</div>
+      <div class="ch-info">
+        <div class="ch-title">${ch.icon} ${ch.title}</div>
+        <div class="ch-subtitle">${ch.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  const pct = Math.round(completedChapters.size/chapters.length*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
+}
+
+function goChapter(id){
+  completedChapters.add(currentChapter);
+  try { localStorage.setItem('videoedit101_done', JSON.stringify([...completedChapters])); } catch(e){}
+  currentChapter = id;
+  renderSidebar();
+  document.getElementById('topbar-title').textContent = chapters[id].icon+' '+chapters[id].title;
+  document.getElementById('content').innerHTML = chapters[id].content();
+  window.scrollTo(0,0);
+  initQuizzes();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function nextChapter(){ if(currentChapter<chapters.length-1) goChapter(currentChapter+1); }
+function prevChapter(){ if(currentChapter>0) goChapter(currentChapter-1); }
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function initQuizzes(){
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const q = this.closest('.quiz-q');
+      if(q.dataset.answered) return;
+      q.dataset.answered='1';
+      const correct = this.dataset.correct==='1';
+      this.classList.add(correct?'correct':'wrong');
+      if(!correct){
+        q.querySelectorAll('.quiz-opt[data-correct="1"]').forEach(b=>b.classList.add('correct'));
+      }
+      const card = this.closest('.quiz-card');
+      const all = card.querySelectorAll('.quiz-q');
+      const done = card.querySelectorAll('.quiz-q[data-answered]');
+      if(done.length===all.length) showQuizResult(card);
+    });
+  });
+  document.querySelectorAll('.btn-quiz').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const card = this.closest('.quiz-card');
+      card.querySelectorAll('.quiz-q').forEach(q=>{
+        delete q.dataset.answered;
+        q.querySelectorAll('.quiz-opt').forEach(o=>{
+          o.classList.remove('correct','wrong','selected');
+        });
+      });
+      card.querySelector('.quiz-result').classList.remove('show','pass','fail');
+    });
+  });
+}
+function showQuizResult(card){
+  const correct = card.querySelectorAll('.quiz-opt.correct').length;
+  const total = card.querySelectorAll('.quiz-q').length;
+  const res = card.querySelector('.quiz-result');
+  const pass = correct/total>=0.6;
+  res.innerHTML = `<div class="quiz-score">${correct}/${total} 題正確</div>
+    <div>${pass?'🎉 恭喜通過！你已掌握本章核心概念。':'💪 再複習一下，重新挑戰！'}</div>`;
+  res.classList.add('show', pass?'pass':'fail');
+}
+function accToggle(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// CHAPTER 0: 課程總覽
+// ============================================================
+function renderCh0(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🗺️ 課程總覽</div>
+  <h1>影片剪輯入門課程<br>從邏輯到手感的剪接思維</h1>
+  <p class="desc">剪輯用嘴巴講很抽象——「節奏」「跳接」「J-Cut」到底長什麼樣子？這套課程幾乎每一章都會用時間軸、影格序列、波形圖等視覺化元件，讓你「看到」剪輯的邏輯，再回頭操作軟體時就不會鴨子聽雷。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>總學習時間：約 3 小時</div>
+    <div class="meta-item"><span class="meta-icon">📚</span>11 個章節</div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>適合完全沒學過剪輯的新手</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你將學到什麼</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">大核心剪接概念</div></div>
+    <div class="stat-card"><div class="stat-num">8+</div><div class="stat-label">種轉場與剪接手法圖解</div></div>
+    <div class="stat-card"><div class="stat-num">10+</div><div class="stat-label">個時間軸／波形視覺化範例</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">章節測驗</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">完整學習路線圖</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">🎬 核心思維與工作環境（第1-2章）</div>
+        <div class="step-desc">先搞懂「剪輯為什麼能說故事」，再認識時間軸、軌道長什麼樣子，之後所有操作都建立在這個畫面上。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">✂️ 剪接邏輯與轉場（第3-4章）</div>
+        <div class="step-desc">用影格序列圖解剪接點怎麼選、180度線是什麼，以及卡接、疊化、J/L-Cut 等轉場實際發生了什麼事。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">🥁 節奏與敘事（第5-6章）</div>
+        <div class="step-desc">用長條圖直接「看見」鏡頭長度如何影響節奏感，並學習三幕劇、蒙太奇序列怎麼組織一整段故事。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">🎨 調色與聲音（第7-8章）</div>
+        <div class="step-desc">用前後對比圖理解調色的方向，用音量表看懂混音的層次關係。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">🚫 避雷與輸出（第9-10章）</div>
+        <div class="step-desc">認識新手最常犯的跳接、越軸錯誤，最後學會依平台選擇正確的比例與匯出規格，完成第一份剪輯練習計畫。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">如何使用本課程</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="checklist">
+        <li><span class="check-icon">✅</span>每一章的視覺化圖表都是重點：先看懂圖，再讀文字說明，理解會快很多。</li>
+        <li><span class="check-icon">✅</span>按順序學習：第1-2章的基本邏輯，是後面所有剪接手法的判斷基礎。</li>
+        <li><span class="check-icon">✅</span>做完每章測驗：60分以上才算過關，幫助你鞏固知識。</li>
+        <li><span class="check-icon">✅</span>邊學邊練：讀完每章後，打開任何剪輯軟體（CapCut、Premiere、DaVinci 都可以），實際找一段素材試著剪一次。</li>
+        <li><span class="check-icon">✅</span>進度自動記錄：本課程會記住你讀過的章節，可隨時繼續。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 關於視覺化圖表</div>
+    <p>課程中的時間軸、波形、影格序列都是示意圖，用來說明「概念關係」（例如哪段先、哪段後、音量高低），並非實際軟體截圖。實際軟體介面依你使用的剪輯工具而有所不同，但邏輯是通用的。</p>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <div></div>
+  <button class="btn btn-primary" onclick="goChapter(1)">開始學習：第一章 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 1: 剪輯的核心思維
+// ============================================================
+function renderCh1(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎬 第一章</div>
+  <h1>剪輯的核心思維<br>庫勒雪夫效應與剪接如何說故事</h1>
+  <p class="desc">剪輯不是「把素材接起來」而已，而是用鏡頭之間的關係製造意義。這一章用最經典的實驗告訴你：同一顆鏡頭，接在不同畫面後面，觀眾會解讀出完全不同的故事。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">庫勒雪夫效應：同一張臉，三種故事</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">1910年代蘇聯導演庫勒雪夫做了一個實驗：把「同一顆」演員面無表情的臉，分別接在三種不同畫面後面，觀眾卻說出了三種完全不同的解讀。</p>
+  <div class="filmstrip">
+    <div class="frame">
+      <div class="frame-thumb">🍲</div>
+      <div class="frame-label">畫面A：一碗湯</div>
+    </div>
+    <div class="frame-arrow">＋</div>
+    <div class="frame">
+      <div class="frame-thumb hl">😐</div>
+      <div class="frame-label">同一張臉</div>
+    </div>
+    <div class="frame-arrow">→</div>
+    <div class="frame">
+      <div class="frame-thumb">💭</div>
+      <div class="frame-label">觀眾解讀：<br>他很「餓」</div>
+    </div>
+  </div>
+  <div class="filmstrip">
+    <div class="frame">
+      <div class="frame-thumb">⚰️</div>
+      <div class="frame-label">畫面B：一具棺材</div>
+    </div>
+    <div class="frame-arrow">＋</div>
+    <div class="frame">
+      <div class="frame-thumb hl">😐</div>
+      <div class="frame-label">同一張臉</div>
+    </div>
+    <div class="frame-arrow">→</div>
+    <div class="frame">
+      <div class="frame-thumb">💭</div>
+      <div class="frame-label">觀眾解讀：<br>他很「悲傷」</div>
+    </div>
+  </div>
+  <div class="filmstrip">
+    <div class="frame">
+      <div class="frame-thumb">🧸</div>
+      <div class="frame-label">畫面C：小孩玩耍</div>
+    </div>
+    <div class="frame-arrow">＋</div>
+    <div class="frame">
+      <div class="frame-thumb hl">😐</div>
+      <div class="frame-label">同一張臉</div>
+    </div>
+    <div class="frame-arrow">→</div>
+    <div class="frame">
+      <div class="frame-thumb">💭</div>
+      <div class="frame-label">觀眾解讀：<br>他很「溫暖」</div>
+    </div>
+  </div>
+  <div class="box box-success">
+    <div class="box-title">✅ 這告訴我們什麼</div>
+    <p>意義不是來自單一鏡頭本身，而是來自鏡頭「與鏡頭之間」的關係。這就是為什麼剪輯師常被說是「用鏡頭寫作」的人——你排列的順序，決定了觀眾感受到的情緒與故事。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">連戲剪輯 vs 蒙太奇剪輯</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🔗</div>
+      <div class="card-title">連戲剪輯 Continuity Editing</div>
+      <div class="card-body">目標是讓觀眾「感覺不到剪接的存在」——時間、空間、動作都要銜接順暢，像是一鏡到底。常見於對話戲、日常敘事。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <div class="card-title">蒙太奇剪輯 Montage Editing</div>
+      <div class="card-body">刻意用鏡頭的碰撞、對比或並列來製造情緒與意義，觀眾會「感覺到」剪接的存在。常見於情緒堆疊、時間流逝、訓練片段。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">剪輯師心中的三個提問</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span><b>這顆鏡頭要留多久？</b>——太短觀眾看不清楚，太長觀眾會覺得拖。</li>
+    <li><span class="check-icon">✅</span><b>下一顆鏡頭要接什麼？</b>——是延續動作、切換角度，還是跳到別的時空？</li>
+    <li><span class="check-icon">✅</span><b>觀眾此刻應該感覺到什麼？</b>——剪輯的每個選擇，最終都是為了服務情緒與節奏。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第一章：剪輯的核心思維</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 庫勒雪夫效應主要說明了什麼？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">鏡頭畫質越高，觀眾越容易理解劇情</button>
+        <button class="quiz-opt" data-correct="1">同一顆鏡頭接在不同畫面之後，觀眾會產生不同的情緒解讀</button>
+        <button class="quiz-opt" data-correct="0">剪輯軟體的濾鏡效果會改變觀眾的解讀</button>
+        <button class="quiz-opt" data-correct="0">演員的表演比剪接順序更重要</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 「連戲剪輯」最主要的目標是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">刻意讓觀眾察覺剪接點，製造衝突感</button>
+        <button class="quiz-opt" data-correct="1">讓時間、空間與動作銜接順暢，觀眾感覺不到剪接的存在</button>
+        <button class="quiz-opt" data-correct="0">盡量減少鏡頭數量，全片只用一顆鏡頭</button>
+        <button class="quiz-opt" data-correct="0">只用於動作片，不適用於對話戲</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(0)">← 課程總覽</button>
+  <button class="btn btn-primary" onclick="goChapter(2)">第二章：認識剪輯工作環境 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 2: 認識剪輯工作環境
+// ============================================================
+function renderCh2(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🖥️ 第二章</div>
+  <h1>認識剪輯工作環境<br>時間軸、軌道與素材面板</h1>
+  <p class="desc">不管你用 Premiere、DaVinci Resolve 還是 CapCut，畫面配置的邏輯都差不多。這一章用一張視覺化時間軸，帶你認識「軌道」「片段」「播放頭」這些核心元素。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">時間軸長什麼樣子</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">下面是一個典型的時間軸示意圖：V1、V2 是「影像軌」，A1、A2 是「聲音軌」，紅色直線是目前播放的位置（播放頭）。</p>
+  <div class="timeline">
+    <div class="timeline-ruler"><span>00:00</span><span>00:05</span><span>00:10</span><span>00:15</span><span>00:20</span></div>
+    <div class="track-row">
+      <div class="track-label">V2</div>
+      <div class="track-lane">
+        <div class="clip clip-empty" style="flex:1.2;"></div>
+        <div class="clip clip-v2" style="flex:1;">字幕條</div>
+        <div class="clip clip-empty" style="flex:1.8;"></div>
+        <div class="playhead" style="left:38%;"></div>
+      </div>
+    </div>
+    <div class="track-row">
+      <div class="track-label">V1</div>
+      <div class="track-lane">
+        <div class="clip clip-v1" style="flex:1;">鏡頭A 遠景</div>
+        <div class="clip clip-v1" style="flex:0.8;">鏡頭B 中景</div>
+        <div class="clip clip-v1" style="flex:1.4;">鏡頭C 特寫</div>
+      </div>
+    </div>
+    <div class="track-row">
+      <div class="track-label">A1</div>
+      <div class="track-lane">
+        <div class="clip clip-a1" style="flex:1;">同步收音</div>
+        <div class="clip clip-a1" style="flex:0.8;">同步收音</div>
+        <div class="clip clip-a1" style="flex:1.4;">同步收音</div>
+      </div>
+    </div>
+    <div class="track-row">
+      <div class="track-label">A2</div>
+      <div class="track-lane">
+        <div class="clip clip-empty" style="flex:1;"></div>
+        <div class="clip clip-a2" style="flex:2.2;">背景音樂</div>
+      </div>
+    </div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 怎麼讀這張圖</div>
+    <p>橫軸代表時間，越往右代表越後面發生。同一時刻、不同軌道的內容會「同時播放」——例如上圖中 A1 的同步收音，會跟 V1 對應的畫面同步發聲；A2 的背景音樂則從中段開始，疊加在整段影片上。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">軌道的分工邏輯</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎥</div>
+      <div class="card-title">影像軌（V1、V2…）</div>
+      <div class="card-body">數字越大通常疊在越上層。V1 放主要畫面，V2 常拿來放字幕、Logo、覆蓋畫面（B-roll）或轉場素材。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔊</div>
+      <div class="card-title">聲音軌（A1、A2…）</div>
+      <div class="card-body">通常 A1 放對白／同步收音，A2、A3 分別放背景音樂與音效，分開放才方便個別調整音量。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📍</div>
+      <div class="card-title">播放頭 Playhead</div>
+      <div class="card-body">目前預覽畫面對應的時間點，剪接、分割、加轉場等操作大多是「以播放頭為基準」進行的。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗂️</div>
+      <div class="card-title">素材庫 / 專案面板</div>
+      <div class="card-body">存放所有匯入的影片、音樂、圖片素材，剪輯時把素材從這裡拖到時間軸的軌道上。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三個新手最常搞混的基本操作</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>操作</th><th>作用</th><th>常見情境</th></tr></thead>
+    <tbody>
+      <tr><td>分割 / 切割（Split）</td><td>在播放頭位置把一段素材切成兩段</td><td>想在某個時間點剪掉多餘畫面</td></tr>
+      <tr><td>裁切（Trim）</td><td>拖動片段頭尾邊界，縮短或延長它</td><td>調整鏡頭進出點</td></tr>
+      <tr><td>波紋刪除（Ripple Delete）</td><td>刪除片段同時把後面內容往前遞補，不留空隙</td><td>刪掉一段廢話後不想留黑畫面</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第二章：認識剪輯工作環境</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 在時間軸中，「播放頭」代表的是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">整段影片的總長度</button>
+        <button class="quiz-opt" data-correct="1">目前預覽畫面對應的時間位置</button>
+        <button class="quiz-opt" data-correct="0">音量的大小</button>
+        <button class="quiz-opt" data-correct="0">影片的解析度</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 「波紋刪除」跟一般刪除最大的差別是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">波紋刪除只能用在音軌上</button>
+        <button class="quiz-opt" data-correct="1">波紋刪除會讓後面的片段自動往前遞補，不留空隙</button>
+        <button class="quiz-opt" data-correct="0">波紋刪除會刪掉整條軌道</button>
+        <button class="quiz-opt" data-correct="0">兩者完全一樣，只是按鍵不同</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(1)">← 第一章</button>
+  <button class="btn btn-primary" onclick="goChapter(3)">第三章：剪接點與運鏡邏輯 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 3: 剪接點與運鏡邏輯
+// ============================================================
+function renderCh3(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">✂️ 第三章</div>
+  <h1>剪接點與運鏡邏輯<br>配對剪接、插入鏡頭與180度線</h1>
+  <p class="desc">「在哪裡剪」比「怎麼剪」更重要。這一章用影格序列圖解幾種最常用的剪接點選擇方式，以及新手最容易犯的「越軸」問題。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>20 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>基礎</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">動作剪接 Action Cut：在動作進行中剪</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">在一個連續動作「進行到一半」時切換鏡頭角度，觀眾的注意力會被動作本身吸引，而察覺不到剪接點。</p>
+  <div class="filmstrip">
+    <div class="frame"><div class="frame-thumb">🧍</div><div class="frame-label">遠景：起身動作開始</div></div>
+    <div class="frame-arrow">✂️</div>
+    <div class="frame"><div class="frame-thumb hl">🚶</div><div class="frame-label">中景：<br>動作進行到一半時切</div></div>
+    <div class="frame-arrow">→</div>
+    <div class="frame"><div class="frame-thumb">🚪</div><div class="frame-label">中景：起身動作完成</div></div>
+  </div>
+  <div class="box box-success">
+    <div class="box-title">✅ 剪接時機</div>
+    <p>剪接點選在動作「正在進行」的中段，而不是動作開始前或結束後的靜止畫面——這是最基本、最好用的隱藏剪接點技巧。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">插入鏡頭 Cutaway：用B-roll補救與豐富畫面</div>
+  <div class="filmstrip">
+    <div class="frame"><div class="frame-thumb">🗣️</div><div class="frame-label">A：受訪者說話</div></div>
+    <div class="frame-arrow">→</div>
+    <div class="frame"><div class="frame-thumb hl">🖐️</div><div class="frame-label">插入：手部特寫<br>（B-roll）</div></div>
+    <div class="frame-arrow">→</div>
+    <div class="frame"><div class="frame-thumb">🗣️</div><div class="frame-label">A：受訪者繼續說話</div></div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 為什麼要用</div>
+    <p>插入鏡頭除了讓畫面更豐富，也是剪輯師最常用的「遮蓋工具」：如果兩段訪談之間有跳動感（跳接），插入一顆相關的畫面就能自然地蓋過去。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">180度線：讓觀眾不會迷失方向</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">想像兩個人對話，中間畫一條假想線。攝影機只要一直待在線的「同一側」拍攝，兩人在畫面上的左右位置就會保持一致，觀眾才不會搞混方向。</p>
+  <div class="grid-overlay" style="max-width:420px;">
+    <div class="gline h1" style="top:50%;background:rgba(239,68,68,.7);height:2px;"></div>
+    <div class="subject" style="left:15%;top:38%;">🧍</div>
+    <div class="subject" style="right:15%;top:38%;">🧍‍♀️</div>
+    <div style="position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:11px;color:var(--text-muted);">紅線＝180度假想線，攝影機需固定在線的同一側</div>
+  </div>
+  <div class="compare-wrap">
+    <div class="compare-box">
+      <div class="compare-frame" style="background:rgba(16,185,129,.12);">🧍　🧍‍♀️</div>
+      <div class="compare-tag" style="color:#6ee7b7;">✅ 正確：機位都在線同側，左右位置一致</div>
+    </div>
+    <div class="compare-box">
+      <div class="compare-frame" style="background:rgba(239,68,68,.12);">🧍‍♀️　🧍</div>
+      <div class="compare-tag" style="color:#fca5a5;">❌ 越軸：跨過線拍攝，左右突然對調，觀眾會困惑</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見剪接點策略一覽</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>手法</th><th>剪接時機</th><th>效果</th></tr></thead>
+    <tbody>
+      <tr><td>配對剪接 Match Cut</td><td>兩個畫面在構圖或動作上相似</td><td>製造時空跳躍卻視覺連貫的巧妙感</td></tr>
+      <tr><td>動作剪接 Action Cut</td><td>動作進行到一半時切換角度</td><td>隱藏剪接點，畫面更流暢</td></tr>
+      <tr><td>插入鏡頭 Cutaway</td><td>插入相關但非主體的畫面</td><td>豐富畫面、遮蓋跳接痕跡</td></tr>
+      <tr><td>反應鏡頭 Reaction Shot</td><td>切到聽者/旁觀者的表情</td><td>強化情緒、交代人物關係</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第三章：剪接點與運鏡邏輯</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 「動作剪接」建議把剪接點放在哪裡？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">動作完全靜止之後</button>
+        <button class="quiz-opt" data-correct="1">動作正在進行的中段</button>
+        <button class="quiz-opt" data-correct="0">動作開始前的預備姿勢</button>
+        <button class="quiz-opt" data-correct="0">隨機挑選，時機不重要</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 「越軸」問題發生的原因是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">影片解析度太低</button>
+        <button class="quiz-opt" data-correct="1">攝影機跨過180度假想線，導致人物左右位置突然對調</button>
+        <button class="quiz-opt" data-correct="0">音量忽大忽小</button>
+        <button class="quiz-opt" data-correct="0">用了太多插入鏡頭</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(2)">← 第二章</button>
+  <button class="btn btn-primary" onclick="goChapter(4)">第四章：轉場手法全解析 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 4: 轉場手法全解析
+// ============================================================
+function renderCh4(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔀 第四章</div>
+  <h1>轉場手法全解析<br>卡接、疊化、划接與J/L-Cut</h1>
+  <p class="desc">轉場不是「特效」，而是敘事工具。這一章逐一圖解最常見的畫面轉場，以及進階的聲音先行 J-Cut / L-Cut 技巧。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">畫面轉場三兄弟</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">✂️</div>
+      <div class="card-title">卡接 Hard Cut</div>
+      <div class="card-body">直接切換，沒有過渡效果。最常用、最不容易讓觀眾出戲，佔全片剪接點的絕大多數。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌫️</div>
+      <div class="card-title">疊化 Dissolve</div>
+      <div class="card-body">前一畫面淡出、後一畫面淡入，兩者短暫重疊。常用來表示時間流逝或情緒過渡。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚪</div>
+      <div class="card-title">划接 Wipe</div>
+      <div class="card-body">用一條線或形狀把畫面「推」走，露出下一個畫面。風格感強烈，常見於復古片或特定節目包裝。</div>
+    </div>
+  </div>
+  <div class="filmstrip">
+    <div class="frame"><div class="frame-thumb">🅰️</div><div class="frame-label">畫面A</div></div>
+    <div class="frame-arrow">✂️</div>
+    <div class="frame"><div class="frame-thumb">🅱️</div><div class="frame-label">卡接：直接切換</div></div>
+  </div>
+  <div class="filmstrip">
+    <div class="frame"><div class="frame-thumb">🅰️</div><div class="frame-label">畫面A</div></div>
+    <div class="frame-arrow">🌫️</div>
+    <div class="frame"><div class="frame-thumb hl" style="opacity:.5;">🅰️🅱️</div><div class="frame-label">疊化：兩畫面重疊淡入淡出</div></div>
+    <div class="frame-arrow">→</div>
+    <div class="frame"><div class="frame-thumb">🅱️</div><div class="frame-label">畫面B</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">J-Cut 與 L-Cut：讓聲音先到或慢走</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">這是讓剪輯「有電影感」最關鍵的技巧之一：讓聲音和畫面「不同時」切換，銜接會自然很多。</p>
+  <div class="cut-diagram">
+    <div style="font-size:12px;font-weight:700;color:var(--secondary);margin-bottom:10px;">J-Cut：下一段的聲音先出現，畫面才跟上</div>
+    <div class="cut-row">
+      <div class="cut-row-label">畫面</div>
+      <div class="cut-lane">
+        <div class="cut-seg clip-v1" style="flex:1.6;">畫面A</div>
+        <div class="cut-seg clip-v2" style="flex:1.4;">畫面B</div>
+      </div>
+    </div>
+    <div class="cut-row">
+      <div class="cut-row-label">聲音</div>
+      <div class="cut-lane">
+        <div class="cut-seg clip-a1" style="flex:1;">聲音A</div>
+        <div class="cut-seg clip-a2" style="flex:2;">聲音B（提早進入）</div>
+      </div>
+    </div>
+  </div>
+  <div class="cut-diagram">
+    <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:10px;">L-Cut：畫面先切走，上一段的聲音延續一小段</div>
+    <div class="cut-row">
+      <div class="cut-row-label">畫面</div>
+      <div class="cut-lane">
+        <div class="cut-seg clip-v1" style="flex:1.4;">畫面A</div>
+        <div class="cut-seg clip-v2" style="flex:1.6;">畫面B</div>
+      </div>
+    </div>
+    <div class="cut-row">
+      <div class="cut-row-label">聲音</div>
+      <div class="cut-lane">
+        <div class="cut-seg clip-a1" style="flex:2;">聲音A（延續到B畫面）</div>
+        <div class="cut-seg clip-a2" style="flex:1;">聲音B</div>
+      </div>
+    </div>
+  </div>
+  <div class="box box-success">
+    <div class="box-title">✅ 實際用途</div>
+    <p>訪談類影片最常用：受訪者B的聲音先進來（J-Cut），觀眾耳朵先聽到「下一個人要說話了」，畫面才切到B的臉，銜接會比「畫面聲音同時切」自然很多。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">轉場選擇原則</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>預設用卡接：九成情況下，觀眾根本不需要「被提醒」有轉場發生。</li>
+    <li><span class="check-icon">✅</span>疊化留給時間跳躍：例如「一天過去了」「多年後」。</li>
+    <li><span class="check-icon">✅</span>划接、翻頁等花俏轉場要謹慎：風格強烈，用多了會分散觀眾對內容的注意力。</li>
+    <li><span class="check-icon">✅</span>J-Cut / L-Cut 是對話與訪談剪輯的必備技巧，值得刻意練習。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第四章：轉場手法全解析</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 在 J-Cut 中，聲音與畫面的關係是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">畫面與聲音永遠同時切換</button>
+        <button class="quiz-opt" data-correct="1">下一段的聲音會先於畫面出現</button>
+        <button class="quiz-opt" data-correct="0">聲音會被完全靜音</button>
+        <button class="quiz-opt" data-correct="0">畫面會先於聲音切換，且沒有任何延遲</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 大多數專業剪輯中，使用比例最高的轉場是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">划接 Wipe</button>
+        <button class="quiz-opt" data-correct="0">翻頁效果</button>
+        <button class="quiz-opt" data-correct="1">卡接 Hard Cut</button>
+        <button class="quiz-opt" data-correct="0">旋轉效果</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(3)">← 第三章</button>
+  <button class="btn btn-primary" onclick="goChapter(5)">第五章：節奏與時間感 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 5: 節奏與時間感
+// ============================================================
+function renderCh5(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🥁 第五章</div>
+  <h1>節奏與時間感<br>鏡頭長度如何決定「爽感」</h1>
+  <p class="desc">為什麼有些影片看起來很「有節奏感」，有些卻讓人昏昏欲睡？答案往往藏在「每顆鏡頭留多久」這件事裡。這一章用長條圖直接視覺化鏡頭長度的變化模式。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">平鋪直敘 vs 加速剪輯：鏡頭長度圖</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">下面兩張圖的長條代表「每顆鏡頭的長度」。左邊是一般敘事的節奏，右邊是動作高潮或轉折點常用的「加速剪輯」——鏡頭越剪越短，觀眾的心跳也會跟著加快。</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:12px;">
+    <div>
+      <div class="pacing-chart">
+        <div class="pacing-bar" style="height:55%;"><span class="pacing-bar-label">4s</span></div>
+        <div class="pacing-bar" style="height:60%;"><span class="pacing-bar-label">4.5s</span></div>
+        <div class="pacing-bar" style="height:50%;"><span class="pacing-bar-label">3.8s</span></div>
+        <div class="pacing-bar" style="height:58%;"><span class="pacing-bar-label">4.2s</span></div>
+        <div class="pacing-bar" style="height:52%;"><span class="pacing-bar-label">4s</span></div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--text-muted);">平穩敘事：鏡頭長度接近，觀眾情緒平穩</div>
+    </div>
+    <div>
+      <div class="pacing-chart">
+        <div class="pacing-bar" style="height:95%;background:linear-gradient(to top,var(--accent),#fbbf24);"><span class="pacing-bar-label">6s</span></div>
+        <div class="pacing-bar" style="height:70%;background:linear-gradient(to top,var(--accent),#fbbf24);"><span class="pacing-bar-label">3.5s</span></div>
+        <div class="pacing-bar" style="height:45%;background:linear-gradient(to top,var(--accent),#fbbf24);"><span class="pacing-bar-label">1.8s</span></div>
+        <div class="pacing-bar" style="height:25%;background:linear-gradient(to top,var(--danger),#fca5a5);"><span class="pacing-bar-label">0.9s</span></div>
+        <div class="pacing-bar" style="height:15%;background:linear-gradient(to top,var(--danger),#fca5a5);"><span class="pacing-bar-label">0.5s</span></div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--text-muted);">加速剪輯：鏡頭越剪越短，堆疊緊張感</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">聲音節奏也是節奏的一部分</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">很多剪輯師會「跟著音樂的鼓點剪」——在鼓點強拍的位置放剪接點，畫面切換會跟音樂融為一體，這就是常說的「卡點剪輯」。</p>
+  <div class="waveform">
+    <div class="wave-bar" style="height:30%;"></div><div class="wave-bar" style="height:80%;"></div><div class="wave-bar" style="height:35%;"></div><div class="wave-bar" style="height:20%;"></div>
+    <div class="wave-bar" style="height:85%;"></div><div class="wave-bar" style="height:40%;"></div><div class="wave-bar" style="height:25%;"></div><div class="wave-bar" style="height:90%;"></div>
+    <div class="wave-bar" style="height:32%;"></div><div class="wave-bar" style="height:18%;"></div><div class="wave-bar" style="height:88%;"></div><div class="wave-bar" style="height:45%;"></div>
+    <div class="wave-bar" style="height:22%;"></div><div class="wave-bar" style="height:92%;"></div><div class="wave-bar" style="height:38%;"></div><div class="wave-bar" style="height:15%;"></div>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 卡點的實作方式</div>
+    <p>大部分剪輯軟體可以顯示音樂波形——波形突然變高的地方通常就是鼓點或重拍，把剪接點對齊這些位置，就是最基本的卡點剪輯手法。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">影響節奏的四個變因</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">⏱️</div>
+      <div class="card-title">平均鏡頭長度</div>
+      <div class="card-body">短鏡頭多＝節奏快、刺激；長鏡頭多＝從容、有沉浸感。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📈</div>
+      <div class="card-title">長度變化的趨勢</div>
+      <div class="card-body">鏡頭「越來越短」會製造緊張堆疊；忽長忽短則帶來不安定感。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎵</div>
+      <div class="card-title">音樂與音效的節拍</div>
+      <div class="card-body">剪接點對齊節拍，會讓觀眾潛意識覺得「順」。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤫</div>
+      <div class="card-title">留白與停頓</div>
+      <div class="card-body">刻意的長鏡頭或安靜片刻，能讓後面的快剪更有對比張力。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第五章：節奏與時間感</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 「加速剪輯」通常用來製造什麼效果？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">讓觀眾放鬆、平靜下來</button>
+        <button class="quiz-opt" data-correct="1">透過鏡頭越剪越短，堆疊緊張與高潮感</button>
+        <button class="quiz-opt" data-correct="0">降低影片的音量</button>
+        <button class="quiz-opt" data-correct="0">增加影片的總長度</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 「卡點剪輯」的核心做法是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">完全不使用背景音樂</button>
+        <button class="quiz-opt" data-correct="1">把剪接點對齊音樂的節拍或鼓點</button>
+        <button class="quiz-opt" data-correct="0">把所有鏡頭長度設成完全一樣</button>
+        <button class="quiz-opt" data-correct="0">只在片頭使用一次轉場</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(4)">← 第四章</button>
+  <button class="btn btn-primary" onclick="goChapter(6)">第六章：敘事結構與蒙太奇 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 6: 敘事結構與蒙太奇
+// ============================================================
+function renderCh6(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📖 第六章</div>
+  <h1>敘事結構與蒙太奇<br>三幕劇與蒙太奇序列剪輯</h1>
+  <p class="desc">剪輯不只是逐句處理素材，更是在組織一段「有結構」的故事。這一章用視覺化圖表拆解最基本的三幕劇架構，以及蒙太奇序列如何濃縮時間。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三幕劇結構：時間軸上的張力曲線</div>
+  <div class="timeline">
+    <div class="timeline-ruler"><span>開場</span><span>建立</span><span>衝突升高</span><span>高潮</span><span>結尾</span></div>
+    <div class="track-row" style="min-width:auto;">
+      <div class="track-label">結構</div>
+      <div class="track-lane" style="height:44px;">
+        <div class="clip clip-v2" style="flex:1;">第一幕：建置</div>
+        <div class="clip clip-v1" style="flex:2.2;">第二幕：對抗／衝突升高</div>
+        <div class="clip clip-a2" style="flex:0.9;">第三幕：解決</div>
+      </div>
+    </div>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">1️⃣</div>
+      <div class="card-title">第一幕：建置</div>
+      <div class="card-body">介紹主角、情境與目標，讓觀眾知道「這是誰的故事、他想要什麼」。剪輯上通常節奏較從容。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">2️⃣</div>
+      <div class="card-title">第二幕：對抗</div>
+      <div class="card-body">占全片篇幅最長，主角遭遇一連串阻礙。剪輯節奏會隨衝突升高逐漸加快，鏡頭趨向變短。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">3️⃣</div>
+      <div class="card-title">第三幕：解決</div>
+      <div class="card-body">衝突到達高潮後收束，給觀眾情緒上的釋放。剪輯節奏在高潮後通常會慢下來。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">蒙太奇序列：把「一段時間」濃縮成幾顆鏡頭</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">例如「主角苦練三個月」，不可能真的拍三個月，而是用幾顆代表性的畫面＋音樂，濃縮出「時間流逝」的感覺。</p>
+  <div class="filmstrip">
+    <div class="frame"><div class="frame-thumb">🌅</div><div class="frame-label">Day 1<br>清晨開始練習</div></div>
+    <div class="frame-arrow">→</div>
+    <div class="frame"><div class="frame-thumb">💦</div><div class="frame-label">Week 2<br>汗流浹背</div></div>
+    <div class="frame-arrow">→</div>
+    <div class="frame"><div class="frame-thumb">📈</div><div class="frame-label">Month 1<br>進度紀錄板</div></div>
+    <div class="frame-arrow">→</div>
+    <div class="frame"><div class="frame-thumb hl">🏆</div><div class="frame-label">Month 3<br>成果展現</div></div>
+  </div>
+  <div class="box box-success">
+    <div class="box-title">✅ 蒙太奇序列的組成公式</div>
+    <p>幾個「有代表性」的瞬間（不需要按順序發生的真實時間）＋ 一致的音樂或節奏 ＋ 淡入淡出或疊化轉場，就能營造出「時間快速流逝」的感覺。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">平行剪輯 Parallel Editing：兩條時間線交叉進行</div>
+  <div class="cut-diagram">
+    <div class="cut-row">
+      <div class="cut-row-label">故事線A</div>
+      <div class="cut-lane">
+        <div class="cut-seg clip-v1" style="flex:1;">A-1</div>
+        <div class="cut-seg clip-empty" style="flex:1;"></div>
+        <div class="cut-seg clip-v1" style="flex:1;">A-2</div>
+        <div class="cut-seg clip-empty" style="flex:1;"></div>
+        <div class="cut-seg clip-v1" style="flex:1;">A-3</div>
+      </div>
+    </div>
+    <div class="cut-row">
+      <div class="cut-row-label">故事線B</div>
+      <div class="cut-lane">
+        <div class="cut-seg clip-empty" style="flex:1;"></div>
+        <div class="cut-seg clip-v2" style="flex:1;">B-1</div>
+        <div class="cut-seg clip-empty" style="flex:1;"></div>
+        <div class="cut-seg clip-v2" style="flex:1;">B-2</div>
+        <div class="cut-seg clip-empty" style="flex:1;"></div>
+      </div>
+    </div>
+  </div>
+  <p style="color:var(--text-muted);font-size:13px;">兩條故事線交錯剪接（A-1 → B-1 → A-2 → B-2…），常用來製造「同一時間、兩地發生的事件即將交會」的懸念感，例如追逐戲或倒數場景。</p>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第六章：敘事結構與蒙太奇</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 三幕劇中，通常篇幅最長、剪輯節奏會逐漸加快的是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">第一幕：建置</button>
+        <button class="quiz-opt" data-correct="1">第二幕：對抗／衝突升高</button>
+        <button class="quiz-opt" data-correct="0">第三幕：解決</button>
+        <button class="quiz-opt" data-correct="0">片尾工作人員名單</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 「平行剪輯」的主要作用是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">把所有鏡頭調成黑白色調</button>
+        <button class="quiz-opt" data-correct="1">交錯剪接兩條故事線，製造同時發生、即將交會的懸念感</button>
+        <button class="quiz-opt" data-correct="0">刪除所有背景音樂</button>
+        <button class="quiz-opt" data-correct="0">只用於片頭的Logo動畫</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(5)">← 第五章</button>
+  <button class="btn btn-primary" onclick="goChapter(7)">第七章：調色與影像風格 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 7: 調色與影像風格
+// ============================================================
+function renderCh7(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🎨 第七章</div>
+  <h1>調色與影像風格<br>從校色到風格化的調色思維</h1>
+  <p class="desc">調色分成兩個階段：先「校色」讓畫面正常，再「風格化」建立情緒與氛圍。這一章用前後對比圖，直接看出兩個階段各自在做什麼。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Step 1：校色 Color Correction — 先「修正」</div>
+  <div class="compare-wrap">
+    <div class="compare-box">
+      <div class="compare-frame" style="background:linear-gradient(135deg,#5b6b7a,#3a4552);">🌫️</div>
+      <div class="compare-tag" style="color:var(--text-muted);">原始素材：偏灰、對比不足、白平衡偏冷</div>
+    </div>
+    <div class="compare-box">
+      <div class="compare-frame" style="background:linear-gradient(135deg,#87a3bd,#e8dcc8);">☀️</div>
+      <div class="compare-tag" style="color:#a5f3fc;">校色後：白平衡校正、對比與曝光正常化</div>
+    </div>
+  </div>
+  <p style="color:var(--text-muted);font-size:13px;">校色的目標是讓畫面「看起來正常、符合肉眼所見」，同時讓不同機器、不同時段拍攝的素材色調一致，這是調色的地基。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">Step 2：風格化 Color Grading — 再「塑造情緒」</div>
+  <div class="compare-wrap">
+    <div class="compare-box">
+      <div class="compare-frame" style="background:linear-gradient(135deg,#87a3bd,#e8dcc8);">☀️</div>
+      <div class="compare-tag" style="color:var(--text-muted);">校色後的中性畫面</div>
+    </div>
+    <div class="compare-box">
+      <div class="compare-frame" style="background:linear-gradient(135deg,#ea9749,#3a5a6b);">🎞️</div>
+      <div class="compare-tag" style="color:#fcd34d;">風格化：橙青色調（Teal & Orange），常見於商業片</div>
+    </div>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🧡</div>
+      <div class="card-title">橙青色調 Teal &amp; Orange</div>
+      <div class="card-body">膚色偏暖橙、陰影與背景偏青藍，對比強烈、商業感十足，是最常見的好萊塢風格。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎞️</div>
+      <div class="card-title">復古膠片感</div>
+      <div class="card-body">降低對比、加一點暖黃或褪色感，帶出懷舊、溫暖的情緒。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌙</div>
+      <div class="card-title">冷調／賽博感</div>
+      <div class="card-body">整體偏藍紫，高對比、暗角，常用於科幻、懸疑或夜景題材。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">調色三個基本觀念</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>先校色、再風格化：地基沒打好，風格化只會放大瑕疵。</li>
+    <li><span class="check-icon">✅</span>色調要服務故事：恐怖片壓青綠、溫馨片加暖黃，色調本身就在說故事。</li>
+    <li><span class="check-icon">✅</span>膚色是最後防線：不管套用什麼風格化 LUT，記得檢查人物膚色是否還自然，太誇張的色偏會讓觀眾出戲。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第七章：調色與影像風格</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 「校色」與「風格化」的正確先後順序是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="1">先校色修正畫面，再進行風格化塑造情緒</button>
+        <button class="quiz-opt" data-correct="0">先風格化，再校色</button>
+        <button class="quiz-opt" data-correct="0">兩者順序完全不影響結果</button>
+        <button class="quiz-opt" data-correct="0">只需要風格化，校色可以省略</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 調色時，即使套用了強烈的風格化 LUT，仍建議特別留意什麼？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">背景音樂的音量</button>
+        <button class="quiz-opt" data-correct="1">人物膚色是否仍自然、不過度偏色</button>
+        <button class="quiz-opt" data-correct="0">影片的檔案大小</button>
+        <button class="quiz-opt" data-correct="0">字幕的字型</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(6)">← 第六章</button>
+  <button class="btn btn-primary" onclick="goChapter(8)">第八章：聲音設計與混音基礎 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 8: 聲音設計與混音基礎
+// ============================================================
+function renderCh8(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🔊 第八章</div>
+  <h1>聲音設計與混音基礎<br>音量、層次與音效的搭配</h1>
+  <p class="desc">觀眾對畫面瑕疵的容忍度，遠比對聲音瑕疵的容忍度高。這一章用音量表視覺化「對白、音樂、音效」三層聲音該怎麼分配空間。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">三層聲音的音量關係</div>
+  <div class="level-meter">
+    <div class="level-row">
+      <div class="level-label">對白</div>
+      <div class="level-track"><div class="level-fill" style="width:85%;background:linear-gradient(90deg,var(--primary),var(--secondary));"></div></div>
+      <div class="level-db">-6 dB</div>
+    </div>
+    <div class="level-row">
+      <div class="level-label">音效 SFX</div>
+      <div class="level-track"><div class="level-fill" style="width:60%;background:linear-gradient(90deg,var(--accent),#fbbf24);"></div></div>
+      <div class="level-db">-12 dB</div>
+    </div>
+    <div class="level-row">
+      <div class="level-label">背景音樂</div>
+      <div class="level-track"><div class="level-fill" style="width:35%;background:linear-gradient(90deg,#f472b6,#be185d);"></div></div>
+      <div class="level-db">-20 dB</div>
+    </div>
+  </div>
+  <div class="box box-success">
+    <div class="box-title">✅ 黃金原則</div>
+    <p>對白永遠是主角，音量最高、最清楚；音效次之，用來強化動作與臨場感；背景音樂音量最低，負責烘托情緒而不搶戲。這個順序反過來，觀眾就會覺得「聽不清楚在講什麼」。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">閃避 Ducking：音樂自動讓路給人聲</div>
+  <div class="cut-diagram">
+    <div class="cut-row">
+      <div class="cut-row-label">對白</div>
+      <div class="cut-lane">
+        <div class="cut-seg clip-empty" style="flex:1;"></div>
+        <div class="cut-seg clip-v1" style="flex:2;">說話中</div>
+        <div class="cut-seg clip-empty" style="flex:1;"></div>
+      </div>
+    </div>
+    <div class="cut-row">
+      <div class="cut-row-label">音樂</div>
+      <div class="cut-lane">
+        <div class="cut-seg clip-a2" style="flex:1;height:38px;">正常音量</div>
+        <div class="cut-seg clip-a2" style="flex:2;height:20px;align-self:flex-end;">自動降低</div>
+        <div class="cut-seg clip-a2" style="flex:1;height:38px;">恢復音量</div>
+      </div>
+    </div>
+  </div>
+  <p style="color:var(--text-muted);font-size:13px;">當有人開口說話，背景音樂的音量會自動（或手動）降低，等說話結束再恢復原本音量，這個技巧叫「閃避」，是 Vlog、Podcast 剪輯的基本功。</p>
+</div>
+
+<div class="section">
+  <div class="section-title">聲音設計檢查清單</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>每個場景轉換都有環境音（Room Tone），避免忽然變成死寂的靜音。</li>
+    <li><span class="check-icon">✅</span>關鍵動作（開門、腳步、點擊）都有對應音效，畫面會更「扎實」。</li>
+    <li><span class="check-icon">✅</span>音樂在對白出現時自動閃避降低。</li>
+    <li><span class="check-icon">✅</span>整體音量做過響度標準化，避免忽大忽小或跟平台建議值差太多。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第八章：聲音設計與混音基礎</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 在對白、音效、背景音樂三者中，音量通常應該最高的是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="1">對白</button>
+        <button class="quiz-opt" data-correct="0">背景音樂</button>
+        <button class="quiz-opt" data-correct="0">環境音效</button>
+        <button class="quiz-opt" data-correct="0">三者音量必須完全相同</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 「閃避 Ducking」指的是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">把所有音效都刪除</button>
+        <button class="quiz-opt" data-correct="1">有人說話時自動降低背景音樂音量，說完再恢復</button>
+        <button class="quiz-opt" data-correct="0">把畫面切換成黑白</button>
+        <button class="quiz-opt" data-correct="0">將影片匯出成無聲版本</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(7)">← 第七章</button>
+  <button class="btn btn-primary" onclick="goChapter(9)">第九章：常見剪輯錯誤與避雷 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 9: 常見剪輯錯誤與避雷
+// ============================================================
+function renderCh9(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">🚫 第九章</div>
+  <h1>常見剪輯錯誤與避雷<br>跳接、越軸與過度剪輯</h1>
+  <p class="desc">學會怎麼剪之前，先學會辨認「哪裡剪錯了」。這一章整理新手最容易踩的幾個雷區，並用圖解說明問題出在哪裡。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>15 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>進階</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">跳接 Jump Cut：畫面「跳」了一下</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">同一機位、同一人物，只是簡單剪掉中間一段話，會讓人物姿勢突然「跳動」一下，觀眾會覺得不自然（除非你是刻意營造這種風格，例如 Vlog 常見手法）。</p>
+  <div class="filmstrip">
+    <div class="frame"><div class="frame-thumb">🧍</div><div class="frame-label">同一機位<br>姿勢A</div></div>
+    <div class="frame-arrow">✂️</div>
+    <div class="frame"><div class="frame-thumb hl">🧍‍♂️</div><div class="frame-label">同一機位<br>姿勢突然改變＝跳接</div></div>
+  </div>
+  <div class="box box-warning">
+    <div class="box-title">⚠️ 怎麼避免</div>
+    <p>三種解法：① 插入一顆 Cutaway 蓋過去、② 加一個輕微的變焦或推鏡製造刻意感、③ 乾脆保留、當作一種風格（許多 YouTuber 的口播就是刻意的跳接節奏）。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">越軸：方向感錯亂（複習）</div>
+  <div class="compare-wrap">
+    <div class="compare-box">
+      <div class="compare-frame" style="background:rgba(16,185,129,.12);">🚗→</div>
+      <div class="compare-tag" style="color:#6ee7b7;">✅ 車子在前後鏡頭都朝右移動</div>
+    </div>
+    <div class="compare-box">
+      <div class="compare-frame" style="background:rgba(239,68,68,.12);">←🚗</div>
+      <div class="compare-tag" style="color:#fca5a5;">❌ 越軸後突然朝左，觀眾以為車子回頭了</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">過度剪輯 Over-editing：塞了太多花招</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🌀</div>
+      <div class="card-title">濫用轉場特效</div>
+      <div class="card-body">每個剪接點都用不同花俏轉場，觀眾注意力會被特效搶走，忘記內容本身。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">✨</div>
+      <div class="card-title">過度使用濾鏡／貼圖</div>
+      <div class="card-body">每個畫面都疊加特效、字體動畫，會讓影片顯得雜亂、缺乏重點。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">不必要的加速剪輯</div>
+      <div class="card-body">明明是平靜的敘事段落，卻用快速剪接手法，節奏與內容不匹配，觀眾會感到疲乏。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">新手避雷檢查表</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>剪完一段落後，退一步用「觀眾視角」重看一次，而不是一直盯著時間軸。</li>
+    <li><span class="check-icon">✅</span>每一個轉場特效／音效，都問自己「這是為了服務內容，還是只是我覺得酷？」</li>
+    <li><span class="check-icon">✅</span>對話戲先確認180度線，再決定要不要用某顆素材。</li>
+    <li><span class="check-icon">✅</span>跳接不是絕對禁忌，但要「有意識地」選擇要不要留。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="quiz-card">
+    <div class="quiz-header"><span class="quiz-badge">📝 章節測驗</span><span class="quiz-title">第九章：常見剪輯錯誤與避雷</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 「跳接」最常見的成因是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="1">同一機位下，簡單剪掉中間一段內容，導致人物姿勢突然改變</button>
+        <button class="quiz-opt" data-correct="0">使用了太多背景音樂</button>
+        <button class="quiz-opt" data-correct="0">影片解析度太低</button>
+        <button class="quiz-opt" data-correct="0">字幕字體選錯</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. 判斷是否「過度剪輯」的一個好方法是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">轉場特效種類越多越好</button>
+        <button class="quiz-opt" data-correct="1">自問每個效果是否服務內容，而非只是看起來很酷</button>
+        <button class="quiz-opt" data-correct="0">每個鏡頭都必須加上加速效果</button>
+        <button class="quiz-opt" data-correct="0">完全不使用任何特效</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(8)">← 第八章</button>
+  <button class="btn btn-primary" onclick="goChapter(10)">第十章：匯出規格與剪輯計畫 →</button>
+</div>
+`;
+}
+
+// ============================================================
+// CHAPTER 10: 匯出規格與剪輯計畫（總複習）
+// ============================================================
+function renderCh10(){
+return `
+<div class="chapter-hero">
+  <div class="chapter-badge">📤 第十章</div>
+  <h1>匯出規格與剪輯計畫<br>總複習：從時間軸到成品輸出</h1>
+  <p class="desc">剪完不代表結束——選對比例與匯出設定，作品才能在對的平台正確呈現。這一章整合畫面比例對照表，並帶你做完整套課程的總複習測驗。</p>
+  <div class="meta">
+    <div class="meta-item"><span class="meta-icon">⏱️</span>18 分鐘</div>
+    <div class="meta-item"><span class="meta-icon">🏆</span>總複習</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">依平台選擇正確的畫面比例</div>
+  <div class="aspect-demo">
+    <div class="aspect-item">
+      <div class="aspect-box" style="width:140px;height:79px;">16:9</div>
+      <div class="aspect-name">16:9 橫式</div>
+      <div class="aspect-use">YouTube、電視、簡報</div>
+    </div>
+    <div class="aspect-item">
+      <div class="aspect-box" style="width:79px;height:140px;">9:16</div>
+      <div class="aspect-name">9:16 直式</div>
+      <div class="aspect-use">Reels、Shorts、限動</div>
+    </div>
+    <div class="aspect-item">
+      <div class="aspect-box" style="width:100px;height:100px;">1:1</div>
+      <div class="aspect-name">1:1 方形</div>
+      <div class="aspect-use">Instagram 貼文</div>
+    </div>
+    <div class="aspect-item">
+      <div class="aspect-box" style="width:100px;height:125px;">4:5</div>
+      <div class="aspect-name">4:5 直式</div>
+      <div class="aspect-use">IG Feed 直式貼文</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">常見平台匯出規格參考</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>平台</th><th>建議比例</th><th>建議解析度</th><th>備註</th></tr></thead>
+    <tbody>
+      <tr><td>YouTube 長影片</td><td>16:9</td><td>1920×1080 起</td><td>字幕留意安全範圍，避免被介面遮擋</td></tr>
+      <tr><td>Instagram / TikTok 短影音</td><td>9:16</td><td>1080×1920</td><td>重要畫面與文字避開頂部與底部按鈕區</td></tr>
+      <tr><td>Instagram 貼文</td><td>1:1 或 4:5</td><td>1080×1080 / 1080×1350</td><td>4:5 在動態消息中佔比更大，曝光通常較高</td></tr>
+      <tr><td>簡報／內部使用</td><td>16:9</td><td>依需求，1080p 通常足夠</td><td>檔案大小與畫質需取得平衡</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box box-info">
+    <div class="box-title">💡 一次拍多比例的技巧</div>
+    <p>拍攝時盡量抓「中間安全範圍」的構圖，剪輯時就能同時裁切出 16:9 與 9:16 兩種版本，不必分開拍兩次。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">你的第一份剪輯練習計畫</div>
+  <ul class="checklist">
+    <li><span class="check-icon">✅</span>找一段 1-3 分鐘的手機素材（旅遊、日常、訪談都可以）。</li>
+    <li><span class="check-icon">✅</span>先用卡接完成一版粗剪，確認故事順序與長度。</li>
+    <li><span class="check-icon">✅</span>檢查有沒有跳接或越軸問題，需要的話插入 Cutaway 補救。</li>
+    <li><span class="check-icon">✅</span>加上背景音樂，練習把至少一個剪接點對齊節拍。</li>
+    <li><span class="check-icon">✅</span>混音：把對白、音效、音樂音量拉到合理層次，並在對白出現時做閃避。</li>
+    <li><span class="check-icon">✅</span>套用一個簡單的調色風格，記得檢查膚色是否自然。</li>
+    <li><span class="check-icon">✅</span>依你要上傳的平台，匯出正確比例與解析度。</li>
+  </ul>
+  <div class="box box-info">
+    <div class="box-title">💡 建議行動</div>
+    <p>不用一次追求完美，先完整跑過一次「粗剪 → 檢查 → 配樂 → 混音 → 調色 → 匯出」的流程，比研究更多理論更能快速累積手感。</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">全課程總複習</div>
+  <div class="quiz-card" style="margin-top:0;">
+    <div class="quiz-header"><span class="quiz-badge">📝 總複習測驗</span><span class="quiz-title">影片剪輯入門課程總複習</span></div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q1. 庫勒雪夫效應告訴我們，意義主要來自於？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">單一鏡頭的畫質高低</button>
+        <button class="quiz-opt" data-correct="1">鏡頭與鏡頭排列後，觀眾產生的關係聯想</button>
+        <button class="quiz-opt" data-correct="0">演員的知名度</button>
+        <button class="quiz-opt" data-correct="0">影片的總長度</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q2. J-Cut 與 L-Cut 的共通重點是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">畫面與聲音必須永遠同時切換</button>
+        <button class="quiz-opt" data-correct="1">讓聲音和畫面的切換時間點錯開，銜接更自然</button>
+        <button class="quiz-opt" data-correct="0">只能用在動作片</button>
+        <button class="quiz-opt" data-correct="0">必須搭配划接特效使用</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q3. 關於180度線，下列敘述何者正確？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">攝影機必須不斷跨越假想線拍攝才專業</button>
+        <button class="quiz-opt" data-correct="1">攝影機應固定在假想線的同一側，避免人物左右位置錯亂</button>
+        <button class="quiz-opt" data-correct="0">180度線只適用於風景空拍</button>
+        <button class="quiz-opt" data-correct="0">180度線與剪輯完全無關</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q4. 混音時，一般建議的音量優先順序（由高到低）是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">背景音樂 → 音效 → 對白</button>
+        <button class="quiz-opt" data-correct="1">對白 → 音效 → 背景音樂</button>
+        <button class="quiz-opt" data-correct="0">音效 → 背景音樂 → 對白</button>
+        <button class="quiz-opt" data-correct="0">三者音量必須完全一致</button>
+      </div>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-text">Q5. 為 Instagram Reels / TikTok 剪輯短影音，最適合的畫面比例是？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-correct="0">16:9</button>
+        <button class="quiz-opt" data-correct="1">9:16</button>
+        <button class="quiz-opt" data-correct="0">21:9</button>
+        <button class="quiz-opt" data-correct="0">3:2</button>
+      </div>
+    </div>
+    <div class="quiz-result"></div>
+    <button class="btn-quiz">🔄 重新測驗</button>
+  </div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ 提醒：本課程內容為一般性的剪輯教育，旨在建立基礎觀念與視覺化理解，實際操作介面與功能名稱會因所使用的剪輯軟體（如 Premiere Pro、DaVinci Resolve、Final Cut Pro、CapCut 等）而有所不同，建議搭配你慣用的軟體實際操作練習。
+</div>
+
+<div class="chapter-nav">
+  <button class="btn btn-ghost" onclick="goChapter(9)">← 第九章</button>
+  <button class="btn btn-primary" onclick="goChapter(0)">🔁 回到課程總覽</button>
+</div>
+`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderSidebar();
+document.getElementById('content').innerHTML = chapters[0].content();
+initQuizzes();
+</script>
+</body>
+</html>
